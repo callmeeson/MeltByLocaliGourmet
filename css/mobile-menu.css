@@ -1,0 +1,216 @@
+/* Mobile Menu Toggle Button */
+.mobile-menu-toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 44px;
+    height: 44px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    z-index: 10000;
+    margin-left: auto;
+}
+
+.hamburger-line {
+    width: 100%;
+    height: 3px;
+    background-color: #1A1A1A;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+/* Show on mobile */
+@media (max-width: 768px) {
+    .mobile-menu-toggle {
+        display: flex !important;
+    }
+}
+
+/* Hamburger animation when active */
+.mobile-menu-toggle.active .hamburger-line:nth-child(1) {
+    transform: rotate(45deg) translate(8px, 8px);
+}
+
+.mobile-menu-toggle.active .hamburger-line:nth-child(2) {
+    opacity: 0;
+}
+
+.mobile-menu-toggle.active .hamburger-line:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+}
+
+/* Mobile Menu */
+.mobile-menu {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100vh !important;
+    background: rgba(12, 12, 12, 0.98) !important;
+    color: #f7f4ef;
+    z-index: 10001 !important;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    overflow-y: auto;
+}
+
+.mobile-menu.active {
+    transform: translateX(0) !important;
+}
+
+.mobile-menu-content {
+    padding: 1.5rem 1.25rem 2rem;
+    position: relative;
+}
+
+.mobile-menu-header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.mobile-menu-close {
+    width: 44px;
+    height: 44px;
+    background: none;
+    border: none;
+    color: rgba(247, 244, 239, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10002;
+}
+
+.mobile-menu-close:hover {
+    color: #f7f4ef;
+}
+
+.mobile-menu-search {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding-bottom: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.mobile-menu-search input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: #f7f4ef;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    padding: 0.5rem 0;
+    outline: none;
+}
+
+.mobile-menu-search input::placeholder {
+    color: rgba(247, 244, 239, 0.6);
+}
+
+.mobile-menu-search button {
+    background: none;
+    border: none;
+    color: #f7f4ef;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mobile-menu-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    margin-bottom: 0.75rem;
+}
+
+.mobile-menu-tab {
+    background: none;
+    border: none;
+    color: rgba(247, 244, 239, 0.7);
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 0.75rem 0;
+    border-bottom: 2px solid transparent;
+}
+
+.mobile-menu-tab.active {
+    color: #f7f4ef;
+    border-bottom-color: #c99a3a;
+}
+
+.mobile-nav-menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.mobile-nav-menu li {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.mobile-nav-menu a {
+    display: block;
+    padding: 0.85rem 0;
+    font-family: var(--font-body, sans-serif);
+    font-size: 0.95rem;
+    color: #f7f4ef;
+    text-decoration: none;
+    transition: color 0.3s ease;
+    letter-spacing: 0.02em;
+}
+
+.mobile-nav-menu a:hover {
+    color: #c99a3a;
+}
+
+.mobile-menu-divider {
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.08);
+    margin: 1.25rem 0;
+}
+
+.mobile-menu-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.mobile-menu-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 0;
+    background: none;
+    border: none;
+    border-radius: 0;
+    font-family: var(--font-body, sans-serif);
+    font-size: 0.85rem;
+    color: #f7f4ef;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    width: 100%;
+    text-align: left;
+}
+
+.mobile-menu-link:hover {
+    color: #c99a3a;
+}
+
+.mobile-menu-link i {
+    width: 18px;
+    height: 18px;
+    color: #c99a3a;
+}

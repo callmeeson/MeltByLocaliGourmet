@@ -1,0 +1,993 @@
+/* ========================================================================================
+   ADDITIONAL RESPONSIVE & MOBILE STYLES
+   ======================================================================================== */
+
+/* CRITICAL: Prevent Horizontal Scrolling */
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    overflow-x: hidden;
+    max-width: 100%;
+}
+
+body {
+    position: relative;
+}
+
+img,
+video,
+iframe,
+embed,
+object {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Prevent text overflow */
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+span,
+div {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* Prevent table overflow */
+table {
+    max-width: 100%;
+    overflow-x: auto;
+    display: block;
+}
+
+/* Container constraints */
+.container,
+.section,
+.hero,
+.product-grid,
+.woocommerce {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+/* Mobile Menu Styles - see mobile-menu.css for main styling */
+
+/* Cart Button */
+.cart-button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Header Icon Buttons */
+.header-icon-btn {
+    position: relative;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.header-icon-btn:hover .header-icon {
+    transform: scale(1.1);
+}
+
+/* Hide header icons on mobile */
+@media (max-width: 768px) {
+    .header-icons {
+        display: none !important;
+    }
+
+    .main-navigation {
+        display: none !important;
+    }
+}
+
+/* Product Grid Responsive */
+@media (max-width: 640px) {
+    .grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Inline grid overrides on custom sections */
+    .section-container>div[style*="grid-template-columns"] {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+    .grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    /* Inline grid overrides on custom sections */
+    .section-container>div[style*="grid-template-columns"] {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+
+/* Collection Cards Hover Effects */
+.collection-card img {
+    will-change: transform;
+}
+
+/* Video Cards Hover Effects */
+.video-card img {
+    will-change: transform, opacity;
+}
+
+/* Product Cards */
+.product-card {
+    will-change: transform, box-shadow;
+}
+
+.product-card img {
+    width: 100%;
+    height: auto;
+    transition: transform 0.5s ease;
+}
+
+.product-card:hover img {
+    transform: scale(1.05);
+}
+
+/* Responsive Typography */
+@media (max-width: 768px) {
+    .section {
+        padding: 3rem 1rem;
+    }
+
+    .section-title {
+        font-size: 2rem;
+    }
+
+    .section-description {
+        font-size: 1rem;
+    }
+
+    .hero-title {
+        font-size: 2.5rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+
+    .hero-buttons {
+        width: 100%;
+    }
+
+    .hero-button {
+        width: 100%;
+        max-width: 300px;
+    }
+}
+
+/* Loading States */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* Smooth Scrolling */
+html {
+    scroll-padding-top: 100px;
+}
+
+/* Focus Styles for Accessibility */
+button:focus,
+a:focus {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+/* Print Styles */
+@media print {
+
+    .site-header,
+    .site-footer,
+    .hero-nav-button,
+    .hero-indicators,
+    .hero-buttons {
+        display: none;
+    }
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+    :root {
+        --primary: #996600;
+        --border: #000000;
+    }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .hero-slide {
+        transition: none !important;
+    }
+}
+
+/* WhatsApp Widget - Placeholder */
+.whatsapp-widget {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 100;
+    width: 60px;
+    height: 60px;
+    background-color: #25D366;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.whatsapp-widget:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+.whatsapp-widget svg {
+    width: 32px;
+    height: 32px;
+    color: white;
+}
+
+/* Pagination Styles */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 3rem;
+    font-family: var(--font-body);
+}
+
+.pagination a,
+.pagination span {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s ease;
+}
+
+.pagination a:hover {
+    background-color: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.pagination .current {
+    background-color: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+/* Post Navigation */
+.post-navigation {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+}
+
+.post-navigation a {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s ease;
+    flex: 1;
+}
+
+.post-navigation a:hover {
+    border-color: var(--primary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.nav-subtitle {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+    margin-bottom: 0.5rem;
+}
+
+.nav-title {
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    color: var(--foreground);
+}
+
+/* Comments */
+.comments-area {
+    margin-top: 3rem;
+    padding-top: 3rem;
+    border-top: 1px solid var(--border);
+}
+
+.comment-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.comment {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+}
+
+.comment-author {
+    font-family: var(--font-body);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.comment-metadata {
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+    margin-bottom: 1rem;
+}
+
+.comment-content {
+    font-family: var(--font-body);
+    line-height: 1.7;
+}
+
+/* WooCommerce Overrides */
+.woocommerce-page .section {
+    padding-top: 8rem;
+}
+
+.woocommerce ul.products {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.woocommerce ul.products li.product {
+    text-align: center;
+    border: 1px solid var(--border);
+    transition: all 0.3s ease;
+    padding: 1rem;
+}
+
+.woocommerce ul.products li.product:hover {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    transform: translateY(-4px);
+}
+
+.woocommerce ul.products li.product img {
+    width: 100%;
+    height: auto;
+    margin-bottom: 1rem;
+}
+
+.woocommerce ul.products li.product .price {
+    color: var(--primary);
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 1.25rem;
+}
+
+.woocommerce .button,
+.woocommerce button.button {
+    background-color: var(--primary);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    font-family: var(--font-body);
+    font-weight: 500;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.woocommerce .button:hover,
+.woocommerce button.button:hover {
+    background-color: var(--accent);
+}
+
+/* ========================================================================================
+   COMPREHENSIVE MOBILE RESPONSIVE IMPROVEMENTS
+   ======================================================================================== */
+
+/* Mobile-First Base Styles */
+* {
+    -webkit-tap-highlight-color: rgba(184, 134, 11, 0.2);
+}
+
+/* Fluid Typography */
+html {
+    font-size: clamp(14px, 2.5vw, 16px);
+}
+
+h1,
+.hero-title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1.2;
+}
+
+h2,
+.section-title {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    line-height: 1.3;
+}
+
+h3 {
+    font-size: clamp(1.25rem, 3vw, 1.75rem);
+}
+
+/* Touch-Friendly Tap Targets (min 44x44px) */
+button,
+.button,
+a.button,
+.header-icon-btn,
+.cart-button {
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Enhanced Mobile Navigation */
+@media (max-width: 767px) {
+
+    /* Header Adjustments */
+    .site-header {
+        padding: 0.85rem 1rem;
+    }
+
+    .header-content {
+        gap: 0.5rem;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+
+    .site-logo {
+        font-size: 1.1rem;
+        margin: 0 auto;
+    }
+
+    .mobile-menu-toggle {
+        width: 40px;
+        height: 40px;
+        position: absolute;
+        left: 0;
+    }
+
+    /* Mobile Menu Full Screen */
+    .mobile-menu {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: auto;
+        bottom: 0;
+        z-index: 10001;
+        overflow-y: auto;
+        width: 82vw;
+        max-width: 320px;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+
+    .mobile-menu.active {
+        transform: translateX(0);
+    }
+
+    .mobile-menu-content {
+        padding: 1.75rem 1.25rem;
+        padding-top: 80px;
+        /* Account for close button */
+    }
+
+    .mobile-nav-menu li {
+        margin-bottom: 0;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .mobile-nav-menu a {
+        padding: 0.9rem 0;
+        font-size: 1rem;
+        border-bottom: none;
+    }
+
+    /* Mobile Menu Close Button */
+    .mobile-menu-close {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        width: 40px;
+        height: 40px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        z-index: 10000;
+    }
+
+    /* Spacing Adjustments */
+    .section {
+        padding: 2rem 1rem;
+    }
+
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    /* Hero Section */
+    .hero {
+        min-height: 60vh;
+    }
+
+    .hero-content {
+        padding: 2rem 1rem;
+    }
+
+    .hero-title {
+        margin-bottom: 1rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+        gap: 1rem;
+        width: 100%;
+    }
+
+    .hero-button {
+        width: 100%;
+        max-width: none;
+        padding: 1rem 2rem;
+    }
+
+    /* Forms - Full Width & Touch Optimized */
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="password"],
+    input[type="number"],
+    textarea,
+    select {
+        width: 100%;
+        font-size: 16px;
+        /* Prevents zoom on iOS */
+        padding: 0.875rem 1rem;
+        min-height: 44px;
+    }
+
+    .form-group {
+        margin-bottom: 1.25rem;
+    }
+
+    label {
+        font-size: 0.9375rem;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Modals - Full Screen on Mobile */
+    .modal,
+    .auth-modal,
+    #customizeModal {
+        padding: 0 !important;
+    }
+
+    .modal-content,
+    .auth-modal-content,
+    .customize-modal-content {
+        width: 100% !important;
+        height: 100% !important;
+        max-width: 100% !important;
+        max-height: 100% !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+        overflow-y: auto;
+    }
+
+    .modal-header {
+        position: sticky;
+        top: 0;
+        background: white;
+        z-index: 10;
+        padding: 1rem;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .modal-close {
+        width: 44px;
+        height: 44px;
+    }
+
+    .modal-body {
+        padding: 1.5rem 1rem;
+    }
+
+    /* Cart & Checkout */
+    .cart-page,
+    .checkout-page {
+        padding: 1rem;
+    }
+
+    .cart-table {
+        display: block;
+        overflow-x: auto;
+    }
+
+    .cart-item {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+        border: 1px solid var(--border);
+        margin-bottom: 1rem;
+    }
+
+    .cart-item-image {
+        width: 100%;
+        max-width: 200px;
+        margin: 0 auto;
+    }
+
+    .quantity-selector {
+        width: 100%;
+        max-width: 150px;
+    }
+
+    .quantity-btn {
+        min-width: 44px;
+        min-height: 44px;
+        font-size: 1.25rem;
+    }
+
+    /* Sticky Checkout Button */
+    .checkout-sticky {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        padding: 1rem;
+        box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+        z-index: 100;
+    }
+
+    .checkout-sticky .button {
+        width: 100%;
+        padding: 1rem;
+        font-size: 1.125rem;
+    }
+
+    /* Dashboard */
+    .dashboard-container {
+        max-height: none;
+        margin: 1rem auto;
+    }
+
+    .dashboard-header {
+        padding: 1rem;
+    }
+
+    .dashboard-title {
+        font-size: 1.5rem;
+    }
+
+    .dashboard-subtitle {
+        font-size: 0.9rem;
+    }
+
+    .dashboard-sidebar {
+        padding: 0.75rem;
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 182, 193, 0.2);
+    }
+
+    /* Product Grid */
+    .products-grid,
+    .woocommerce ul.products {
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem;
+    }
+
+    /* Landing page cards */
+    .collection-card-overlay,
+    .video-card-overlay {
+        padding: 1rem !important;
+        max-width: none !important;
+    }
+
+    .video-duration-badge {
+        bottom: 1rem !important;
+        right: 1rem !important;
+        padding: 0.35rem 0.6rem !important;
+        font-size: 0.75rem !important;
+    }
+
+    .play-button {
+        width: 3.5rem !important;
+        height: 3.5rem !important;
+    }
+
+    .collection-card h3,
+    .video-card h3 {
+        font-size: 1.1rem !important;
+    }
+
+    /* Custom checkout + cart layout */
+    .checkout-container,
+    .cart-container {
+        grid-template-columns: 1fr !important;
+    }
+
+    .checkout-sidebar,
+    .cart-sidebar {
+        width: 100% !important;
+        margin-top: 1.5rem;
+        position: static !important;
+    }
+
+    /* Search results thumbnail */
+    .post-thumbnail {
+        width: 100% !important;
+    }
+
+    .product-card {
+        padding: 1rem;
+    }
+
+    /* Product Single */
+    .product-gallery {
+        margin-bottom: 1.5rem;
+    }
+
+    .product-info {
+        padding: 1rem;
+    }
+
+    /* Customize Modal */
+    .customize-options {
+        padding: 1rem;
+    }
+
+    .size-options,
+    .topping-options {
+        grid-template-columns: 1fr !important;
+        gap: 0.75rem;
+    }
+
+    .size-option,
+    .topping-option {
+        padding: 1rem;
+        min-height: 44px;
+    }
+
+    /* Footer */
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 2rem;
+    }
+
+    .footer-column {
+        width: 100%;
+    }
+
+    /* User Dropdown */
+    .user-dropdown {
+        position: fixed !important;
+        top: auto !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        max-height: 70vh;
+        border-radius: 16px 16px 0 0;
+        box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Reduce Animations on Mobile */
+    .product-card:hover {
+        transform: none;
+    }
+
+    .product-card img:hover {
+        transform: scale(1.02);
+    }
+
+    /* WhatsApp Widget */
+    .whatsapp-widget {
+        bottom: 1rem;
+        right: 1rem;
+        width: 50px;
+        height: 50px;
+    }
+
+    .whatsapp-widget svg {
+        width: 28px;
+        height: 28px;
+    }
+}
+
+/* Tablet Optimizations */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .section {
+        padding: 4rem 2rem;
+    }
+
+    .products-grid,
+    .woocommerce ul.products {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    .hero-buttons {
+        flex-direction: row;
+    }
+
+    .modal-content {
+        width: 90% !important;
+        max-width: 600px !important;
+    }
+}
+
+/* Desktop Enhancements */
+@media (min-width: 1024px) {
+
+    /* Hover Effects */
+    .product-card:hover {
+        transform: translateY(-8px);
+    }
+
+    .button:hover {
+        transform: translateY(-2px);
+    }
+
+    /* Better Spacing */
+    .section {
+        padding: 6rem 2rem;
+    }
+}
+
+/* Landscape Mobile */
+@media (max-width: 767px) and (orientation: landscape) {
+    .hero {
+        min-height: 100vh;
+    }
+
+    .modal-content {
+        max-height: 90vh;
+    }
+}
+
+/* Small Mobile (320px) */
+@media (max-width: 374px) {
+    html {
+        font-size: 14px;
+    }
+
+    .hero-title {
+        font-size: 1.75rem;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+    }
+
+    .button {
+        padding: 0.75rem 1.5rem;
+        font-size: 0.9375rem;
+    }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+
+    /* Remove hover effects on touch devices */
+    .product-card:hover,
+    .button:hover,
+    a:hover {
+        transform: none;
+    }
+
+    /* Larger touch targets */
+    button,
+    a,
+    .clickable {
+        min-height: 48px;
+        padding: 0.75rem 1rem;
+    }
+}
+
+/* High DPI Screens */
+@media (-webkit-min-device-pixel-ratio: 2),
+(min-resolution: 192dpi) {
+
+    /* Optimize for retina displays */
+    img {
+        image-rendering: -webkit-optimize-contrast;
+    }
+}
+
+/* ========================================================================================
+   ADDITIONAL OVERFLOW PREVENTION
+   ======================================================================================== */
+
+/* Mobile-specific overflow fixes */
+@media (max-width: 767px) {
+
+    /* Prevent any row/grid overflow */
+    .row,
+    .grid,
+    .flex,
+    .d-flex {
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    /* Fix wide buttons and inputs */
+    .button,
+    button,
+    input,
+    select,
+    textarea {
+        max-width: 100%;
+    }
+
+    /* Fix WooCommerce tables */
+    .woocommerce table,
+    .shop_table {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Fix product images */
+    .product-image,
+    .woocommerce-product-gallery {
+        max-width: 100%;
+        overflow: hidden;
+    }
+
+    /* Fix any fixed-width elements */
+    [style*="width:"],
+    [style*="min-width:"] {
+        max-width: 100% !important;
+    }
+
+    /* Ensure padding doesn't cause overflow */
+    .container,
+    .section,
+    .wrapper {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
