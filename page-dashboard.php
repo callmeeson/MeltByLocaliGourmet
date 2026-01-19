@@ -443,12 +443,31 @@ function get_status_icon($status)
             });
         }
 
+        function getInitialTab() {
+            const params = new URLSearchParams(window.location.search);
+            const tabFromQuery = params.get('tab');
+            if (tabFromQuery) {
+                return tabFromQuery;
+            }
+
+            if (window.location.hash) {
+                return window.location.hash.replace('#', '');
+            }
+
+            return null;
+        }
+
         navItems.forEach(item => {
             item.addEventListener('click', () => {
                 const tabId = item.dataset.tab;
                 setActiveTab(tabId);
             });
         });
+
+        const initialTab = getInitialTab();
+        if (initialTab) {
+            setActiveTab(initialTab);
+        }
 
         // Initialize Lucide icons
         lucide.createIcons();

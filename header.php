@@ -143,7 +143,7 @@
 										$total_orders = wc_get_customer_order_count( $customer_id );
 										if ( $total_orders > 3 ) :
 										?>
-											<a href="<?php echo esc_url( wc_get_account_endpoint_url( 'orders' ) ); ?>" class="view-all-orders">
+											<a href="<?php echo esc_url( add_query_arg( 'tab', 'orders', home_url( '/dashboard' ) ) ); ?>" class="view-all-orders">
 												View All Orders (<?php echo esc_html( $total_orders ); ?>)
 											</a>
 										<?php endif;
