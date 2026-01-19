@@ -616,3 +616,39 @@ function melt_ajax_change_password()
 	wp_send_json_success(array('message' => 'Password updated successfully!'));
 }
 add_action('wp_ajax_melt_change_password', 'melt_ajax_change_password');
+
+/**
+ * Fix Login URL Loop
+ * Ensures login URL is never the homepage and breaks recursive loops
+ */
+function melt_fix_login_url($login_url, $redirect, $force_reauth)
+{
+	// If login URL is set to homepage, reset to default wp-login.php
+	if (trim($login_url, '/') === trim(home_url(), '/')) {
+		$login_url = site_url('wp-login.php', 'login');
+		if (!empty($redirect)) {
+			$login_url = add_query_arg('redirect_to', urlencode($redirect), $login_url);
+		}
+	}
+	return $login_url;
+}
+add_filter('login_url', 'melt_fix_login_url', 999, 3);
+
+/**
+ * Break Redirect Loop
+ * Detects recursive redirect_to parameters and sanitizes them
+ */
+function melt_break_redirect_loop()
+{
+	// Check for deeply nested redirect_to in the current URL querystring
+	$query = isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '';
+
+	// Count occurrences of 'redirect_to'. If it appears more than once, it's likely a loop.
+	// e.g. ?redirect_to=https%3A%2F%2Fsite.com%2F%3Fredirect_to%3D...
+	if (substr_count($query, 'redirect_to') > 1) {
+		// Clear all query args and redirect to safe homepage
+		wp_redirect(remove_query_arg('redirect_to', home_url()));
+		exit;
+	}
+}
+add_action('template_redirect', 'melt_break_redirect_loop', 1);
