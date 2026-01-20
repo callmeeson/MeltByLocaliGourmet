@@ -620,7 +620,11 @@ add_action('wp_ajax_melt_change_password', 'melt_ajax_change_password');
 /**
  * Fix Login URL Loop
  * Ensures login URL points to wp-login.php if it seems to be pointing to the homepage
+ * 
+ * DISABLED: This is now handled by melt_mu_fix_login_url in melt-loop-breaker.php
+ * This was causing recursive redirect_to parameters
  */
+/*
 function melt_fix_login_url($login_url, $redirect, $force_reauth)
 {
 	// If login URL does not contain 'wp-login.php', forces it back.
@@ -635,6 +639,7 @@ function melt_fix_login_url($login_url, $redirect, $force_reauth)
 	return $login_url;
 }
 add_filter('login_url', 'melt_fix_login_url', 999, 3);
+*/
 
 /**
  * Break Redirect Loop
