@@ -639,7 +639,10 @@ add_filter('login_url', 'melt_fix_login_url', 999, 3);
 /**
  * Break Redirect Loop
  * Detects redirect_to parameters on the homepage and sanitizes them
+ * 
+ * DISABLED: This is now handled by melt-loop-breaker.php mu-plugin
  */
+/*
 function melt_break_redirect_loop()
 {
 	// Only run on front page/home
@@ -655,3 +658,4 @@ function melt_break_redirect_loop()
 	}
 }
 add_action('template_redirect', 'melt_break_redirect_loop', 1);
+*/
