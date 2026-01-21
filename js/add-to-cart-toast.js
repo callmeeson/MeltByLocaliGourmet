@@ -1,6 +1,6 @@
 /**
  * Add to Cart Handler with Toast Notification
- * Shows success toast with "View Cart" button after adding product to cart
+ * Shows success toast after adding product to cart
  */
 
 (function () {
@@ -11,12 +11,12 @@
         // Get cart URL from WooCommerce params or use default
         const cartUrl = wc_add_to_cart_params.cart_url || window.location.origin + '/cart/';
 
-        // Show toast with View Cart button
+        // Show toast
         showAddToCartToast(cartUrl);
     });
 
     /**
-     * Show custom toast notification with View Cart button
+     * Show custom toast notification
      */
     function showAddToCartToast(cartUrl) {
         // Create toast element
@@ -76,36 +76,6 @@
         `;
         messageEl.textContent = 'Added to cart successfully!';
 
-        // View Cart button
-        const viewCartBtn = document.createElement('a');
-        viewCartBtn.href = cartUrl;
-        viewCartBtn.textContent = 'View Cart';
-        viewCartBtn.style.cssText = `
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 6px 12px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-size: 13px;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            align-self: flex-start;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        `;
-
-        viewCartBtn.onmouseover = () => {
-            viewCartBtn.style.background = 'rgba(255, 255, 255, 0.3)';
-            viewCartBtn.style.transform = 'translateY(-1px)';
-        };
-
-        viewCartBtn.onmouseout = () => {
-            viewCartBtn.style.background = 'rgba(255, 255, 255, 0.2)';
-            viewCartBtn.style.transform = 'translateY(0)';
-        };
-
         // Close button
         const closeBtn = document.createElement('button');
         closeBtn.innerHTML = '×';
@@ -150,7 +120,6 @@
 
         // Assemble
         contentEl.appendChild(messageEl);
-        contentEl.appendChild(viewCartBtn);
 
         toast.appendChild(iconEl);
         toast.appendChild(contentEl);

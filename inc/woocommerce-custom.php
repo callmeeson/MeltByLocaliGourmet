@@ -196,6 +196,15 @@ function melt_apply_custom_price($cart)
 add_action('woocommerce_before_calculate_totals', 'melt_apply_custom_price', 10, 1);
 
 /**
+ * Remove "View cart" link from add-to-cart notices.
+ */
+function melt_strip_view_cart_link($message, $products) {
+    $message = preg_replace('/<a[^>]*>.*?<\/a>/i', '', $message);
+    return trim($message);
+}
+add_filter('wc_add_to_cart_message_html', 'melt_strip_view_cart_link', 10, 2);
+
+/**
  * Display custom data in cart and checkout
  * 
  * Security: All output is escaped to prevent XSS
@@ -373,7 +382,7 @@ add_action('wp_ajax_nopriv_melt_cart_action', 'melt_ajax_cart_action');
  * 
  * Creates a WooCommerce order in pending status and a Stripe PaymentIntent
  */
-function melt_build_checkout_order($billing_data, $shipping_data, $email, $name, $phone, $order_notes)
+function melt_build_checkout_order($billing_data, $shipping_data, $email, $name, $phone, $order_notes, $delivery_date = '')
 {
     // Create WooCommerce order
     $order = wc_create_order();
@@ -467,6 +476,9 @@ function melt_build_checkout_order($billing_data, $shipping_data, $email, $name,
     if (! empty($order_notes)) {
         $order->set_customer_note($order_notes);
     }
+    if (! empty($delivery_date)) {
+        $order->update_meta_data('_delivery_date', sanitize_text_field($delivery_date));
+    }
 
     // Apply coupons
     foreach (WC()->cart->get_applied_coupons() as $coupon_code) {
@@ -511,7 +523,7 @@ function melt_create_payment_intent()
         $total = WC()->cart->get_total('edit');
         $currency = strtolower(get_woocommerce_currency());
 
-        $order = melt_build_checkout_order($billing_data, $shipping_data, $email, $name, $phone, $order_notes);
+        $order = melt_build_checkout_order($billing_data, $shipping_data, $email, $name, $phone, $order_notes, $delivery_date);
 
         // Set payment method
         $order->set_payment_method('stripe');
@@ -573,6 +585,29 @@ add_action('wp_ajax_melt_create_payment_intent', 'melt_create_payment_intent');
 add_action('wp_ajax_nopriv_melt_create_payment_intent', 'melt_create_payment_intent');
 
 /**
+ * Show delivery date on admin order screen.
+ */
+function melt_admin_order_delivery_date($order)
+{
+    $delivery_date = $order->get_meta('_delivery_date');
+    if (! empty($delivery_date)) {
+        echo '<p><strong>' . esc_html__('Delivery date:', 'melt-custom') . '</strong> ' . esc_html($delivery_date) . '</p>';
+    }
+}
+add_action('woocommerce_admin_order_data_after_billing_address', 'melt_admin_order_delivery_date');
+
+/**
+ * Ensure product images show in WooCommerce order emails.
+ */
+function melt_enable_email_product_images($args)
+{
+    $args['show_image'] = true;
+    $args['image_size'] = array(100, 100);
+    return $args;
+}
+add_filter('woocommerce_email_order_items_args', 'melt_enable_email_product_images', 10, 1);
+
+/**
  * Create COD Order for Custom Checkout
  */
 function melt_create_cod_order()
@@ -597,8 +632,23 @@ function melt_create_cod_order()
         $name = isset($_POST['name']) ? sanitize_text_field($_POST['name']) : '';
         $phone = isset($_POST['phone']) ? sanitize_text_field($_POST['phone']) : '';
         $order_notes = isset($_POST['order_notes']) ? sanitize_textarea_field($_POST['order_notes']) : '';
+        $delivery_date = isset($_POST['delivery_date']) ? sanitize_text_field($_POST['delivery_date']) : '';
 
-        $order = melt_build_checkout_order($billing_data, $shipping_data, $email, $name, $phone, $order_notes);
+        if (empty($delivery_date)) {
+            wp_send_json(array('success' => false, 'message' => 'Please select a delivery date.'));
+        }
+        $delivery_date = isset($_POST['delivery_date']) ? sanitize_text_field($_POST['delivery_date']) : '';
+
+        if (empty($delivery_date)) {
+            wp_send_json(array('success' => false, 'message' => 'Please select a delivery date.'));
+        }
+        $delivery_date = isset($_POST['delivery_date']) ? sanitize_text_field($_POST['delivery_date']) : '';
+
+        if (empty($delivery_date)) {
+            wp_send_json(array('success' => false, 'message' => 'Please select a delivery date.'));
+        }
+
+        $order = melt_build_checkout_order($billing_data, $shipping_data, $email, $name, $phone, $order_notes, $delivery_date);
 
         $order->set_payment_method('cod');
         $order->set_payment_method_title($available_gateways['cod']->get_title());
@@ -739,6 +789,13 @@ function melt_custom_thankyou_content($order_id)
                         <span class="label"><?php esc_html_e('Date:', 'woocommerce'); ?></span>
                         <span class="value"><?php echo esc_html(wc_format_datetime($order->get_date_created())); ?></span>
                     </li>
+                    <?php $delivery_date = $order->get_meta('_delivery_date'); ?>
+                    <?php if (! empty($delivery_date)) : ?>
+                        <li class="overview-item">
+                            <span class="label"><?php esc_html_e('Delivery date:', 'melt-custom'); ?></span>
+                            <span class="value"><?php echo esc_html($delivery_date); ?></span>
+                        </li>
+                    <?php endif; ?>
                     <li class="overview-item">
                         <span class="label"><?php esc_html_e('Total:', 'woocommerce'); ?></span>
                         <span class="value"><?php echo wp_kses_post($order->get_formatted_order_total()); ?></span>

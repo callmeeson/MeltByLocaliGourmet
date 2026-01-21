@@ -1104,6 +1104,25 @@ $currency = get_woocommerce_currency();
             // Form Submission
             const form = document.getElementById('checkout-form');
             const submitBtn = document.getElementById('place-order-btn');
+            const deliveryDateInput = document.getElementById('delivery_date');
+
+            if (deliveryDateInput) {
+                const today = new Date();
+                const offset = today.getTimezoneOffset();
+                const local = new Date(today.getTime() - offset * 60000);
+                deliveryDateInput.min = local.toISOString().split('T')[0];
+
+                const storedDate = localStorage.getItem('melt_delivery_date');
+                if (storedDate) {
+                    deliveryDateInput.value = storedDate;
+                }
+
+                deliveryDateInput.addEventListener('change', () => {
+                    if (deliveryDateInput.value) {
+                        localStorage.setItem('melt_delivery_date', deliveryDateInput.value);
+                    }
+                });
+            }
 
             form.addEventListener('submit', async function(e) {
                 e.preventDefault();
@@ -1251,6 +1270,9 @@ $currency = get_woocommerce_currency();
                 if (shippingData) {
                     formData.append('shipping_data', JSON.stringify(shippingData));
                 }
+                if (deliveryDateInput && deliveryDateInput.value) {
+                    formData.append('delivery_date', deliveryDateInput.value);
+                }
 
                 // Get order notes if present
                 const orderNotes = document.getElementById('order_notes');
@@ -1280,6 +1302,9 @@ $currency = get_woocommerce_currency();
                 }
                 if (shippingData) {
                     formData.append('shipping_data', JSON.stringify(shippingData));
+                }
+                if (deliveryDateInput && deliveryDateInput.value) {
+                    formData.append('delivery_date', deliveryDateInput.value);
                 }
 
                 const orderNotes = document.getElementById('order_notes');

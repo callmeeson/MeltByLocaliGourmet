@@ -92,7 +92,7 @@
 			</div>
 
 			<!-- Password -->
-			<div>
+			<div id="passwordField">
 				<label style="display: block; color: var(--primary); font-family: var(--font-body); font-weight: 500; margin-bottom: 0.5rem; font-size: 0.875rem;">
 					Password
 				</label>
@@ -104,9 +104,26 @@
 						name="password"
 						placeholder="Enter your password"
 						required
-						style="width: 100%; padding: 0.875rem 1rem 0.875rem 2.75rem; border: 2px solid rgba(184, 134, 11, 0.3); border-radius: 8px; background: rgba(255, 255, 255, 0.5); color: var(--foreground); font-family: var(--font-body); transition: all 0.3s ease;"
+						style="width: 100%; padding: 0.875rem 3.25rem 0.875rem 2.75rem; border: 2px solid rgba(184, 134, 11, 0.3); border-radius: 8px; background: rgba(255, 255, 255, 0.5); color: var(--foreground); font-family: var(--font-body); transition: all 0.3s ease;"
 						onfocus="this.style.borderColor='var(--primary)'; this.style.boxShadow='0 0 0 3px rgba(184, 134, 11, 0.1)'"
 						onblur="this.style.borderColor='rgba(184, 134, 11, 0.3)'; this.style.boxShadow='none'">
+					<button
+						type="button"
+						id="togglePasswordBtn"
+						onclick="toggleAuthPasswordVisibility()"
+						aria-label="Show password"
+						style="position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--accent); cursor: pointer; font-family: var(--font-body); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.02em; display: inline-flex; align-items: center; justify-content: center; z-index: 2;">
+						<svg data-icon="eye" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+							<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"></path>
+							<circle cx="12" cy="12" r="3"></circle>
+						</svg>
+						<svg data-icon="eye-off" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: none;">
+							<path d="M17.94 17.94A10.94 10.94 0 0 1 12 20C5 20 1 12 1 12a21.8 21.8 0 0 1 5.06-5.94"></path>
+							<path d="M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 8 11 8a21.8 21.8 0 0 1-3.5 4.94"></path>
+							<path d="M14.12 14.12a3 3 0 0 1-4.24-4.24"></path>
+							<path d="M1 1l22 22"></path>
+						</svg>
+					</button>
 				</div>
 				<span id="passwordError" class="auth-error" style="display: none; color: var(--destructive); font-size: 0.75rem; margin-top: 0.25rem;"></span>
 				
@@ -121,6 +138,18 @@
 					</div>
 					<div class="password-requirements"></div>
 				</div>
+			</div>
+
+			<!-- Forgot Password -->
+			<div id="forgotPasswordLink" style="text-align: right; margin-top: -0.25rem;">
+				<button
+					type="button"
+					onclick="showPasswordResetForm()"
+					style="color: var(--accent); background: none; border: none; cursor: pointer; font-family: var(--font-body); font-size: 0.8125rem; font-weight: 500; transition: color 0.3s ease;"
+					onmouseover="this.style.color='var(--primary)'"
+					onmouseout="this.style.color='var(--accent)'">
+					Forgot password?
+				</button>
 			</div>
 
 			<!-- Submit Button -->

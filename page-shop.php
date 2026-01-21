@@ -88,29 +88,35 @@ get_header();
 }
 
 .product-card {
-	transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+	transition: all 0.35s ease;
 	cursor: pointer;
-    background: white;
-    border: 1px solid rgba(0,0,0,0.06);
-    border-radius: 16px;
+    background: #fff;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 20px;
     overflow: hidden;
     position: relative;
     display: flex;
     flex-direction: column;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
 }
 
 .product-card:hover {
-	transform: translateY(-8px);
-    box-shadow: 0 20px 40px -5px rgba(0,0,0,0.08);
-    border-color: rgba(184, 134, 11, 0.2);
+	transform: translateY(-6px);
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+    border-color: rgba(184, 134, 11, 0.25);
 }
 
 .product-image-wrapper {
 	position: relative;
 	overflow: hidden;
-	aspect-ratio: 4/5; /* Slightly taller for elegance */
-	background-color: var(--secondary);
-	border-bottom: 1px solid rgba(0,0,0,0.04);
+	aspect-ratio: 1 / 1; /* Smaller, more compact image area */
+	background: linear-gradient(135deg, rgba(15, 23, 42, 0.03), rgba(184, 134, 11, 0.05));
+	border-bottom: 1px solid rgba(15, 23, 42, 0.04);
+	border: none;
+	padding: 0;
+	width: 100%;
+	text-align: left;
+	cursor: pointer;
 }
 
 .product-card:hover .product-image-wrapper {
@@ -121,11 +127,11 @@ get_header();
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
-	transition: transform 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
+	transition: transform 0.6s ease;
 }
 
 .product-card:hover .product-image {
-	transform: scale(1.08);
+	transform: scale(1.06);
 }
 
 .product-overlay {
@@ -142,7 +148,7 @@ get_header();
 }
 
 .product-info {
-    padding: 1.5rem;
+    padding: 1.25rem 1.5rem 1.5rem;
     display: flex;
     flex-direction: column;
     flex-grow: 1;
@@ -151,12 +157,12 @@ get_header();
 
 .product-name {
 	font-family: var(--font-serif);
-	font-size: 1.1rem;
-	letter-spacing: -0.01em;
-	margin-bottom: 0.5rem;
+	font-size: 1.05rem;
+	letter-spacing: -0.012em;
+	margin-bottom: 0.35rem;
 	transition: color 0.3s ease;
 	color: var(--foreground);
-    line-height: 1.3;
+    line-height: 1.35;
 }
 
 .product-card:hover .product-name {
@@ -165,10 +171,10 @@ get_header();
 
 .product-description {
 	font-family: var(--font-body);
-	font-size: 0.875rem;
+	font-size: 0.85rem;
 	font-weight: 300;
 	color: var(--muted-foreground);
-	margin-bottom: 1.25rem;
+	margin-bottom: 1rem;
 	display: -webkit-box;
 	-webkit-line-clamp: 2;
 	-webkit-box-orient: vertical;
@@ -180,15 +186,15 @@ get_header();
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	padding-top: 0.75rem;
-    border-top: 1px solid rgba(0,0,0,0.06);
+	padding-top: 0.9rem;
+    border-top: 1px solid rgba(15, 23, 42, 0.08);
     margin-top: auto;
 }
 
 .product-price {
 	font-family: var(--font-body);
-	font-size: 1.1rem;
-    font-weight: 500;
+	font-size: 1rem;
+    font-weight: 600;
 	color: var(--foreground);
 	transition: transform 0.3s ease;
 	display: inline-block;
@@ -200,7 +206,7 @@ get_header();
 
 .product-buttons {
 	display: flex;
-	gap: 0.75rem;
+	gap: 0.5rem;
     align-items: center;
 }
 
@@ -231,28 +237,182 @@ get_header();
 }
 
 .btn-add {
-	padding: 0.5rem 0.5rem;
-    width: 2.25rem;
-    height: 2.25rem;
+	padding: 0.5rem 0.9rem;
+    width: auto;
+    height: auto;
     justify-content: center;
 	background-color: var(--primary);
 	color: white;
 	border: none;
 	font-family: var(--font-body);
+	font-size: 0.8rem;
+    font-weight: 600;
 	cursor: pointer;
 	transition: all 0.2s ease;
 	display: inline-flex;
 	align-items: center;
-    border-radius: 50%;
+    gap: 0.4rem;
+    border-radius: 999px;
     position: relative;
     z-index: 10;
 	text-decoration: none;
-    box-shadow: 0 2px 4px rgba(184, 134, 11, 0.2);
+    box-shadow: 0 6px 14px rgba(184, 134, 11, 0.25);
 }
 
 .btn-add:hover {
 	background-color: var(--accent);
-    transform: scale(1.1) rotate(90deg);
+    transform: translateY(-1px);
+}
+
+.added_to_cart {
+	display: none !important;
+}
+
+/* Product Quick View Modal */
+.product-quick-view {
+	position: fixed;
+	inset: 0;
+	background: rgba(15, 23, 42, 0.5);
+	display: none;
+	align-items: center;
+	justify-content: center;
+	padding: 1.5rem;
+	z-index: 9999;
+	backdrop-filter: blur(6px);
+}
+
+.product-quick-view__dialog {
+	background: #fff;
+	border-radius: 20px;
+	max-width: 960px;
+	width: 100%;
+	display: grid;
+	grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+	gap: 1.5rem;
+	padding: 1.5rem;
+	box-shadow: 0 24px 60px rgba(15, 23, 42, 0.2);
+	position: relative;
+}
+
+.product-quick-view__media {
+	background: linear-gradient(135deg, rgba(15, 23, 42, 0.03), rgba(184, 134, 11, 0.08));
+	border-radius: 16px;
+	padding: 1rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+}
+
+.product-quick-view__image {
+	width: 100%;
+	aspect-ratio: 1 / 1;
+	border-radius: 12px;
+	object-fit: cover;
+	background: #f8fafc;
+}
+
+.product-quick-view__thumbs {
+	display: flex;
+	gap: 0.5rem;
+	overflow-x: auto;
+	padding-bottom: 0.25rem;
+}
+
+.product-quick-view__thumb {
+	width: 56px;
+	height: 56px;
+	border-radius: 10px;
+	border: 1px solid rgba(15, 23, 42, 0.12);
+	background: #fff;
+	cursor: pointer;
+	flex: 0 0 auto;
+	padding: 0;
+	overflow: hidden;
+}
+
+.product-quick-view__thumb img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+.product-quick-view__thumb.is-active {
+	border-color: rgba(184, 134, 11, 0.6);
+	box-shadow: 0 0 0 2px rgba(184, 134, 11, 0.2);
+}
+
+.product-quick-view__content {
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+}
+
+.product-quick-view__title {
+	font-family: var(--font-serif);
+	font-size: 1.6rem;
+	letter-spacing: -0.02em;
+	color: var(--foreground);
+}
+
+.product-quick-view__price {
+	font-family: var(--font-body);
+	font-size: 1.1rem;
+	font-weight: 600;
+	color: var(--primary);
+}
+
+.product-quick-view__desc {
+	font-family: var(--font-body);
+	font-size: 0.95rem;
+	color: var(--muted-foreground);
+	line-height: 1.6;
+}
+
+.product-quick-view__actions {
+	display: flex;
+	gap: 0.75rem;
+	align-items: center;
+	margin-top: auto;
+}
+
+.product-quick-view__field {
+	display: flex;
+	flex-direction: column;
+	gap: 0.35rem;
+}
+
+.product-quick-view__field label {
+	font-family: var(--font-body);
+	font-size: 0.8rem;
+	color: var(--muted-foreground);
+}
+
+.product-quick-view__field input[type="date"] {
+	padding: 0.55rem 0.75rem;
+	border: 1px solid rgba(15, 23, 42, 0.12);
+	border-radius: 10px;
+	font-family: var(--font-body);
+}
+
+.product-quick-view__close {
+	position: absolute;
+	top: 12px;
+	right: 12px;
+	width: 36px;
+	height: 36px;
+	border-radius: 50%;
+	border: none;
+	background: rgba(15, 23, 42, 0.08);
+	cursor: pointer;
+	font-size: 20px;
+	line-height: 1;
+}
+
+@media (max-width: 900px) {
+	.product-quick-view__dialog {
+		grid-template-columns: 1fr;
+	}
 }
 
 /* Pagination Styles */
@@ -384,6 +544,18 @@ get_header();
 					$product_image = wc_placeholder_img_src();
 				}
 				
+				$gallery_ids = $product->get_gallery_image_ids();
+				$images = [];
+				$images[] = $product_image;
+				if (!empty($gallery_ids)) {
+					foreach ($gallery_ids as $image_id) {
+						$image_url = wp_get_attachment_image_url($image_id, 'large');
+						if ($image_url) {
+							$images[] = $image_url;
+						}
+					}
+				}
+
 				$product_cats = wc_get_product_term_ids($product->get_id(), 'product_cat');
                 $cat_slugs = [];
                 foreach($product_cats as $cat_id) {
@@ -391,21 +563,31 @@ get_header();
                     if($term && !is_wp_error($term)) $cat_slugs[] = $term->slug;
                 }
                 $categories_json = json_encode($cat_slugs);
+				$price_display = $product->get_price_html();
+				if (empty($price_display) && $product->get_price()) {
+					$price_display = 'AED ' . number_format((float)$product->get_price(), 2);
+				}
+				$short_description = wp_strip_all_tags($product->get_short_description());
 				?>
-				<div class="product-card fade-in-item" data-categories='<?php echo esc_attr($categories_json); ?>'>
+				<div class="product-card fade-in-item"
+					data-categories='<?php echo esc_attr($categories_json); ?>'
+					data-name="<?php echo esc_attr($product->get_name()); ?>"
+					data-price="<?php echo esc_attr(wp_strip_all_tags($price_display)); ?>"
+					data-description="<?php echo esc_attr($short_description); ?>"
+					data-images='<?php echo esc_attr(wp_json_encode($images)); ?>'>
 					<!-- Product Image -->
-					<a href="<?php echo get_permalink(); ?>" class="product-image-wrapper">
+					<button type="button" class="product-image-wrapper" aria-label="<?php echo esc_attr($product->get_name()); ?>">
 						<img src="<?php echo esc_url($product_image); ?>" 
 							alt="<?php echo esc_attr($product->get_name()); ?>" 
 							class="product-image"
 							loading="lazy">
 						<div class="product-overlay"></div>
-					</a>
+					</button>
 
 					<!-- Product Info -->
 					<div class="product-info">
 						<h3 class="product-name">
-                            <a href="<?php echo get_permalink(); ?>"><?php echo $product->get_name(); ?></a>
+                            <span><?php echo $product->get_name(); ?></span>
                         </h3>
 						<div class="product-description"><?php echo $product->get_short_description(); ?></div>
 
@@ -424,12 +606,7 @@ get_header();
 							</span>
 							
 								<div class="product-buttons">
-									<button class="btn-customize" onclick="event.preventDefault(); event.stopPropagation(); openCustomizeModal(<?php echo esc_js($product->get_id()); ?>, '<?php echo esc_js($product->get_name()); ?>', <?php echo esc_js((float)$product->get_price()); ?>, '<?php echo esc_url($product_image); ?>')">
-										<i data-lucide="sparkles" style="width: 0.75rem; height: 0.75rem;"></i>
-										Customize
-									</button>
-									
-									<!-- + Button adds base product directly to cart -->
+									<!-- Arrow button adds base product directly to cart -->
 									<a href="<?php echo $product->add_to_cart_url(); ?>" 
 									   data-quantity="1" 
 									   class="btn-add product_type_<?php echo $product->get_type(); ?> add_to_cart_button ajax_add_to_cart" 
@@ -437,7 +614,8 @@ get_header();
 									   data-product_sku="<?php echo $product->get_sku(); ?>" 
 									   aria-label="Add &ldquo;<?php echo esc_attr($product->get_name()); ?>&rdquo; to your cart" 
 									   rel="nofollow">
-										<i data-lucide="plus" style="width: 0.75rem; height: 0.75rem;"></i>
+										<i data-lucide="shopping-cart" style="width: 0.75rem; height: 0.75rem;"></i>
+										Add to cart
 									</a>
 								</div>
 						</div>
@@ -529,6 +707,183 @@ get_header();
 get_template_part('template-parts/customize-modal'); 
 ?>
 
-<!-- Both Customize and + buttons open the customize modal -->
+<!-- Product quick view modal -->
+<div id="productQuickView" class="product-quick-view" aria-hidden="true">
+	<div class="product-quick-view__dialog" role="dialog" aria-modal="true" aria-labelledby="productQuickViewTitle">
+		<button type="button" class="product-quick-view__close" aria-label="Close">x</button>
+		<div class="product-quick-view__media">
+			<img class="product-quick-view__image" src="" alt="" id="productQuickViewImage">
+			<div class="product-quick-view__thumbs" id="productQuickViewThumbs"></div>
+		</div>
+		<div class="product-quick-view__content">
+			<h3 class="product-quick-view__title" id="productQuickViewTitle"></h3>
+			<div class="product-quick-view__price" id="productQuickViewPrice"></div>
+			<div class="product-quick-view__desc" id="productQuickViewDesc"></div>
+			<div class="product-quick-view__field">
+				<label for="productQuickViewDate">Preferred Delivery Date</label>
+				<input type="date" id="productQuickViewDate">
+			</div>
+			<div class="product-quick-view__actions">
+				<a class="btn-add" href="#" id="productQuickViewAdd">Add to cart</a>
+			</div>
+		</div>
+	</div>
+</div>
 
 <?php get_footer(); ?>
+
+<script>
+(function () {
+	'use strict';
+
+	const modal = document.getElementById('productQuickView');
+	if (!modal) return;
+
+	const titleEl = document.getElementById('productQuickViewTitle');
+	const priceEl = document.getElementById('productQuickViewPrice');
+	const descEl = document.getElementById('productQuickViewDesc');
+	const imageEl = document.getElementById('productQuickViewImage');
+	const thumbsEl = document.getElementById('productQuickViewThumbs');
+	const addBtn = document.getElementById('productQuickViewAdd');
+	const dateInput = document.getElementById('productQuickViewDate');
+	const closeBtn = modal.querySelector('.product-quick-view__close');
+
+	function openModal() {
+		modal.style.display = 'flex';
+		modal.setAttribute('aria-hidden', 'false');
+	}
+
+	function closeModal() {
+		modal.style.display = 'none';
+		modal.setAttribute('aria-hidden', 'true');
+	}
+
+	function setActiveImage(url, alt) {
+		imageEl.src = url;
+		imageEl.alt = alt || '';
+	}
+
+	function renderThumbs(images, alt) {
+		thumbsEl.innerHTML = '';
+		if (!images || images.length <= 1) {
+			thumbsEl.style.display = 'none';
+			return;
+		}
+		thumbsEl.style.display = 'flex';
+		images.forEach((url, index) => {
+			const button = document.createElement('button');
+			button.type = 'button';
+			button.className = 'product-quick-view__thumb';
+			button.setAttribute('aria-label', 'View image ' + (index + 1));
+			const img = document.createElement('img');
+			img.src = url;
+			img.alt = alt || '';
+			button.appendChild(img);
+			if (index === 0) {
+				button.classList.add('is-active');
+			}
+			button.addEventListener('click', (event) => {
+				event.stopPropagation();
+				Array.from(thumbsEl.children).forEach((thumb) => {
+					thumb.classList.remove('is-active');
+				});
+				button.classList.add('is-active');
+				setActiveImage(url, alt);
+			});
+			thumbsEl.appendChild(button);
+		});
+	}
+
+	function openQuickView(card) {
+		const name = card.dataset.name || '';
+		const price = card.dataset.price || '';
+		const description = card.dataset.description || '';
+		let images = [];
+
+		try {
+			images = JSON.parse(card.dataset.images || '[]');
+		} catch (e) {
+			images = [];
+		}
+
+		titleEl.textContent = name;
+		priceEl.textContent = price;
+		descEl.textContent = description || 'No description available.';
+		if (dateInput) {
+			const today = new Date();
+			const offset = today.getTimezoneOffset();
+			const local = new Date(today.getTime() - offset * 60000);
+			dateInput.min = local.toISOString().split('T')[0];
+			dateInput.value = localStorage.getItem('melt_delivery_date') || '';
+		}
+
+		if (images.length > 0) {
+			setActiveImage(images[0], name);
+		}
+		renderThumbs(images, name);
+
+		const addButton = card.querySelector('.add_to_cart_button');
+		if (addButton) {
+			addBtn.href = addButton.getAttribute('href') || '#';
+			addBtn.setAttribute('data-product_id', addButton.getAttribute('data-product_id') || '');
+			addBtn.setAttribute('data-product_sku', addButton.getAttribute('data-product_sku') || '');
+			addBtn.className = addButton.className;
+			addBtn.innerHTML = addButton.innerHTML;
+		}
+
+		openModal();
+	}
+
+	if (dateInput) {
+		dateInput.addEventListener('change', () => {
+			if (dateInput.value) {
+				localStorage.setItem('melt_delivery_date', dateInput.value);
+			}
+		});
+	}
+
+	addBtn.addEventListener('click', () => {
+		if (dateInput && dateInput.value) {
+			localStorage.setItem('melt_delivery_date', dateInput.value);
+		}
+	});
+
+	document.addEventListener('click', (event) => {
+		const link = event.target.closest('.product-card a');
+		if (!link) return;
+		const card = link.closest('.product-card');
+		const ignore = event.target.closest('.btn-add, .add_to_cart_button');
+		if (ignore || !card) return;
+		event.preventDefault();
+		event.stopPropagation();
+		openQuickView(card);
+	}, true);
+
+	document.querySelectorAll('.product-card').forEach((card) => {
+		card.querySelectorAll('.product-image-wrapper').forEach((button) => {
+			button.addEventListener('click', (event) => {
+				event.preventDefault();
+				event.stopPropagation();
+				openQuickView(card);
+			});
+		});
+		card.addEventListener('click', (event) => {
+			const ignore = event.target.closest('.btn-add, .add_to_cart_button');
+			if (ignore) return;
+			openQuickView(card);
+		});
+	});
+
+	closeBtn.addEventListener('click', closeModal);
+	modal.addEventListener('click', (event) => {
+		if (event.target === modal) {
+			closeModal();
+		}
+	});
+	document.addEventListener('keydown', (event) => {
+		if (event.key === 'Escape' && modal.style.display === 'flex') {
+			closeModal();
+		}
+	});
+})();
+</script>

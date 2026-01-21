@@ -17,7 +17,8 @@ function showPasswordResetForm() {
     const toggleSection = document.querySelector('.auth-toggle');
     const nameField = document.getElementById('nameField');
     const phoneField = document.getElementById('phoneField');
-    const passwordField = document.getElementById('authPassword').parentElement;
+    const passwordField = document.getElementById('passwordField');
+    const passwordInput = document.getElementById('authPassword');
     const forgotPasswordLink = document.getElementById('forgotPasswordLink');
 
     // Update UI
@@ -29,6 +30,10 @@ function showPasswordResetForm() {
     nameField.style.display = 'none';
     phoneField.style.display = 'none';
     passwordField.style.display = 'none';
+    if (passwordInput) {
+        passwordInput.required = false;
+        passwordInput.disabled = true;
+    }
     if (forgotPasswordLink) forgotPasswordLink.style.display = 'none';
     if (toggleSection) toggleSection.style.display = 'none';
 
@@ -49,13 +54,18 @@ function backToLogin() {
     isPasswordResetMode = false;
     isSignUpMode = false;
 
-    const passwordField = document.getElementById('authPassword').parentElement;
+    const passwordField = document.getElementById('passwordField');
+    const passwordInput = document.getElementById('authPassword');
     const forgotPasswordLink = document.getElementById('forgotPasswordLink');
     const toggleSection = document.querySelector('.auth-toggle');
     const backLink = document.getElementById('backToLoginLink');
 
     // Show password field
     passwordField.style.display = 'block';
+    if (passwordInput) {
+        passwordInput.disabled = false;
+        passwordInput.required = true;
+    }
     if (forgotPasswordLink) forgotPasswordLink.style.display = 'block';
     if (toggleSection) toggleSection.style.display = 'block';
     if (backLink) backLink.remove();

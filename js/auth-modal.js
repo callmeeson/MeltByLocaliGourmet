@@ -100,6 +100,23 @@ window.updateAuthModalUI = function () {
     }
 }
 
+// Toggle password visibility
+window.toggleAuthPasswordVisibility = function () {
+    const passwordInput = document.getElementById('authPassword');
+    const toggleBtn = document.getElementById('togglePasswordBtn');
+    if (!passwordInput || !toggleBtn) return;
+
+    const isHidden = passwordInput.type === 'password';
+    passwordInput.type = isHidden ? 'text' : 'password';
+    toggleBtn.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
+    const eyeIcon = toggleBtn.querySelector('[data-icon="eye"]');
+    const eyeOffIcon = toggleBtn.querySelector('[data-icon="eye-off"]');
+    if (eyeIcon && eyeOffIcon) {
+        eyeIcon.style.display = isHidden ? 'none' : 'inline';
+        eyeOffIcon.style.display = isHidden ? 'inline' : 'none';
+    }
+};
+
 // Clear all errors
 function clearAuthErrors() {
     const errors = document.querySelectorAll('.auth-error');
