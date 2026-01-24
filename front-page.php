@@ -55,97 +55,58 @@ get_header();
 	</div>
 </section>
 
-<!-- Cake Collections Section -->
-<section class="section fade-in-section" style="background-color: white;">
-	<div class="section-container">
-		<div class="section-header">
-			<p style="color: var(--primary); margin-bottom: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.875rem; font-family: var(--font-body);">
-				Explore Our Collections
-			</p>
-			<h2 class="section-title">Curated Cake Collections</h2>
-			<p class="section-description">Each collection is thoughtfully crafted for different occasions and tastes</p>
+<!-- Cake Collections Gallery Section -->
+<section class="cake-gallery-section">
+	<div class="cake-gallery-container">
+		<div class="gallery-header">
+			<p>Explore Our Collections</p>
+			<h2>Curated Cake Collections</h2>
+			<p class="gallery-description">Each collection is thoughtfully crafted for different occasions and tastes</p>
 		</div>
 
-		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem;">
+		<div class="gallery-grid">
 			<?php
-			$collections = array(
-				array(
-					'title'       => 'Wedding Elegance',
-					'description' => 'Multi-tier masterpieces for your special day',
-					'image'       => 'https://images.unsplash.com/photo-1535254973040-607b474cb50d?w=1200',
-					'count'       => '25+ Designs',
-					'price'       => 'Starting from AED 1,200',
-				),
-				array(
-					'title'       => 'Birthday Celebrations',
-					'description' => 'Custom cakes that make moments unforgettable',
-					'image'       => 'https://images.unsplash.com/photo-1602351447937-745cb720612f?w=1200',
-					'count'       => '40+ Designs',
-					'price'       => 'Starting from AED 280',
-				),
-				array(
-					'title'       => 'Chocolate Paradise',
-					'description' => 'Rich Belgian chocolate creations',
-					'image'       => 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=1200',
-					'count'       => '18+ Varieties',
-					'price'       => 'Starting from AED 320',
-				),
-				array(
-					'title'       => 'Fruit Symphony',
-					'description' => 'Fresh fruits and delicate flavors',
-					'image'       => 'https://images.unsplash.com/photo-1464349095431-e9a21285b2df?w=1200',
-					'count'       => '15+ Varieties',
-					'price'       => 'Starting from AED 290',
-				),
-				array(
-					'title'       => 'Luxury Collection',
-					'description' => 'Gold leaf and premium ingredients',
-					'image'       => 'https://images.unsplash.com/photo-1588195538326-c5b1e5b80e27?w=1200',
-					'count'       => '12+ Exclusives',
-					'price'       => 'Starting from AED 850',
-				),
-				array(
-					'title'       => 'Custom Creations',
-					'description' => 'Bring your vision to life',
-					'image'       => 'https://images.unsplash.com/photo-1571115177098-24ec42ed204d?w=1200',
-					'count'       => 'Unlimited Options',
-					'price'       => 'Custom Pricing',
-				),
-			);
+			// Fetch WooCommerce products to display their images
+			if ( class_exists( 'WooCommerce' ) ) {
+				$products = wc_get_products( array(
+					'limit'  => 6,
+					'orderby' => 'date',
+					'order'  => 'DESC',
+					'status' => 'publish',
+				) );
 
-			foreach ( $collections as $index => $collection ) :
-				?>
-				<div class="collection-card fade-in-item group" style="position: relative; cursor: pointer;">
-					<div style="position: relative; overflow: hidden; aspect-ratio: 4/3;">
-						<img 
-							src="<?php echo esc_url( $collection['image'] ); ?>" 
-							alt="<?php echo esc_attr( $collection['title'] ); ?>"
-							style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s ease;"
-							onmouseover="this.style.transform='scale(1.1)'"
-							onmouseout="this.style.transform='scale(1)'"
-						>
-						<div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 50%, transparent 100%);"></div>
-						<div class="collection-card-overlay" style="position: absolute; bottom: 0; left: 0; right: 0; padding: 1.5rem; color: white;">
-							<span style="color: var(--primary); background-color: rgba(255, 255, 255, 0.9); padding: 0.25rem 0.75rem; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; display: inline-block; margin-bottom: 0.75rem; font-family: var(--font-body); font-weight: 600;">
-								<?php echo esc_html( $collection['count'] ); ?>
-							</span>
-							<h3 style="font-size: 1.5rem; margin-bottom: 0.5rem; font-family: var(--font-serif);">
-								<?php echo esc_html( $collection['title'] ); ?>
-							</h3>
-							<p style="color: rgba(255, 255, 255, 0.9); margin-bottom: 0.5rem; font-family: var(--font-elegant);">
-								<?php echo esc_html( $collection['description'] ); ?>
-							</p>
-							<p style="color: var(--primary); font-family: var(--font-body); font-weight: 500;">
-								<?php echo esc_html( $collection['price'] ); ?>
-							</p>
-						</div>
-					</div>
-				</div>
-			<?php endforeach; ?>
+				if ( $products ) {
+					foreach ( $products as $product ) {
+						$image_id = $product->get_image_id();
+						if ( $image_id ) {
+							$image_url = wp_get_attachment_image_url( $image_id, 'large' );
+							?>
+							<div class="gallery-item">
+								<img 
+									src="<?php echo esc_url( $image_url ); ?>" 
+									alt="<?php echo esc_attr( $product->get_name() ); ?>"
+									class="gallery-item-image"
+									loading="lazy"
+								>
+							</div>
+							<?php
+						}
+					}
+				} else {
+					// Fallback if no products found
+					echo '<p style="grid-column: 1 / -1; text-align: center; padding: 2rem;">No products available. Please add products to your store.</p>';
+				}
+			} else {
+				// WooCommerce not active fallback
+				echo '<p style="grid-column: 1 / -1; text-align: center; padding: 2rem;">WooCommerce is not active.</p>';
+			}
+			?>
 		</div>
 	</div>
 </section>
 
+<?php
+/*
 <!-- Artisans at Work Section -->
 <section class="section fade-in-section" style="background-color: rgba(248, 248, 248, 0.3);">
 	<div class="section-container">
@@ -235,6 +196,8 @@ get_header();
 		</div>
 	</div>
 </section>
+*/
+?>
 
 <!-- Seasonal Cakes Section -->
 <?php

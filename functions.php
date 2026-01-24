@@ -175,6 +175,12 @@ function melt_scripts()
 	wp_enqueue_style('melt-mobile-menu', get_template_directory_uri() . '/css/mobile-menu.css', array(), MELT_VERSION);
 	wp_enqueue_script('melt-mobile-menu', get_template_directory_uri() . '/js/mobile-menu.js', array(), MELT_VERSION, true);
 
+	// Cake Gallery Styles and Scripts - Only load on front page
+	if (is_front_page()) {
+		wp_enqueue_style('melt-cake-gallery', get_template_directory_uri() . '/css/cake-gallery.css', array('melt-style'), MELT_VERSION, 'all');
+		wp_enqueue_script('melt-cake-gallery', get_template_directory_uri() . '/js/cake-gallery.js', array(), MELT_VERSION, true);
+	}
+
 	// Thank You Page Styles - Only load on order-received page
 	if (is_wc_endpoint_url('order-received')) {
 		wp_enqueue_style('melt-thankyou', get_template_directory_uri() . '/css/thankyou.css', array('melt-style'), MELT_VERSION, 'all');

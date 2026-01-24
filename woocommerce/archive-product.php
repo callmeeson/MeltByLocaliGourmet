@@ -89,7 +89,7 @@ get_header();
 
 .product-card {
 	transition: all 0.35s ease;
-	cursor: pointer;
+	cursor: default;
     background: #fff;
     border: 1px solid rgba(15, 23, 42, 0.08);
     border-radius: 20px;
@@ -116,7 +116,7 @@ get_header();
 	padding: 0;
 	width: 100%;
 	text-align: left;
-	cursor: pointer;
+	cursor: default;
 }
 
 .product-card:hover .product-image-wrapper {
@@ -394,6 +394,13 @@ get_header();
 	border-radius: 10px;
 	font-family: var(--font-body);
 }
+.product-quick-view__field select {
+	padding: 0.55rem 0.75rem;
+	border: 1px solid rgba(15, 23, 42, 0.12);
+	border-radius: 10px;
+	font-family: var(--font-body);
+	background: #fff;
+}
 
 .product-quick-view__close {
 	position: absolute;
@@ -543,6 +550,42 @@ get_header();
                     if($term && !is_wp_error($term)) $cat_slugs[] = $term->slug;
                 }
                 $categories_json = json_encode($cat_slugs);
+				$size_terms = [];
+				$size_attribute_name = '';
+				$attribute_taxonomies = wc_get_attribute_taxonomies();
+				if (!empty($attribute_taxonomies)) {
+					foreach ($attribute_taxonomies as $attribute_taxonomy) {
+						if (isset($attribute_taxonomy->attribute_label) && strtolower($attribute_taxonomy->attribute_label) === 'cake size') {
+							$size_attribute_name = wc_attribute_taxonomy_name($attribute_taxonomy->attribute_name);
+							break;
+						}
+					}
+				}
+				if (!empty($size_attribute_name)) {
+					$size_terms = wc_get_product_terms($product->get_id(), $size_attribute_name, ['fields' => 'names']);
+				}
+				if (empty($size_terms)) {
+					$product_attributes = $product->get_attributes();
+					foreach ($product_attributes as $attribute) {
+						if (!$attribute instanceof WC_Product_Attribute) continue;
+						if ($attribute->is_taxonomy()) {
+							$tax = $attribute->get_name();
+							$tax_obj = get_taxonomy($tax);
+							$tax_label = $tax_obj ? $tax_obj->labels->singular_name : '';
+							if (strtolower($tax_label) === 'cake size') {
+								$size_terms = wc_get_product_terms($product->get_id(), $tax, ['fields' => 'names']);
+								break;
+							}
+						} else {
+							$attr_label = $attribute->get_name();
+							if (strtolower($attr_label) === 'cake size') {
+								$size_terms = $attribute->get_options();
+								break;
+							}
+						}
+					}
+				}
+				$size_terms_json = wp_json_encode($size_terms);
 				$price_display = $product->get_price_html();
 				if (empty($price_display) && $product->get_price()) {
 					$price_display = 'AED ' . number_format((float)$product->get_price(), 2);
@@ -551,18 +594,25 @@ get_header();
 				?>
 				<div class="product-card fade-in-item"
 					data-categories='<?php echo esc_attr($categories_json); ?>'
+					data-size-label="Cake Size"
+					data-size-options='<?php echo esc_attr($size_terms_json); ?>'
+					data-product-id="<?php echo esc_attr($product->get_id()); ?>"
+					data-product-sku="<?php echo esc_attr($product->get_sku()); ?>"
+					data-product-type="<?php echo esc_attr($product->get_type()); ?>"
+					data-product-url="<?php echo esc_url($product->get_permalink()); ?>"
+					data-add-to-cart-url="<?php echo esc_url($product->add_to_cart_url()); ?>"
 					data-name="<?php echo esc_attr($product->get_name()); ?>"
 					data-price="<?php echo esc_attr(wp_strip_all_tags($price_display)); ?>"
 					data-description="<?php echo esc_attr($short_description); ?>"
 					data-images='<?php echo esc_attr(wp_json_encode($images)); ?>'>
 					<!-- Product Image -->
-					<button type="button" class="product-image-wrapper" aria-label="<?php echo esc_attr($product->get_name()); ?>">
+					<div class="product-image-wrapper" aria-label="<?php echo esc_attr($product->get_name()); ?>">
 						<img src="<?php echo esc_url($product_image); ?>" 
 							alt="<?php echo esc_attr($product->get_name()); ?>" 
 							class="product-image"
 							loading="lazy">
 						<div class="product-overlay"></div>
-					</button>
+					</div>
 
 					<!-- Product Info -->
 					<div class="product-info">
@@ -585,26 +635,9 @@ get_header();
 								?>
 							</span>
 							
-								<div class="product-buttons">
-									<?php if ( $product->is_type( 'variable' ) ) : ?>
-										<button class="btn-add" 
-												onclick="event.preventDefault(); event.stopPropagation(); quickAddToCart(<?php echo $product->get_id(); ?>, this)">
-											<i data-lucide="shopping-cart" style="width: 0.75rem; height: 0.75rem;"></i>
-											Add to cart
-										</button>
-									<?php else : ?>
-										<a href="<?php echo $product->add_to_cart_url(); ?>" 
-										   data-quantity="1" 
-										   class="btn-add product_type_<?php echo $product->get_type(); ?> add_to_cart_button ajax_add_to_cart" 
-										   data-product_id="<?php echo $product->get_id(); ?>" 
-										   data-product_sku="<?php echo $product->get_sku(); ?>" 
-										   aria-label="Add &ldquo;<?php echo esc_attr($product->get_name()); ?>&rdquo; to your cart" 
-										   rel="nofollow">
-											<i data-lucide="shopping-cart" style="width: 0.75rem; height: 0.75rem;"></i>
-											Add to cart
-										</a>
-									<?php endif; ?>
-								</div>
+							<div class="product-buttons">
+								<button type="button" class="btn-add btn-view-product">View Product</button>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -686,6 +719,10 @@ get_header();
 			<div class="product-quick-view__field">
 				<label for="productQuickViewDate">Preferred Delivery Date</label>
 				<input type="date" id="productQuickViewDate">
+			</div>
+			<div class="product-quick-view__field" id="productQuickViewSizeField" style="display: none;">
+				<label for="productQuickViewSize" id="productQuickViewSizeLabel">Cake Size</label>
+				<select id="productQuickViewSize"></select>
 			</div>
 			<div class="product-quick-view__actions">
 				<a class="btn-add" href="#" id="productQuickViewAdd">Add to cart</a>
@@ -777,6 +814,9 @@ document.head.appendChild(style);
 	const thumbsEl = document.getElementById('productQuickViewThumbs');
 	const addBtn = document.getElementById('productQuickViewAdd');
 	const dateInput = document.getElementById('productQuickViewDate');
+	const sizeField = document.getElementById('productQuickViewSizeField');
+	const sizeLabel = document.getElementById('productQuickViewSizeLabel');
+	const sizeSelect = document.getElementById('productQuickViewSize');
 	const closeBtn = modal.querySelector('.product-quick-view__close');
 
 	function openModal() {
@@ -829,12 +869,24 @@ document.head.appendChild(style);
 		const name = card.dataset.name || '';
 		const price = card.dataset.price || '';
 		const description = card.dataset.description || '';
+		const sizeLabelText = card.dataset.sizeLabel || 'Cake Size';
+		let sizeOptions = [];
+		const productId = card.dataset.productId || '';
+		const productSku = card.dataset.productSku || '';
+		const productType = card.dataset.productType || '';
+		const productUrl = card.dataset.productUrl || '';
+		const addToCartUrl = card.dataset.addToCartUrl || '';
 		let images = [];
 
 		try {
 			images = JSON.parse(card.dataset.images || '[]');
 		} catch (e) {
 			images = [];
+		}
+		try {
+			sizeOptions = JSON.parse(card.dataset.sizeOptions || '[]');
+		} catch (e) {
+			sizeOptions = [];
 		}
 
 		titleEl.textContent = name;
@@ -853,13 +905,37 @@ document.head.appendChild(style);
 		}
 		renderThumbs(images, name);
 
-		const addButton = card.querySelector('.add_to_cart_button');
-		if (addButton) {
-			addBtn.href = addButton.getAttribute('href') || '#';
-			addBtn.setAttribute('data-product_id', addButton.getAttribute('data-product_id') || '');
-			addBtn.setAttribute('data-product_sku', addButton.getAttribute('data-product_sku') || '');
-			addBtn.className = addButton.className;
-			addBtn.innerHTML = addButton.innerHTML;
+		if (sizeField && sizeSelect && Array.isArray(sizeOptions) && sizeOptions.length > 0) {
+			sizeField.style.display = 'flex';
+			if (sizeLabel) {
+				sizeLabel.textContent = sizeLabelText;
+			}
+			sizeSelect.innerHTML = '';
+			sizeOptions.forEach((optionText, index) => {
+				const option = document.createElement('option');
+				option.value = optionText;
+				option.textContent = optionText;
+				if (index === 0) option.selected = true;
+				sizeSelect.appendChild(option);
+			});
+		} else if (sizeField) {
+			sizeField.style.display = 'none';
+		}
+
+		if (addBtn) {
+			if (productType === 'variable') {
+				addBtn.href = productUrl || '#';
+				addBtn.className = 'btn-add';
+				addBtn.textContent = 'View product';
+				addBtn.removeAttribute('data-product_id');
+				addBtn.removeAttribute('data-product_sku');
+			} else {
+				addBtn.href = addToCartUrl || '#';
+				addBtn.setAttribute('data-product_id', productId);
+				addBtn.setAttribute('data-product_sku', productSku);
+				addBtn.className = 'btn-add add_to_cart_button ajax_add_to_cart';
+				addBtn.textContent = 'Add to cart';
+			}
 		}
 
 		openModal();
@@ -879,17 +955,12 @@ document.head.appendChild(style);
 		}
 	});
 
-	document.querySelectorAll('.product-card').forEach((card) => {
-		card.querySelectorAll('.product-image-wrapper').forEach((button) => {
-			button.addEventListener('click', (event) => {
-				event.preventDefault();
-				event.stopPropagation();
-				openQuickView(card);
-			});
-		});
-		card.addEventListener('click', (event) => {
-			const ignore = event.target.closest('.btn-add, .add_to_cart_button');
-			if (ignore) return;
+	document.querySelectorAll('.btn-view-product').forEach((button) => {
+		button.addEventListener('click', (event) => {
+			event.preventDefault();
+			event.stopPropagation();
+			const card = button.closest('.product-card');
+			if (!card) return;
 			openQuickView(card);
 		});
 	});

@@ -12,17 +12,18 @@
 
 <header class="site-header" id="masthead">
 	<div class="header-container">
-		<!-- Logo -->
-		<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="site-logo">
-			<h3 class="logo-text">Melt <span class="logo-subtitle">by Locali Gourmet</span></h3>
-		</a>
-		
 		<!-- Mobile Menu Toggle Button -->
 		<button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Menu">
 			<span class="hamburger-line"></span>
 			<span class="hamburger-line"></span>
 			<span class="hamburger-line"></span>
+			<span class="menu-text">Menu</span>
 		</button>
+		
+		<!-- Logo -->
+		<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="site-logo">
+			<h3 class="logo-text">Melt <span class="logo-subtitle">by Locali Gourmet</span></h3>
+		</a>
 
 		<!-- Desktop Navigation -->
 		<nav class="main-navigation">
@@ -210,6 +211,27 @@
 					</div>
 				</div>
 			<?php endif; ?>
+
+			<!-- Cart Icon -->
+			<?php if ( function_exists( 'WC' ) && function_exists( 'wc_get_cart_url' ) ) : ?>
+				<a href="<?php echo esc_url( wc_get_cart_url() ); ?>" class="header-icon-btn relative cart-button" aria-label="Shopping Cart">
+					<i data-lucide="shopping-cart" class="header-icon"></i>
+					<?php
+					$cart_count = melt_get_cart_count();
+					if ( $cart_count > 0 ) :
+						?>
+						<span class="cart-count"><?php echo esc_html( $cart_count ); ?></span>
+					<?php endif; ?>
+				</a>
+			<?php endif; ?>
+		</div>
+		
+		<!-- Mobile Header Icons -->
+		<div class="mobile-header-icons">
+			<!-- Location Icon -->
+			<button class="header-icon-btn" onclick="openLocations()" aria-label="Locations">
+				<i data-lucide="map-pin" class="header-icon"></i>
+			</button>
 
 			<!-- Cart Icon -->
 			<?php if ( function_exists( 'WC' ) && function_exists( 'wc_get_cart_url' ) ) : ?>

@@ -90,6 +90,88 @@ table {
     .main-navigation {
         display: none !important;
     }
+    
+    /* Mobile header layout */
+    .header-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 1rem;
+        max-width: 100%;
+    }
+    
+    /* Burger menu - Left */
+    .mobile-menu-toggle {
+        display: flex !important;
+        order: 1;
+        flex-shrink: 0;
+        width: auto;
+        height: auto;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        font-family: var(--font-body);
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #c99a3a;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+    }
+    
+    /* Style all three hamburger lines */
+    .mobile-menu-toggle .hamburger-line {
+        display: inline-block;
+        width: 18px;
+        height: 2px;
+        background-color: #c99a3a;
+        margin: 0 4px;
+    }
+    
+    .mobile-menu-toggle .hamburger-line:nth-child(2),
+    .mobile-menu-toggle .hamburger-line:nth-child(3) {
+        display: none;
+    }
+    
+    /* Logo - Center */
+    .site-logo {
+        order: 2;
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-width: 0;
+    }
+    
+    .site-logo .logo-text {
+        font-size: 1.1rem;
+        white-space: nowrap;
+    }
+    
+    .site-logo .logo-subtitle {
+        display: none;
+    }
+    
+    /* Mobile header icons - Right (location + cart) */
+    .mobile-header-icons {
+        display: flex !important;
+        order: 3;
+        align-items: center;
+        gap: 1rem;
+        flex-shrink: 0;
+    }
+    
+    .mobile-header-icons .header-icon-btn {
+        padding: 0;
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 }
 
 /* Product Grid Responsive */

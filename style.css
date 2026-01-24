@@ -201,6 +201,7 @@ body:not(.home-page) .site-header {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    text-decoration: none;
 }
 
 .logo-text {
@@ -353,10 +354,72 @@ body:not(.home-page) .site-header .header-icon:hover {
     /* White by default */
 }
 
+.mobile-menu-toggle {
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+    letter-spacing: 0.02em;
+    display: grid;
+    grid-template-columns: 20px auto;
+    grid-template-rows: repeat(3, 6px);
+    column-gap: 0.5rem;
+}
+
+.hamburger-line {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background-color: currentColor;
+    border-radius: 999px;
+    grid-column: 1;
+}
+
+.mobile-menu-toggle .menu-text {
+    font-family: var(--font-body);
+    font-weight: 500;
+    grid-column: 2;
+    grid-row: 1 / span 3;
+    align-self: center;
+}
+
 .site-header.scrolled .mobile-menu-toggle,
 body:not(.home-page) .site-header .mobile-menu-toggle {
     color: rgba(26, 26, 26, 0.7);
     /* Dark when scrolled or on other pages */
+}
+
+/* Mobile Header Icons */
+.mobile-header-icons {
+    display: none;
+    align-items: center;
+    gap: 1rem;
+}
+
+.mobile-header-icons .header-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    transition: all 0.3s ease;
+    color: rgba(255, 255, 255, 0.9);
+    /* White by default */
+}
+
+.site-header.scrolled .mobile-header-icons .header-icon,
+body:not(.home-page) .site-header .mobile-header-icons .header-icon {
+    color: rgba(26, 26, 26, 0.7);
+    /* Dark when scrolled or on other pages */
+}
+
+.mobile-header-icons .header-icon-btn:hover .header-icon {
+    transform: scale(1.1);
+}
+
+.site-header.scrolled .mobile-header-icons .header-icon:hover,
+body:not(.home-page) .site-header .mobile-header-icons .header-icon:hover {
+    color: var(--primary);
+}
+
+.site-header:not(.scrolled) .mobile-header-icons .header-icon:hover {
+    color: white;
 }
 
 /* ==========================================================================
@@ -966,7 +1029,26 @@ body:not(.home-page) .site-header .mobile-menu-toggle {
 
 @media (max-width: 768px) {
     .header-container {
-        padding: 1.25rem 1.5rem;
+        padding: 1.1rem 1.25rem;
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 0.75rem;
+        position: relative;
+    }
+
+    .site-logo {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        justify-self: center;
+        text-align: center;
+        z-index: 1;
+    }
+
+    .site-header {
+        background-color: rgba(0, 0, 0, 0.35);
+        border-bottom-color: transparent;
+        box-shadow: none;
     }
 
     .main-navigation .nav-menu {
@@ -974,7 +1056,22 @@ body:not(.home-page) .site-header .mobile-menu-toggle {
     }
 
     .mobile-menu-toggle {
-        display: block;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.3rem;
+        padding: 0;
+        margin-left: 0.9rem;
+    }
+
+    .header-icons {
+        display: none;
+    }
+
+    .mobile-header-icons {
+        display: flex;
+        justify-self: end;
+        gap: 0.25rem;
     }
 
     .hero-section {
@@ -995,6 +1092,39 @@ body:not(.home-page) .site-header .mobile-menu-toggle {
 
     .logo-subtitle {
         display: none;
+    }
+
+    .mobile-menu-toggle,
+    .mobile-header-icons .header-icon {
+        color: var(--primary);
+    }
+
+    .site-header.scrolled .mobile-menu-toggle,
+    body:not(.home-page) .site-header .mobile-menu-toggle,
+    .site-header.scrolled .mobile-header-icons .header-icon,
+    body:not(.home-page) .site-header .mobile-header-icons .header-icon {
+        color: var(--primary);
+    }
+
+    .mobile-menu-toggle .menu-text {
+        font-size: 0.7rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        line-height: 1;
+    }
+
+    .hamburger-line {
+        width: 18px;
+    }
+
+    .site-logo .logo-text {
+        color: var(--primary);
+        font-size: 1.15rem;
+    }
+
+    .mobile-header-icons .header-icon {
+        width: 1.6rem;
+        height: 1.6rem;
     }
 }
 
