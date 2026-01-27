@@ -1,0 +1,111 @@
+/* 
+ * WooCommerce Shop Archive Page Styles
+ * Ensures shop pages have proper text colors and visibility
+ */
+
+/* Global WooCommerce Shop Fix - Ensure all content is visible */
+body.post-type-archive-product,
+body.tax-product_cat,
+body.page-template-default.page.woocommerce {
+	color: var(--foreground) !important;
+	background-color: var(--background) !important;
+}
+
+/* Force text colors on shop page */
+.woocommerce,
+.woocommerce-page,
+.shop-page-wrapper {
+	color: var(--foreground) !important;
+}
+
+/* Ensure all text elements are visible */
+.woocommerce h1,
+.woocommerce h2,
+.woocommerce h3,
+.woocommerce h4,
+.woocommerce h5,
+.woocommerce h6,
+.woocommerce p,
+.woocommerce a,
+.woocommerce span,
+.woocommerce div,
+.shop-page-wrapper h1,
+.shop-page-wrapper h2,
+.shop-page-wrapper h3,
+.shop-page-wrapper h4,
+.shop-page-wrapper h5,
+.shop-page-wrapper h6,
+.shop-page-wrapper p,
+.shop-page-wrapper a,
+.shop-page-wrapper span,
+.shop-page-wrapper div {
+	color: inherit !important;
+}
+
+/* Shop title and subtitle */
+.shop-title {
+	color: var(--foreground) !important;
+}
+
+.shop-subtitle {
+	color: var(--muted-foreground) !important;
+}
+
+/* Category filters */
+.category-filter-btn {
+	color: var(--muted-foreground) !important;
+}
+
+.category-filter-btn.active,
+.category-filter-btn:hover {
+	color: var(--foreground) !important;
+}
+
+/* Product Cards */
+.product-card .product-name {
+	color: var(--foreground) !important;
+}
+
+.product-card .product-description {
+	color: var(--muted-foreground) !important;
+}
+
+.product-card .product-price {
+	color: var(--foreground) !important;
+}
+
+.product-card:hover .product-name {
+	color: var(--primary) !important;
+}
+
+.product-card:hover .product-price {
+	color: var(--primary) !important;
+}
+
+/* Woo Default Elements Override */
+.woocommerce ul.products li.product .woocommerce-loop-product__title,
+.woocommerce ul.products li.product h2,
+.woocommerce ul.products li.product h3 {
+	color: var(--foreground) !important;
+}
+
+.woocommerce ul.products li.product .price {
+	color: var(--foreground) !important;
+}
+
+/* Pagination */
+.woocommerce nav.woocommerce-pagination ul li a,
+.woocommerce nav.woocommerce-pagination ul li span {
+	color: var(--foreground) !important;
+}
+
+/* Ensure buttons have proper text visibility */
+.btn-customize,
+.btn-add,
+.pagination-btn {
+	color: inherit !important;
+}
+
+.btn-add {
+	color: white !important;
+}

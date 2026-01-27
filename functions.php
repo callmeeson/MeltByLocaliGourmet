@@ -196,6 +196,11 @@ function melt_scripts()
 		wp_enqueue_style('melt-single-product', get_template_directory_uri() . '/css/single-product.css', array('melt-style'), MELT_VERSION, 'all');
 	}
 
+	// Shop Page Styles - Only load on shop archive pages to fix text visibility
+	if (is_shop() || is_product_taxonomy() || is_post_type_archive('product')) {
+		wp_enqueue_style('melt-shop-page', get_template_directory_uri() . '/css/shop-page.css', array('melt-style'), MELT_VERSION, 'all');
+	}
+
 	// Localize script for AJAX
 	wp_localize_script(
 		'melt-main',
