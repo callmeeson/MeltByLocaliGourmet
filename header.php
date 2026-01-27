@@ -195,7 +195,7 @@
 								</button>
 							</div>
 							
-							<!-- Divider -->
+							<?php /* Divider - simplified for debugging */ ?>
 							<div class="user-dropdown-divider"></div>
 							
 							<div class="guest-links">
