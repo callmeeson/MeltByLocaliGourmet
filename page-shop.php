@@ -748,7 +748,7 @@ get_header();
 					$description = wp_strip_all_tags($product->get_description());
 				}
 		?>
-				<div class="product-card fade-in-item"
+				<div class="product-card fade-in-item" style="opacity: 1 !important; visibility: visible !important;"
 					data-categories='<?php echo esc_attr($categories_json); ?>'
 					data-size-label="Cake Size"
 					data-size-options='<?php echo esc_attr($size_terms_json); ?>'
