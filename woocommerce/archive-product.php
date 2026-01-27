@@ -714,8 +714,15 @@ get_header();
 					$card_price_html = wc_price((float) $product->get_price());
 				}
 
-				$card_price_text = wp_strip_all_tags($card_price_html);
-				$description = wp_strip_all_tags($product->get_description());
+				$card_price_text = '';
+				if ($card_price_html) {
+					$card_price_text = wp_strip_all_tags($card_price_html);
+				}
+				
+				$description = '';
+				if ($product->get_description()) {
+					$description = wp_strip_all_tags($product->get_description());
+				}
 		?>
 				<div class="product-card fade-in-item"
 					data-categories='<?php echo esc_attr($categories_json); ?>'
@@ -829,7 +836,5 @@ get_header();
 	</style>
 </div>
 
-
-<?php get_footer(); ?>
 
 <?php get_footer(); ?>
