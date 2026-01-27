@@ -66,6 +66,101 @@ get_header();
 
 		<div class="gallery-grid">
 			<?php
+			// Custom styles for the bento grid
+			?>
+			<style>
+				.gallery-grid {
+					display: grid;
+					grid-template-columns: 1fr;
+					gap: 1rem;
+				}
+
+				.gallery-item {
+					position: relative;
+					overflow: hidden;
+					border-radius: 0.5rem;
+					isolation: isolate;
+					height: 300px; /* Default height for mobile */
+				}
+
+				@media (min-width: 768px) {
+					.gallery-grid {
+						grid-template-columns: repeat(3, 1fr);
+						grid-auto-rows: 300px;
+						gap: 1.5rem;
+					}
+					
+					/* Reset height for grid items to fill their cells */
+					.gallery-item {
+						height: 100%;
+					}
+
+					/* Bento Grid Layout Configuration for 6 items */
+					/* Row 1: [Tall] [Wide.....] */
+					/* Row 2: [Tall] [Std] [Std] */
+					/* Row 3: [Wide.....] [Std] */
+					
+					.gallery-item.item-0 { grid-row: span 2; } /* Tall */
+					.gallery-item.item-1 { grid-column: span 2; } /* Wide */
+					/* item-2 and item-3 are standard 1x1 */
+					.gallery-item.item-4 { grid-column: span 2; } /* Wide */
+					/* item-5 is standard 1x1 */
+				}
+
+				.gallery-item-image {
+					width: 100%;
+					height: 100%;
+					object-fit: cover;
+					transition: transform 0.7s ease;
+				}
+
+				.gallery-item:hover .gallery-item-image {
+					transform: scale(1.05);
+				}
+
+				.gallery-overlay {
+					position: absolute;
+					inset: 0;
+					background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 50%, transparent 100%);
+					display: flex;
+					flex-direction: column;
+					justify-content: flex-end;
+					padding: 1.5rem;
+					z-index: 10;
+				}
+
+				.gallery-title {
+					color: white;
+					font-family: var(--font-serif);
+					font-size: 1.5rem;
+					margin-bottom: 0.25rem;
+					transform: translateY(0);
+					transition: transform 0.3s ease;
+				}
+				
+				.gallery-subtitle {
+					color: rgba(255, 255, 255, 0.9);
+					font-family: var(--font-body);
+					font-size: 0.875rem;
+					opacity: 0;
+					transform: translateY(10px);
+					transition: all 0.3s ease;
+					height: 0;
+					overflow: hidden;
+				}
+
+				.gallery-item:hover .gallery-title {
+					transform: translateY(-5px);
+				}
+
+				.gallery-item:hover .gallery-subtitle {
+					opacity: 1;
+					transform: translateY(0);
+					height: auto;
+				}
+			</style>
+
+			<?php
 			// Fetch WooCommerce products to display their images
 			if ( class_exists( 'WooCommerce' ) ) {
 				$products = wc_get_products( array(
@@ -76,20 +171,30 @@ get_header();
 				) );
 
 				if ( $products ) {
+					$index = 0;
 					foreach ( $products as $product ) {
 						$image_id = $product->get_image_id();
 						if ( $image_id ) {
 							$image_url = wp_get_attachment_image_url( $image_id, 'large' );
+							// Determine class based on index
+							$class = 'item-' . $index;
 							?>
-							<div class="gallery-item">
-								<img 
-									src="<?php echo esc_url( $image_url ); ?>" 
-									alt="<?php echo esc_attr( $product->get_name() ); ?>"
-									class="gallery-item-image"
-									loading="lazy"
-								>
+							<div class="gallery-item <?php echo esc_attr($class); ?>">
+								<a href="<?php echo esc_url( $product->get_permalink() ); ?>" style="display: block; width: 100%; height: 100%;">
+									<img 
+										src="<?php echo esc_url( $image_url ); ?>" 
+										alt="<?php echo esc_attr( $product->get_name() ); ?>"
+										class="gallery-item-image"
+										loading="lazy"
+									>
+									<div class="gallery-overlay">
+										<h3 class="gallery-title"><?php echo esc_html( $product->get_name() ); ?></h3>
+										<div class="gallery-subtitle">View Collection</div>
+									</div>
+								</a>
 							</div>
 							<?php
+							$index++;
 						}
 					}
 				} else {

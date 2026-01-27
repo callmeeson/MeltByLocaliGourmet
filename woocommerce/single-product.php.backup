@@ -1,0 +1,795 @@
+<?php
+
+/**
+ * Custom Single Product Template
+ * Optimized UX/UI Design
+ *
+ * @package Melt_Custom
+ */
+
+get_header();
+
+while (have_posts()) : the_post();
+    global $product;
+
+    if (!$product || !$product->is_visible()) {
+        return;
+    }
+?>
+
+    <div class="melt-product-page">
+        <!-- Breadcrumbs -->
+        <div class="melt-product-breadcrumbs">
+            <div class="melt-container">
+                <nav class="breadcrumb-nav">
+                    <a href="<?php echo esc_url(home_url('/')); ?>">Home</a>
+                    <span class="breadcrumb-separator">/</span>
+                    <a href="<?php echo esc_url(wc_get_page_permalink('shop')); ?>">Shop</a>
+                    <span class="breadcrumb-separator">/</span>
+                    <span><?php echo esc_html(get_the_title()); ?></span>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Main Product Content -->
+        <div class="melt-container">
+            <div class="melt-product-layout">
+
+                <!-- Left: Product Gallery -->
+                <div class="melt-product-gallery">
+                    <div class="melt-gallery-main">
+                        <?php
+                        $main_image_id = get_post_thumbnail_id();
+                        $main_image_url = $main_image_id
+                            ? wp_get_attachment_image_url($main_image_id, 'full')
+                            : wc_placeholder_img_src('full');
+                        $gallery_ids = $product->get_gallery_image_ids();
+                        ?>
+                        <div class="melt-main-image-wrapper" id="meltMainImageWrapper">
+                            <img
+                                src="<?php echo esc_url($main_image_url); ?>"
+                                alt="<?php echo esc_attr(get_the_title()); ?>"
+                                class="melt-main-image"
+                                id="meltMainImage" />
+                            <div class="melt-zoom-hint">Click to zoom</div>
+
+                            <?php if (!empty($gallery_ids)) : ?>
+                                <div class="melt-gallery-nav">
+                                    <button class="melt-gallery-prev" id="meltGalleryPrev" aria-label="Previous image">‹</button>
+                                    <button class="melt-gallery-next" id="meltGalleryNext" aria-label="Next image">›</button>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+
+                    <?php if (!empty($gallery_ids)) : ?>
+                        <div class="melt-gallery-thumbnails" id="meltGalleryThumbs">
+                            <?php
+                            $main_thumb = $main_image_id
+                                ? wp_get_attachment_image_url($main_image_id, 'thumbnail')
+                                : wc_placeholder_img_src('thumbnail');
+                            $main_full = $main_image_id
+                                ? wp_get_attachment_image_url($main_image_id, 'full')
+                                : wc_placeholder_img_src('full');
+                            ?>
+                            <div class="melt-thumbnail active" data-full="<?php echo esc_url($main_full); ?>">
+                                <img src="<?php echo esc_url($main_thumb); ?>" alt="Product thumbnail" />
+                            </div>
+
+                            <?php foreach ($gallery_ids as $gallery_id) :
+                                $thumb_url = wp_get_attachment_image_url($gallery_id, 'thumbnail');
+                                $full_url = wp_get_attachment_image_url($gallery_id, 'full');
+                            ?>
+                                <div class="melt-thumbnail" data-full="<?php echo esc_url($full_url); ?>">
+                                    <img src="<?php echo esc_url($thumb_url); ?>" alt="Product thumbnail" />
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+
+                <!-- Right: Product Info & Form -->
+                <div class="melt-product-info">
+                    <!-- Product Header -->
+                    <div class="melt-product-header">
+                        <h1 class="melt-product-title"><?php the_title(); ?></h1>
+
+                        <?php if ($product->get_average_rating() > 0) : ?>
+                            <div class="melt-product-rating">
+                                <?php echo wc_get_rating_html($product->get_average_rating()); ?>
+                                <span class="melt-review-count">(<?php echo $product->get_review_count(); ?> reviews)</span>
+                            </div>
+                        <?php endif; ?>
+
+                        <div class="melt-product-price">
+                            <?php echo $product->get_price_html(); ?>
+                        </div>
+                    </div>
+
+                    <!-- Product Form Card -->
+                    <div class="melt-product-form-card">
+                        <?php if ($product->is_type('variable')) : ?>
+                            <!-- Variable Product Form -->
+                            <form class="melt-cart-form variations_form cart" method="post" enctype="multipart/form-data">
+                                <div class="melt-variations-container">
+                                    <?php
+                                    $attributes = $product->get_variation_attributes();
+                                    foreach ($attributes as $attribute_name => $options) :
+                                        $attribute_label = wc_attribute_label($attribute_name);
+                                    ?>
+                                        <div class="melt-variation-group">
+                                            <label class="melt-variation-label" for="<?php echo esc_attr(sanitize_title($attribute_name)); ?>">
+                                                <?php echo esc_html($attribute_label); ?>
+                                            </label>
+                                            <select
+                                                id="<?php echo esc_attr(sanitize_title($attribute_name)); ?>"
+                                                name="attribute_<?php echo esc_attr(sanitize_title($attribute_name)); ?>"
+                                                class="melt-variation-select"
+                                                data-attribute_name="attribute_<?php echo esc_attr(sanitize_title($attribute_name)); ?>">
+                                                <option value="">Choose an option...</option>
+                                                <?php foreach ($options as $option) : ?>
+                                                    <option value="<?php echo esc_attr($option); ?>">
+                                                        <?php echo esc_html(ucfirst($option)); ?>
+                                                    </option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
+                                    <?php endforeach; ?>
+
+                                    <div class="melt-variation-reset" style="display: none;">
+                                        <a href="#" class="melt-reset-variations">Clear selection</a>
+                                    </div>
+                                </div>
+
+                                <?php /* Variation details removed - not needed for current implementation */ ?>
+
+                                <div class="melt-quantity-group">
+                                    <label class="melt-quantity-label" for="meltQuantity">Quantity</label>
+                                    <div class="melt-quantity-controls">
+                                        <button type="button" class="melt-qty-btn melt-qty-minus" aria-label="Decrease quantity">−</button>
+                                        <input
+                                            type="number"
+                                            id="meltQuantity"
+                                            class="melt-quantity-input"
+                                            name="quantity"
+                                            value="1"
+                                            min="1"
+                                            max="<?php echo esc_attr($product->get_max_purchase_quantity()); ?>" />
+                                        <button type="button" class="melt-qty-btn melt-qty-plus" aria-label="Increase quantity">+</button>
+                                    </div>
+                                </div>
+
+                                <div class="melt-delivery-date-group">
+                                    <label class="melt-delivery-label" for="meltDeliveryDate">Preferred Delivery Date</label>
+                                    <input
+                                        type="date"
+                                        id="meltDeliveryDate"
+                                        class="melt-delivery-input"
+                                        name="delivery_date"
+                                        min="<?php echo date('Y-m-d'); ?>" />
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    class="melt-add-to-cart-btn"
+                                    disabled>
+                                    <span class="melt-btn-text">Select options to add to cart</span>
+                                </button>
+
+                                <?php wp_nonce_field('woocommerce-add-to-cart', 'woocommerce-add-to-cart-nonce'); ?>
+                                <input type="hidden" name="add-to-cart" value="<?php echo esc_attr($product->get_id()); ?>" />
+                                <input type="hidden" name="product_id" value="<?php echo esc_attr($product->get_id()); ?>" />
+                            </form>
+                        <?php else : ?>
+                            <!-- Simple Product Form -->
+                            <form class="melt-cart-form cart" method="post" enctype="multipart/form-data">
+                                <div class="melt-quantity-group">
+                                    <label class="melt-quantity-label" for="meltQuantity">Quantity</label>
+                                    <div class="melt-quantity-controls">
+                                        <button type="button" class="melt-qty-btn melt-qty-minus" aria-label="Decrease quantity">−</button>
+                                        <input
+                                            type="number"
+                                            id="meltQuantity"
+                                            class="melt-quantity-input"
+                                            name="quantity"
+                                            value="1"
+                                            min="1"
+                                            max="<?php echo esc_attr($product->get_max_purchase_quantity()); ?>" />
+                                        <button type="button" class="melt-qty-btn melt-qty-plus" aria-label="Increase quantity">+</button>
+                                    </div>
+                                </div>
+
+                                <div class="melt-delivery-date-group">
+                                    <label class="melt-delivery-label" for="meltDeliveryDate">Preferred Delivery Date</label>
+                                    <input
+                                        type="date"
+                                        id="meltDeliveryDate"
+                                        class="melt-delivery-input"
+                                        name="delivery_date"
+                                        min="<?php echo date('Y-m-d'); ?>" />
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    class="melt-add-to-cart-btn"
+                                    name="add-to-cart"
+                                    value="<?php echo esc_attr($product->get_id()); ?>">
+                                    <span class="melt-btn-text"><?php echo esc_html($product->single_add_to_cart_text()); ?></span>
+                                </button>
+
+                                <?php wp_nonce_field('woocommerce-add-to-cart', 'woocommerce-add-to-cart-nonce'); ?>
+                            </form>
+                        <?php endif; ?>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Tabs (Description & Reviews) -->
+        <?php if ($product->get_description() || $product->get_reviews_allowed()) : ?>
+            <div class="melt-product-tabs-section">
+                <div class="melt-container">
+                    <div class="melt-tabs-wrapper">
+                        <div class="melt-tabs-nav">
+                            <?php if ($product->get_description()) : ?>
+                                <button class="melt-tab-btn active" data-tab="description">Description</button>
+                            <?php endif; ?>
+                            <?php if ($product->get_short_description()) : ?>
+                                <button class="melt-tab-btn" data-tab="short-description">Quick Info</button>
+                            <?php endif; ?>
+                            <?php if ($product->get_reviews_allowed()) : ?>
+                                <button class="melt-tab-btn" data-tab="reviews">Reviews (<?php echo $product->get_review_count(); ?>)</button>
+                            <?php endif; ?>
+                        </div>
+
+                        <?php if ($product->get_description()) : ?>
+                            <div class="melt-tab-content active" id="meltTabDescription">
+                                <div class="melt-tab-inner">
+                                    <?php echo wpautop($product->get_description()); ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if ($product->get_short_description()) : ?>
+                            <div class="melt-tab-content" id="meltTabShort-description">
+                                <div class="melt-tab-inner">
+                                    <?php echo wpautop($product->get_short_description()); ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if ($product->get_reviews_allowed()) : ?>
+                            <div class="melt-tab-content" id="meltTabReviews">
+                                <div class="melt-tab-inner">
+                                    <div class="melt-reviews-header">
+                                        <h3 class="melt-reviews-title">Customer Reviews</h3>
+                                        <?php if (get_option('woocommerce_review_rating_verification_required') === 'no' || wc_customer_bought_product('', get_current_user_id(), $product->get_id())) : ?>
+                                            <button class="melt-add-review-btn">Write a Review</button>
+                                        <?php endif; ?>
+                                    </div>
+
+                                    <div class="melt-reviews-list">
+                                        <?php
+                                        $reviews = get_comments(array(
+                                            'post_id' => $product->get_id(),
+                                            'status' => 'approve',
+                                            'type' => 'review'
+                                        ));
+
+                                        if ($reviews) :
+                                            foreach ($reviews as $review) :
+                                        ?>
+                                                <div class="melt-review-item">
+                                                    <div class="melt-review-header">
+                                                        <span class="melt-review-author"><?php echo esc_html($review->comment_author); ?></span>
+                                                        <span class="melt-review-date"><?php echo esc_html(date_i18n(get_option('date_format'), strtotime($review->comment_date))); ?></span>
+                                                    </div>
+                                                    <div class="melt-review-rating">
+                                                        <?php echo wc_get_rating_html(intval(get_comment_meta($review->comment_ID, 'rating', true))); ?>
+                                                    </div>
+                                                    <div class="melt-review-content">
+                                                        <?php echo wpautop(esc_html($review->comment_content)); ?>
+                                                    </div>
+                                                </div>
+                                            <?php
+                                            endforeach;
+                                        else :
+                                            ?>
+                                            <p class="melt-no-reviews">No reviews yet. Be the first to review this product!</p>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
+
+        <!-- Related Products -->
+        <?php
+        $related_ids = wc_get_related_products($product->get_id(), 4);
+        if (!empty($related_ids)) :
+        ?>
+            <div class="melt-related-products">
+                <div class="melt-container">
+                    <div class="melt-related-header">
+                        <h2 class="melt-related-title">You Might Also Like</h2>
+                        <p class="melt-related-subtitle">Discover more delicious treats from our collection</p>
+                    </div>
+                    <div class="melt-related-grid">
+                        <?php foreach ($related_ids as $related_id) :
+                            $related_product = wc_get_product($related_id);
+                            if (!$related_product) continue;
+                        ?>
+                            <div class="melt-related-card">
+                                <a href="<?php echo esc_url(get_permalink($related_id)); ?>" class="melt-related-link">
+                                    <div class="melt-related-image">
+                                        <?php echo $related_product->get_image('woocommerce_thumbnail'); ?>
+                                    </div>
+                                    <div class="melt-related-info">
+                                        <h3 class="melt-related-name"><?php echo esc_html($related_product->get_name()); ?></h3>
+                                        <div class="melt-related-price">
+                                            <?php echo $related_product->get_price_html(); ?>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+
+            // Gallery functionality
+            const mainImage = document.getElementById('meltMainImage');
+            const mainImageWrapper = document.getElementById('meltMainImageWrapper');
+            const thumbnails = document.querySelectorAll('.melt-thumbnail');
+            const prevBtn = document.getElementById('meltGalleryPrev');
+            const nextBtn = document.getElementById('meltGalleryNext');
+            let currentImageIndex = 0;
+
+            // Thumbnail click
+            thumbnails.forEach((thumb, index) => {
+                thumb.addEventListener('click', function() {
+                    const fullUrl = this.dataset.full;
+                    if (fullUrl && mainImage) {
+                        mainImage.style.opacity = '0.5';
+                        setTimeout(() => {
+                            mainImage.src = fullUrl;
+                            mainImage.style.opacity = '1';
+                        }, 150);
+                    }
+
+                    thumbnails.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    currentImageIndex = index;
+                });
+            });
+
+            // Navigation arrows
+            if (prevBtn && nextBtn && thumbnails.length > 1) {
+                prevBtn.addEventListener('click', () => {
+                    currentImageIndex = (currentImageIndex - 1 + thumbnails.length) % thumbnails.length;
+                    thumbnails[currentImageIndex].click();
+                });
+
+                nextBtn.addEventListener('click', () => {
+                    currentImageIndex = (currentImageIndex + 1) % thumbnails.length;
+                    thumbnails[currentImageIndex].click();
+                });
+            }
+
+            // Image zoom
+            if (mainImageWrapper) {
+                let isZoomed = false;
+                mainImageWrapper.addEventListener('click', function(e) {
+                    if (e.target.tagName === 'BUTTON') return;
+                    isZoomed = !isZoomed;
+                    this.classList.toggle('zoomed', isZoomed);
+                });
+            }
+
+            // Quantity controls
+            const qtyInputs = document.querySelectorAll('.melt-quantity-input');
+            qtyInputs.forEach(input => {
+                const wrapper = input.closest('.melt-quantity-controls');
+                if (!wrapper) return;
+                
+                const minusBtn = wrapper.querySelector('.melt-qty-minus');
+                const plusBtn = wrapper.querySelector('.melt-qty-plus');
+
+                if (minusBtn) {
+                    minusBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const current = parseInt(input.value) || 1;
+                        const min = parseInt(input.getAttribute('min')) || 1;
+                        if (current > min) {
+                            input.value = current - 1;
+                            input.dispatchEvent(new Event('change', { bubbles: true }));
+                        }
+                    });
+                }
+
+                if (plusBtn) {
+                    plusBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const current = parseInt(input.value) || 1;
+                        const max = parseInt(input.getAttribute('max')) || 999;
+                        if (current < max) {
+                            input.value = current + 1;
+                            input.dispatchEvent(new Event('change', { bubbles: true }));
+                        }
+                    });
+                }
+            });
+
+            // Variable product handling
+            const variationForm = document.querySelector('.variations_form');
+            if (variationForm) {
+                const selects = variationForm.querySelectorAll('.melt-variation-select');
+                const addToCartBtn = variationForm.querySelector('.melt-add-to-cart-btn');
+
+                const resetLink = variationForm.querySelector('.melt-reset-variations');
+
+                selects.forEach(select => {
+                    select.addEventListener('change', function() {
+                        checkVariationSelection();
+                    });
+                });
+
+                function checkVariationSelection() {
+                    let allSelected = true;
+                    selects.forEach(select => {
+                        if (!select.value) allSelected = false;
+                    });
+
+                    if (allSelected) {
+                        addToCartBtn.disabled = false;
+                        addToCartBtn.querySelector('.melt-btn-text').textContent = 'Add to cart';
+
+                        variationForm.querySelector('.melt-variation-reset').style.display = 'block';
+                    } else {
+                        addToCartBtn.disabled = true;
+                        addToCartBtn.querySelector('.melt-btn-text').textContent = 'Select options to add to cart';
+
+                        variationForm.querySelector('.melt-variation-reset').style.display = 'none';
+                    }
+                }
+
+                resetLink?.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    selects.forEach(select => select.value = '');
+                    checkVariationSelection();
+                });
+            }
+
+            // Tabs
+            const tabButtons = document.querySelectorAll('.melt-tab-btn');
+            const tabContents = document.querySelectorAll('.melt-tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetTab = this.dataset.tab;
+
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+
+                    this.classList.add('active');
+                    const tabId = 'meltTab' + targetTab.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join('');
+                    document.getElementById(tabId)?.classList.add('active');
+                });
+            });
+
+
+            // Delivery date persistence
+            const deliveryInput = document.getElementById('meltDeliveryDate');
+            if (deliveryInput) {
+                const saved = localStorage.getItem('melt_delivery_date');
+                if (saved) deliveryInput.value = saved;
+                deliveryInput.addEventListener('change', function() {
+                    localStorage.setItem('melt_delivery_date', this.value);
+                });
+            }
+
+            // Initialize Lucide icons
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        })();
+    </script>
+
+<?php
+while (have_posts()) :
+    the_post();
+    global $product;
+?>
+    <div class="melt-single-product-wrapper">
+        <div class="melt-product-summary-section">
+            <div class="melt-container">
+                <div class="melt-product-summary-grid">
+
+                    <!-- Product Gallery -->
+                    <div class="melt-product-gallery">
+                        <div class="melt-main-image-wrapper" id="meltMainImageWrapper">
+                            <img id="meltMainImage" src="<?php echo esc_url($product->get_image_id() ? wp_get_attachment_image_url($product->get_image_id(), 'full') : wc_placeholder_img_url()); ?>" alt="<?php echo esc_attr($product->get_name()); ?>">
+                            <?php if (count($product->get_gallery_image_ids()) > 0) : ?>
+                                <button class="melt-gallery-nav melt-gallery-prev" id="meltGalleryPrev">
+                                    <i data-lucide="chevron-left"></i>
+                                </button>
+                                <button class="melt-gallery-nav melt-gallery-next" id="meltGalleryNext">
+                                    <i data-lucide="chevron-right"></i>
+                                </button>
+                            <?php endif; ?>
+                        </div>
+                        <?php if (count($product->get_gallery_image_ids()) > 0) : ?>
+                            <div class="melt-thumbnails">
+                                <?php
+                                // Add main product image as first thumbnail
+                                $main_image_id = $product->get_image_id();
+                                if ($main_image_id) :
+                                    $main_image_url = wp_get_attachment_image_url($main_image_id, 'woocommerce_thumbnail');
+                                    $main_image_full_url = wp_get_attachment_image_url($main_image_id, 'full');
+                                ?>
+                                    <div class="melt-thumbnail active" data-full="<?php echo esc_url($main_image_full_url); ?>">
+                                        <img src="<?php echo esc_url($main_image_url); ?>" alt="<?php echo esc_attr($product->get_name()); ?>">
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php foreach ($product->get_gallery_image_ids() as $attachment_id) :
+                                    $thumbnail_url = wp_get_attachment_image_url($attachment_id, 'woocommerce_thumbnail');
+                                    $full_url = wp_get_attachment_image_url($attachment_id, 'full');
+                                ?>
+                                    <div class="melt-thumbnail" data-full="<?php echo esc_url($full_url); ?>">
+                                        <img src="<?php echo esc_url($thumbnail_url); ?>" alt="<?php echo esc_attr(get_post_meta($attachment_id, '_wp_attachment_image_alt', true)); ?>">
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+
+                    <!-- Product Details -->
+                    <div class="melt-product-details">
+                        <h1 class="melt-product-title"><?php echo esc_html($product->get_name()); ?></h1>
+
+                        <?php if ($product->get_rating_count() > 0) : ?>
+                            <div class="melt-product-rating">
+                                <?php echo wc_get_rating_html($product->get_average_rating()); ?>
+                                <span class="melt-rating-count">(<?php echo esc_html($product->get_rating_count()); ?> reviews)</span>
+                            </div>
+                        <?php endif; ?>
+
+                        <p class="melt-product-price"><?php echo $product->get_price_html(); ?></p>
+
+                        <?php if ($product->get_short_description()) : ?>
+                            <div class="melt-product-short-description">
+                                <?php echo wpautop($product->get_short_description()); ?>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if ($product->is_type('variable')) : ?>
+                            <form class="variations_form cart melt-variations-form" action="<?php echo esc_url(apply_filters('woocommerce_add_to_cart_form_action', $product->get_permalink())); ?>" method="post" enctype='multipart/form-data'>
+                                <div class="melt-variations">
+                                    <?php foreach ($product->get_variation_attributes() as $attribute_name => $options) : ?>
+                                        <div class="melt-variation-item">
+                                            <label for="<?php echo sanitize_title($attribute_name); ?>"><?php echo wc_attribute_label($attribute_name); ?></label>
+                                            <select id="<?php echo sanitize_title($attribute_name); ?>" class="melt-variation-select" name="attribute_<?php echo sanitize_title($attribute_name); ?>" data-attribute_name="attribute_<?php echo sanitize_title($attribute_name); ?>">
+                                                <option value=""><?php echo esc_html__('Choose an option', 'woocommerce'); ?></option>
+                                                <?php
+                                                wc_dropdown_variation_attribute_options(array(
+                                                    'options'   => $options,
+                                                    'attribute' => $attribute_name,
+                                                    'product'   => $product,
+                                                ));
+                                                ?>
+                                            </select>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+
+                                <div class="melt-variation-add-to-cart">
+                                    <div class="melt-quantity-controls">
+                                        <button type="button" class="melt-qty-minus">-</button>
+                                        <input
+                                            type="number"
+                                            class="input-text qty text melt-quantity-input"
+                                            step="1"
+                                            min="1"
+                                            max=""
+                                            name="quantity"
+                                            value="1"
+                                            title="<?php echo esc_attr_x('Qty', 'Product quantity input tooltip', 'woocommerce'); ?>"
+                                            size="4"
+                                            placeholder=""
+                                            inputmode="numeric" />
+                                        <button type="button" class="melt-qty-plus">+</button>
+                                    </div>
+
+                                    <button
+                                        type="submit"
+                                        class="melt-add-to-cart-btn"
+                                        name="add-to-cart"
+                                        value="<?php echo esc_attr($product->get_id()); ?>"
+                                        disabled>
+                                        <span class="melt-btn-text">Select options to add to cart</span>
+                                    </button>
+                                </div>
+
+                                <a class="melt-variation-reset" href="#" style="display:none;">Clear selection</a>
+
+                                <?php wp_nonce_field('woocommerce-add-to-cart', 'woocommerce-add-to-cart-nonce'); ?>
+                            </form>
+                        <?php else : ?>
+                            <form class="cart melt-simple-product-form" action="<?php echo esc_url(apply_filters('woocommerce_add_to_cart_form_action', $product->get_permalink())); ?>" method="post" enctype='multipart/form-data'>
+                                <div class="melt-quantity-controls">
+                                    <button type="button" class="melt-qty-minus">-</button>
+                                    <input
+                                        type="number"
+                                        class="input-text qty text melt-quantity-input"
+                                        step="1"
+                                        min="1"
+                                        max=""
+                                        name="quantity"
+                                        value="1"
+                                        title="<?php echo esc_attr_x('Qty', 'Product quantity input tooltip', 'woocommerce'); ?>"
+                                        size="4"
+                                        placeholder=""
+                                        inputmode="numeric" />
+                                    <button type="button" class="melt-qty-plus">+</button>
+                                </div>
+
+                                <div class="melt-delivery-date-group">
+                                    <label class="melt-delivery-label" for="meltDeliveryDate">Preferred Delivery Date</label>
+                                    <input
+                                        type="date"
+                                        id="meltDeliveryDate"
+                                        class="melt-delivery-input"
+                                        name="delivery_date"
+                                        min="<?php echo date('Y-m-d'); ?>" />
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    class="melt-add-to-cart-btn"
+                                    name="add-to-cart"
+                                    value="<?php echo esc_attr($product->get_id()); ?>">
+                                    <span class="melt-btn-text"><?php echo esc_html($product->single_add_to_cart_text()); ?></span>
+                                </button>
+
+                                <?php wp_nonce_field('woocommerce-add-to-cart', 'woocommerce-add-to-cart-nonce'); ?>
+                            </form>
+                        <?php endif; ?>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Tabs (Description & Reviews) -->
+        <?php if ($product->get_description() || $product->get_reviews_allowed()) : ?>
+            <div class="melt-product-tabs-section">
+                <div class="melt-container">
+                    <div class="melt-tabs-wrapper">
+                        <div class="melt-tabs-nav">
+                            <?php if ($product->get_description()) : ?>
+                                <button class="melt-tab-btn active" data-tab="description">Description</button>
+                            <?php endif; ?>
+                            <?php if ($product->get_short_description()) : ?>
+                                <button class="melt-tab-btn" data-tab="short-description">Quick Info</button>
+                            <?php endif; ?>
+                            <?php if ($product->get_reviews_allowed()) : ?>
+                                <button class="melt-tab-btn" data-tab="reviews">Reviews (<?php echo $product->get_review_count(); ?>)</button>
+                            <?php endif; ?>
+                        </div>
+
+                        <?php if ($product->get_description()) : ?>
+                            <div class="melt-tab-content active" id="meltTabDescription">
+                                <div class="melt-tab-inner">
+                                    <?php echo wpautop($product->get_description()); ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if ($product->get_short_description()) : ?>
+                            <div class="melt-tab-content" id="meltTabShort-description">
+                                <div class="melt-tab-inner">
+                                    <?php echo wpautop($product->get_short_description()); ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if ($product->get_reviews_allowed()) : ?>
+                            <div class="melt-tab-content" id="meltTabReviews">
+                                <div class="melt-tab-inner">
+                                    <div class="melt-reviews-header">
+                                        <h3 class="melt-reviews-title">Customer Reviews</h3>
+                                        <?php if (get_option('woocommerce_review_rating_verification_required') === 'no' || wc_customer_bought_product('', get_current_user_id(), $product->get_id())) : ?>
+                                            <button class="melt-add-review-btn">Write a Review</button>
+                                        <?php endif; ?>
+                                    </div>
+
+                                    <div class="melt-reviews-list">
+                                        <?php
+                                        $reviews = get_comments(array(
+                                            'post_id' => $product->get_id(),
+                                            'status' => 'approve',
+                                            'type' => 'review'
+                                        ));
+
+                                        if ($reviews) :
+                                            foreach ($reviews as $review) :
+                                        ?>
+                                                <div class="melt-review-item">
+                                                    <div class="melt-review-header">
+                                                        <span class="melt-review-author"><?php echo esc_html($review->comment_author); ?></span>
+                                                        <span class="melt-review-date"><?php echo esc_html(date_i18n(get_option('date_format'), strtotime($review->comment_date))); ?></span>
+                                                    </div>
+                                                    <div class="melt-review-rating">
+                                                        <?php echo wc_get_rating_html(intval(get_comment_meta($review->comment_ID, 'rating', true))); ?>
+                                                    </div>
+                                                    <div class="melt-review-content">
+                                                        <?php echo wpautop(esc_html($review->comment_content)); ?>
+                                                    </div>
+                                                </div>
+                                            <?php
+                                            endforeach;
+                                        else :
+                                            ?>
+                                            <p class="melt-no-reviews">No reviews yet. Be the first to review this product!</p>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
+
+        <!-- Related Products -->
+        <?php
+        $related_ids = wc_get_related_products($product->get_id(), 4);
+        if (!empty($related_ids)) :
+        ?>
+            <div class="melt-related-products">
+                <div class="melt-container">
+                    <div class="melt-related-header">
+                        <h2 class="melt-related-title">You Might Also Like</h2>
+                        <p class="melt-related-subtitle">Discover more delicious treats from our collection</p>
+                    </div>
+                    <div class="melt-related-grid">
+                        <?php foreach ($related_ids as $related_id) :
+                            $related_product = wc_get_product($related_id);
+                            if (!$related_product) continue;
+                        ?>
+                            <div class="melt-related-card">
+                                <a href="<?php echo esc_url(get_permalink($related_id)); ?>" class="melt-related-link">
+                                    <div class="melt-related-image">
+                                        <?php echo $related_product->get_image('woocommerce_thumbnail'); ?>
+                                    </div>
+                                    <div class="melt-related-info">
+                                        <h3 class="melt-related-name"><?php echo esc_html($related_product->get_name()); ?></h3>
+                                        <div class="melt-related-price">
+                                            <?php echo $related_product->get_price_html(); ?>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
+    </div>
+
+<?php
+endwhile;
+get_footer();

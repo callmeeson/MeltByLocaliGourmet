@@ -12,3 +12,4 @@ Thumbs.db
 # Node (if you use it later)
 node_modules/
 dist/
+.blackboxcli/

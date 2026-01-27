@@ -22,7 +22,7 @@
 		
 		<!-- Logo -->
 		<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="site-logo">
-			<h3 class="logo-text">Melt <span class="logo-subtitle">by Locali Gourmet</span></h3>
+			<img src="<?php echo get_template_directory_uri(); ?>/assets/images/hero/logo.png" alt="Melt by Locali Gourmet" class="logo-image">
 		</a>
 
 		<!-- Desktop Navigation -->

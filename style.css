@@ -204,19 +204,36 @@ body:not(.home-page) .site-header {
     text-decoration: none;
 }
 
+.logo-image {
+    height: 50px;
+    width: auto;
+    transition: all 0.3s ease;
+    filter: brightness(0) invert(1);
+    /* White logo by default for transparent header */
+}
+
+.site-header.scrolled .logo-image,
+body:not(.home-page) .site-header .logo-image {
+    filter: none;
+    /* Original colors when scrolled or on other pages */
+}
+
+.logo-image:hover {
+    transform: scale(1.05);
+}
+
+/* Legacy text logo styles - kept for backwards compatibility */
 .logo-text {
     font-family: var(--font-serif);
     font-size: 1.25rem;
     letter-spacing: 0.025em;
     transition: color 0.5s ease;
     color: white;
-    /* White by default for transparent header */
 }
 
 .site-header.scrolled .logo-text,
 body:not(.home-page) .site-header .logo-text {
     color: var(--foreground);
-    /* Dark when scrolled or on other pages */
 }
 
 .logo-subtitle {
@@ -225,13 +242,11 @@ body:not(.home-page) .site-header .logo-text {
     letter-spacing: 0.025em;
     transition: color 0.5s ease;
     color: rgba(255, 255, 255, 0.8);
-    /* White with opacity by default */
 }
 
 .site-header.scrolled .logo-subtitle,
 body:not(.home-page) .site-header .logo-subtitle {
     color: var(--muted-foreground);
-    /* Muted when scrolled or on other pages */
 }
 
 .main-navigation {
@@ -1117,6 +1132,14 @@ body:not(.home-page) .site-header .mobile-header-icons .header-icon:hover {
         width: 18px;
     }
 
+    .site-logo .logo-image {
+        height: 45px;
+        width: auto;
+        filter: none;
+        /* Show original colors on mobile */
+    }
+
+    /* Legacy text logo styles */
     .site-logo .logo-text {
         color: var(--primary);
         font-size: 1.15rem;
@@ -2283,6 +2306,7 @@ body:not(.home-page) .site-header .mobile-header-icons .header-icon:hover {
 }
 
 @media (max-width: 640px) {
+
     .contact-card,
     .contact-form-card {
         padding: 1.5rem;
@@ -2343,4 +2367,54 @@ body:not(.home-page) .site-header .mobile-header-icons .header-icon:hover {
 .woocommerce-table--order-details th {
     font-weight: 600;
     color: var(--foreground) !important;
+}
+
+/* Hide default Woo success notice on single product; use toast instead */
+.single-product .woocommerce-message,
+.single-product .woocommerce-notice--success {
+    display: none;
+}
+
+/* Toast notifications */
+.melt-toast {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 9999;
+    max-width: 320px;
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    background: #1f2937;
+    color: #ffffff;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.18);
+    opacity: 0;
+    transform: translateY(8px);
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.melt-toast.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@media (max-width: 640px) {
+    .melt-toast {
+        left: 16px;
+        right: 16px;
+        bottom: 16px;
+        max-width: none;
+    }
+}
+
+/* Shop Page Fix */
+.shop-page-wrapper {
+    padding-top: 200px !important;
+}
+
+/* Shop Page Fix Adjusted */
+.shop-page-wrapper {
+    padding-top: 180px !important;
 }

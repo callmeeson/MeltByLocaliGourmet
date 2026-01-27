@@ -90,7 +90,7 @@ table {
     .main-navigation {
         display: none !important;
     }
-    
+
     /* Mobile header layout */
     .header-container {
         display: flex;
@@ -100,7 +100,7 @@ table {
         padding: 1rem;
         max-width: 100%;
     }
-    
+
     /* Burger menu - Left */
     .mobile-menu-toggle {
         display: flex !important;
@@ -121,7 +121,7 @@ table {
         letter-spacing: 0.05em;
         text-transform: uppercase;
     }
-    
+
     /* Style all three hamburger lines */
     .mobile-menu-toggle .hamburger-line {
         display: inline-block;
@@ -130,12 +130,12 @@ table {
         background-color: #c99a3a;
         margin: 0 4px;
     }
-    
+
     .mobile-menu-toggle .hamburger-line:nth-child(2),
     .mobile-menu-toggle .hamburger-line:nth-child(3) {
         display: none;
     }
-    
+
     /* Logo - Center */
     .site-logo {
         order: 2;
@@ -145,16 +145,22 @@ table {
         align-items: center;
         min-width: 0;
     }
-    
+
+    .site-logo .logo-image {
+        height: 40px;
+        width: auto;
+    }
+
+    /* Legacy text logo styles */
     .site-logo .logo-text {
         font-size: 1.1rem;
         white-space: nowrap;
     }
-    
+
     .site-logo .logo-subtitle {
         display: none;
     }
-    
+
     /* Mobile header icons - Right (location + cart) */
     .mobile-header-icons {
         display: flex !important;
@@ -163,7 +169,7 @@ table {
         gap: 1rem;
         flex-shrink: 0;
     }
-    
+
     .mobile-header-icons .header-icon-btn {
         padding: 0;
         width: 44px;
@@ -442,7 +448,7 @@ a:focus {
 
 /* WooCommerce Overrides */
 .woocommerce-page .section {
-    padding-top: 8rem;
+    padding-top: 180px !important;
 }
 
 .woocommerce ul.products {
@@ -554,8 +560,12 @@ a.button,
     }
 
     .site-logo {
-        font-size: 1.1rem;
         margin: 0 auto;
+    }
+
+    .site-logo .logo-image {
+        height: 40px;
+        width: auto;
     }
 
     .mobile-menu-toggle {
@@ -905,17 +915,54 @@ a.button,
         transform: scale(1.02);
     }
 
-    /* WhatsApp Widget */
+    /* WhatsApp Widget - ID based overrides for footer.php inline styles */
+    #whatsapp-widget {
+        bottom: 1rem !important;
+        right: 1rem !important;
+        z-index: 9999 !important;
+    }
+
+    #whatsapp-btn {
+        width: 48px !important;
+        height: 48px !important;
+    }
+
+    #whatsapp-btn svg {
+        width: 24px !important;
+        height: 24px !important;
+    }
+    
+    /* Ensure chat panel fits on mobile */
+    #whatsapp-panel {
+        position: fixed !important;
+        width: calc(100vw - 2rem) !important;
+        max-width: 340px !important;
+        right: 1rem !important;
+        bottom: 75px !important; /* Above the button */
+        left: auto !important;
+        border-radius: 16px !important;
+    }
+
+    /* Keep class-based styles just in case */
     .whatsapp-widget {
         bottom: 1rem;
         right: 1rem;
-        width: 50px;
-        height: 50px;
+        width: 44px;
+        height: 44px;
+        z-index: 9999;
     }
 
     .whatsapp-widget svg {
-        width: 28px;
-        height: 28px;
+        width: 24px;
+        height: 24px;
+    }
+    
+    .whatsapp-float__panel {
+        width: calc(100vw - 2rem) !important;
+        max-width: 300px;
+        right: 0;
+        bottom: 60px;
+        position: absolute;
     }
 }
 

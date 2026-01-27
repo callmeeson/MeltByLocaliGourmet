@@ -160,6 +160,11 @@ function melt_scripts()
 	// Customize Modal Script - Only on shop pages
 	if (is_page_template('page-shop.php') || is_shop() || is_product_taxonomy()) {
 		wp_enqueue_script('melt-customize-modal', get_template_directory_uri() . '/js/customize-modal.js', array('melt-main'), MELT_VERSION, true);
+
+		// Needed for variable products in quick view modal (variation selects + AJAX add to cart)
+		if (class_exists('WooCommerce')) {
+			wp_enqueue_script('wc-add-to-cart-variation');
+		}
 	}
 
 	// WooCommerce Add to Cart AJAX Script
@@ -186,6 +191,11 @@ function melt_scripts()
 		wp_enqueue_style('melt-thankyou', get_template_directory_uri() . '/css/thankyou.css', array('melt-style'), MELT_VERSION, 'all');
 	}
 
+	// Single Product Page Styles - Only load on single product pages
+	if (is_product()) {
+		wp_enqueue_style('melt-single-product', get_template_directory_uri() . '/css/single-product.css', array('melt-style'), MELT_VERSION, 'all');
+	}
+
 	// Localize script for AJAX
 	wp_localize_script(
 		'melt-main',
@@ -197,6 +207,77 @@ function melt_scripts()
 	);
 }
 add_action('wp_enqueue_scripts', 'melt_scripts', 5); // Priority 5 to load early
+
+/**
+ * AJAX: Return variable product variation form HTML for the shop quick view modal.
+ */
+function melt_ajax_quick_view_variations()
+{
+	// Always check WooCommerce is active first
+	if (! class_exists('WooCommerce')) {
+		wp_send_json_error(array('message' => 'WooCommerce is not active'));
+	}
+
+	// Get product ID first - this is required
+	$product_id = isset($_POST['product_id']) ? absint($_POST['product_id']) : 0;
+
+	if (! $product_id) {
+		wp_send_json_error(array('message' => 'Product ID is required'));
+	}
+
+	// Verify product exists and is variable type
+	$product = wc_get_product($product_id);
+	if (! $product) {
+		wp_send_json_error(array('message' => 'Product not found'));
+	}
+
+	if (! $product->exists()) {
+		wp_send_json_error(array('message' => 'Product does not exist'));
+	}
+
+	if (! $product->is_type('variable')) {
+		wp_send_json_error(array('message' => 'Product is not variable type'));
+	}
+
+	// Now verify nonce for security
+	$nonce = isset($_POST['nonce']) ? sanitize_text_field(wp_unslash($_POST['nonce'])) : '';
+
+	if (! $nonce) {
+		wp_send_json_error(array('message' => 'Nonce not provided'));
+	}
+
+	if (! wp_verify_nonce($nonce, 'melt_nonce')) {
+		wp_send_json_error(array('message' => 'Security verification failed'));
+	}
+
+	// Set global product for WooCommerce template
+	$GLOBALS['product'] = $product;
+
+	// Output the variations form
+	ob_start();
+	try {
+		wc_get_template(
+			'single-product/add-to-cart/variable.php',
+			array(
+				'available_variations' => $product->get_available_variations(),
+				'attributes'           => $product->get_variation_attributes(),
+				'selected_attributes'  => $product->get_default_attributes(),
+			)
+		);
+		$html = ob_get_clean();
+	} catch (Exception $e) {
+		ob_end_clean();
+		wp_send_json_error(array('message' => 'Error rendering product options: ' . $e->getMessage()));
+	}
+
+	if (! $html) {
+		wp_send_json_error(array('message' => 'No HTML was generated for product options'));
+	}
+
+	wp_send_json_success(array('html' => $html));
+}
+add_action('wp_ajax_melt_quick_view_variations', 'melt_ajax_quick_view_variations');
+add_action('wp_ajax_nopriv_melt_quick_view_variations', 'melt_ajax_quick_view_variations');
 
 /**
  * Centralized error logging function
@@ -407,22 +488,22 @@ function melt_get_hero_slides()
 	if (empty($slides)) {
 		return array(
 			array(
-				'image'    => 'https://images.unsplash.com/photo-1640794334523-b299f14d28db?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBjaG9jb2xhdGUlMjBjYWtlfGVufDF8fHx8MTc2NzU5OTE0MXww&ixlib=rb-4.1.0&q=80&w=1080',
+				'image'    => get_template_directory_uri() . '/assets/images/hero/hero-1.jpeg',
 				'title'    => 'Artisan Patisserie',
 				'subtitle' => 'Handcrafted confections made with premium ingredients and timeless techniques',
 			),
 			array(
-				'image'    => 'https://images.unsplash.com/photo-1740594967618-23cd757b9291?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlbGVnYW50JTIwdmFuaWxsYSUyMGNha2V8ZW58MXx8fHwxNzY3NTk5NTYxfDA&ixlib=rb-4.1.0&q=80&w=1080',
+				'image'    => get_template_directory_uri() . '/assets/images/hero/hero-2.jpeg',
 				'title'    => 'Elegant Creations',
 				'subtitle' => 'Exquisite cakes designed to elevate your special moments',
 			),
 			array(
-				'image'    => 'https://images.unsplash.com/photo-1763161693167-d5c117505cde?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnb3VybWV0JTIwc3RyYXdiZXJyeSUyMGNha2V8ZW58MXx8fHwxNzY3NTk5NTYyfDA&ixlib=rb-4.1.0&q=80&w=1080',
+				'image'    => get_template_directory_uri() . '/assets/images/hero/hero-3.jpeg',
 				'title'    => 'Fresh & Delicious',
 				'subtitle' => 'Premium ingredients sourced daily for the finest flavors',
 			),
 			array(
-				'image'    => 'https://images.unsplash.com/photo-1666453579043-fef25e9ce099?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhcnRpc2FuJTIwbGF5ZXJlZCUyMGNha2V8ZW58MXx8fHwxNzY3NTk5NTYzfDA&ixlib=rb-4.1.0&q=80&w=1080',
+				'image'    => get_template_directory_uri() . '/assets/images/hero/hero-4.jpeg',
 				'title'    => 'Layered Perfection',
 				'subtitle' => 'Each layer crafted with precision and passion',
 			),
@@ -550,18 +631,38 @@ if (class_exists('WooCommerce')) {
 	remove_action('woocommerce_before_main_content', 'woocommerce_output_content_wrapper', 10);
 	remove_action('woocommerce_after_main_content', 'woocommerce_output_content_wrapper_end', 10);
 
-	// Add custom wrappers
+	// Remove default single product hooks (we use custom template)
+	remove_action('woocommerce_before_single_product_summary', 'woocommerce_show_product_sale_flash', 10);
+	remove_action('woocommerce_before_single_product_summary', 'woocommerce_show_product_images', 20);
+	remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_title', 5);
+	remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_rating', 10);
+	remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_price', 10);
+	remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_excerpt', 20);
+	remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_add_to_cart', 30);
+	remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_meta', 40);
+	remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_sharing', 50);
+	remove_action('woocommerce_after_single_product_summary', 'woocommerce_output_product_data_tabs', 10);
+	remove_action('woocommerce_after_single_product_summary', 'woocommerce_upsell_display', 15);
+	remove_action('woocommerce_after_single_product_summary', 'woocommerce_output_related_products', 20);
+
+	// Add custom wrappers (for archive pages only)
 	add_action('woocommerce_before_main_content', 'melt_woocommerce_wrapper_start', 10);
 	add_action('woocommerce_after_main_content', 'melt_woocommerce_wrapper_end', 10);
 
 	function melt_woocommerce_wrapper_start()
 	{
-		echo '<div class="section"><div class="section-container">';
+		// Only add wrapper on archive pages, not single product
+		if (!is_product()) {
+			echo '<div class="section"><div class="section-container">';
+		}
 	}
 
 	function melt_woocommerce_wrapper_end()
 	{
-		echo '</div></div>';
+		// Only add wrapper on archive pages, not single product
+		if (!is_product()) {
+			echo '</div></div>';
+		}
 	}
 }
 
@@ -670,3 +771,90 @@ function melt_break_redirect_loop()
 }
 add_action('template_redirect', 'melt_break_redirect_loop', 1);
 */
+
+/**
+ * AJAX handler to get all product variations
+ */
+function melt_ajax_get_product_variations()
+{
+	if (!class_exists('WooCommerce')) {
+		wp_send_json_error(array('message' => 'WooCommerce is not active'));
+	}
+
+	$product_id = isset($_POST['product_id']) ? absint($_POST['product_id']) : 0;
+
+	if (!$product_id) {
+		wp_send_json_error(array('message' => 'Product ID is required'));
+	}
+
+	$product = wc_get_product($product_id);
+
+	if (!$product || !$product->is_type('variable')) {
+		wp_send_json_error(array('message' => 'Invalid variable product'));
+	}
+
+	$variations = $product->get_available_variations();
+
+	wp_send_json_success($variations);
+}
+add_action('wp_ajax_get_product_variations', 'melt_ajax_get_product_variations');
+add_action('wp_ajax_nopriv_get_product_variations', 'melt_ajax_get_product_variations');
+
+/**
+ * AJAX handler to get variation price based on selected attributes
+ */
+function melt_ajax_get_variation_price()
+{
+	if (!class_exists('WooCommerce')) {
+		wp_send_json_error(array('message' => 'WooCommerce is not active'));
+	}
+
+	$product_id = isset($_POST['product_id']) ? absint($_POST['product_id']) : 0;
+	$attributes = isset($_POST['attributes']) ? $_POST['attributes'] : array();
+
+	if (!$product_id) {
+		wp_send_json_error(array('message' => 'Product ID is required'));
+	}
+
+	$product = wc_get_product($product_id);
+
+	if (!$product || !$product->is_type('variable')) {
+		wp_send_json_error(array('message' => 'Invalid variable product'));
+	}
+
+	// Get all available variations
+	$variations = $product->get_available_variations();
+
+	// Find matching variation
+	$matching_variation = null;
+	foreach ($variations as $variation) {
+		$matches = true;
+
+		foreach ($attributes as $attr_name => $attr_value) {
+			$variation_attr_value = isset($variation['attributes'][$attr_name]) ? $variation['attributes'][$attr_name] : '';
+
+			// Empty variation attribute means "any"
+			if ($variation_attr_value !== '' && strtolower($variation_attr_value) !== strtolower($attr_value)) {
+				$matches = false;
+				break;
+			}
+		}
+
+		if ($matches) {
+			$matching_variation = $variation;
+			break;
+		}
+	}
+
+	if ($matching_variation) {
+		wp_send_json_success(array(
+			'price_html' => $matching_variation['price_html'],
+			'display_price' => $matching_variation['display_price'],
+			'variation_id' => $matching_variation['variation_id']
+		));
+	} else {
+		wp_send_json_error(array('message' => 'No matching variation found'));
+	}
+}
+add_action('wp_ajax_get_variation_price', 'melt_ajax_get_variation_price');
+add_action('wp_ajax_nopriv_get_variation_price', 'melt_ajax_get_variation_price');

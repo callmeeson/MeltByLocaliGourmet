@@ -1,0 +1,965 @@
+/**
+ * Custom Single Product Page - Optimized UX/UI
+ */
+
+/* ============================================
+   CSS Variables
+   ============================================ */
+:root {
+    --melt-product-primary: #B8860B;
+    --melt-product-accent: #DAA520;
+    --melt-product-bg: #FFFFFF;
+    --melt-product-text: #1A1A1A;
+    --melt-product-muted: #6B7280;
+    --melt-product-border: #E5E7EB;
+    --melt-product-card: #F9FAFB;
+    --melt-product-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --melt-product-shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* ============================================
+   Main Container
+   ============================================ */
+.melt-product-page {
+    min-height: 100vh;
+    background: #FAFAFA;
+    padding: 4rem 0 4rem;
+    padding-top: 7rem;
+    /* Extra space for fixed navbar */
+}
+
+@media (max-width: 768px) {
+    .melt-product-page {
+        padding-top: 5rem;
+    }
+}
+
+.melt-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+@media (max-width: 768px) {
+    .melt-container {
+        padding: 0 1rem;
+    }
+}
+
+/* ============================================
+   Breadcrumbs
+   ============================================ */
+.melt-product-breadcrumbs {
+    margin-bottom: 2.5rem;
+    padding-top: 0;
+    margin-top: 1rem;
+    /* Additional space from top */
+}
+
+.breadcrumb-nav {
+    font-size: 0.875rem;
+    color: var(--melt-product-muted);
+    font-family: var(--font-body);
+}
+
+.breadcrumb-nav a {
+    color: var(--melt-product-muted);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.breadcrumb-nav a:hover {
+    color: var(--melt-product-primary);
+}
+
+.breadcrumb-separator {
+    margin: 0 0.5rem;
+    color: var(--melt-product-border);
+}
+
+.breadcrumb-nav span:last-child {
+    color: var(--melt-product-text);
+    font-weight: 500;
+}
+
+/* ============================================
+   Product Layout
+   ============================================ */
+.melt-product-layout {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 3rem;
+    align-items: start;
+    margin-bottom: 4rem;
+}
+
+@media (max-width: 1024px) {
+    .melt-product-layout {
+        gap: 2.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .melt-product-layout {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+}
+
+/* ============================================
+   Product Gallery
+   ============================================ */
+.melt-product-gallery {
+    position: sticky;
+    top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+@media (max-width: 768px) {
+    .melt-product-gallery {
+        position: static;
+    }
+}
+
+.melt-gallery-main {
+    background: var(--melt-product-bg);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: var(--melt-product-shadow);
+    border: 1px solid var(--melt-product-border);
+}
+
+.melt-main-image-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--melt-product-card);
+    cursor: zoom-in;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.melt-main-image-wrapper:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--melt-product-shadow-lg);
+}
+
+.melt-main-image-wrapper.zoomed {
+    cursor: zoom-out;
+    z-index: 10;
+}
+
+.melt-main-image-wrapper.zoomed .melt-main-image {
+    transform: scale(2.5);
+    transform-origin: center;
+}
+
+.melt-main-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: all 0.3s ease;
+}
+
+.melt-zoom-hint {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    background: rgba(0, 0, 0, 0.75);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    backdrop-filter: blur(8px);
+}
+
+.melt-main-image-wrapper:hover .melt-zoom-hint {
+    opacity: 1;
+}
+
+.melt-gallery-nav {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-between;
+    padding: 0 1rem;
+    pointer-events: none;
+}
+
+.melt-gallery-prev,
+.melt-gallery-next {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 1.25rem;
+    color: var(--melt-product-text);
+    box-shadow: var(--melt-product-shadow);
+    pointer-events: all;
+}
+
+.melt-gallery-prev:hover,
+.melt-gallery-next:hover {
+    background: var(--melt-product-primary);
+    color: white;
+    transform: scale(1.05);
+}
+
+.melt-gallery-thumbnails {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0;
+    scrollbar-width: thin;
+    scrollbar-color: var(--melt-product-border) transparent;
+}
+
+.melt-gallery-thumbnails::-webkit-scrollbar {
+    height: 4px;
+}
+
+.melt-gallery-thumbnails::-webkit-scrollbar-thumb {
+    background: var(--melt-product-border);
+    border-radius: 2px;
+}
+
+.melt-thumbnail {
+    flex-shrink: 0;
+    width: 80px;
+    height: 80px;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: white;
+    box-shadow: var(--melt-product-shadow);
+}
+
+.melt-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.melt-thumbnail:hover {
+    border-color: var(--melt-product-primary);
+    transform: translateY(-2px);
+    box-shadow: var(--melt-product-shadow-lg);
+}
+
+.melt-thumbnail.active {
+    border-color: var(--melt-product-primary);
+    box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.15);
+}
+
+/* ============================================
+   Product Info
+   ============================================ */
+.melt-product-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.melt-product-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.melt-product-title {
+    font-family: var(--font-serif);
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--melt-product-text);
+    letter-spacing: -0.02em;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .melt-product-title {
+        font-size: 2rem;
+    }
+}
+
+.melt-product-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.melt-review-count {
+    font-size: 0.875rem;
+    color: var(--melt-product-muted);
+}
+
+.melt-product-price {
+    font-size: 1.875rem;
+    font-weight: 600;
+    color: var(--melt-product-primary);
+    margin: 0;
+}
+
+.melt-product-price .woocommerce-Price-amount {
+    color: var(--melt-product-primary);
+}
+
+.melt-product-price del {
+    font-size: 1.25rem;
+    color: var(--melt-product-muted);
+    opacity: 0.7;
+    margin-right: 0.5rem;
+}
+
+.melt-product-price ins {
+    text-decoration: none;
+    color: var(--melt-product-primary);
+}
+
+/* ============================================
+   Product Form Card
+   ============================================ */
+.melt-product-form-card {
+    background: var(--melt-product-bg);
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: var(--melt-product-shadow);
+    border: 1px solid var(--melt-product-border);
+}
+
+@media (max-width: 768px) {
+    .melt-product-form-card {
+        padding: 1.5rem;
+    }
+}
+
+.melt-cart-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.melt-variations-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.melt-variation-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.melt-variation-label {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--melt-product-text);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.melt-variation-select {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 2px solid var(--melt-product-border);
+    border-radius: 10px;
+    background: white;
+    font-size: 1rem;
+    color: var(--melt-product-text);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%231A1A1A' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    padding-right: 2.5rem;
+    font-family: var(--font-body);
+}
+
+.melt-variation-select:focus {
+    outline: none;
+    border-color: var(--melt-product-primary);
+    box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.1);
+}
+
+.melt-variation-select:hover {
+    border-color: var(--melt-product-primary);
+}
+
+.melt-variation-reset {
+    margin-top: -0.5rem;
+}
+
+.melt-reset-variations {
+    color: var(--melt-product-primary);
+    font-size: 0.875rem;
+    text-decoration: underline;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.melt-reset-variations:hover {
+    color: var(--melt-product-accent);
+}
+
+.melt-variation-details {
+    padding: 1rem;
+    background: var(--melt-product-card);
+    border-radius: 10px;
+    border: 1px solid var(--melt-product-border);
+}
+
+.melt-variation-price {
+    font-size: 1.375rem;
+    font-weight: 600;
+    color: var(--melt-product-primary);
+    margin-bottom: 0.5rem;
+}
+
+.melt-variation-description {
+    color: var(--melt-product-muted);
+    font-size: 0.875rem;
+}
+
+.melt-quantity-group,
+.melt-delivery-date-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.melt-quantity-label,
+.melt-delivery-label {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--melt-product-text);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.melt-quantity-controls {
+    display: flex;
+    align-items: center;
+    border: 2px solid var(--melt-product-border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: white;
+    width: fit-content;
+}
+
+.melt-qty-btn {
+    width: 42px;
+    height: 42px;
+    border: none;
+    background: var(--melt-product-card);
+    color: var(--melt-product-text);
+    font-size: 1.125rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.melt-qty-btn:hover {
+    background: var(--melt-product-primary);
+    color: white;
+}
+
+.melt-quantity-input {
+    width: 70px;
+    height: 42px;
+    border: none;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--melt-product-text);
+    background: white;
+    -moz-appearance: textfield;
+}
+
+.melt-quantity-input::-webkit-outer-spin-button,
+.melt-quantity-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.melt-quantity-input:focus {
+    outline: none;
+}
+
+.melt-delivery-input {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 2px solid var(--melt-product-border);
+    border-radius: 10px;
+    background: white;
+    font-size: 1rem;
+    color: var(--melt-product-text);
+    transition: all 0.2s ease;
+    font-family: var(--font-body);
+}
+
+.melt-delivery-input:focus {
+    outline: none;
+    border-color: var(--melt-product-primary);
+    box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.1);
+}
+
+.melt-add-to-cart-btn {
+    width: 100%;
+    height: 52px;
+    background: var(--melt-product-primary);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.0625rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(184, 134, 11, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body);
+    margin-top: 0.5rem;
+}
+
+.melt-add-to-cart-btn:hover:not(:disabled) {
+    background: var(--melt-product-accent);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(184, 134, 11, 0.35);
+}
+
+.melt-add-to-cart-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.melt-add-to-cart-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* ============================================
+   Product Meta
+   ============================================ */
+.melt-product-meta {
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--melt-product-border);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.melt-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--melt-product-muted);
+}
+
+.melt-meta-label {
+    font-weight: 600;
+    color: var(--melt-product-text);
+}
+
+/* ============================================
+   Social Share
+   ============================================ */
+.melt-product-share {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--melt-product-border);
+}
+
+.melt-share-label {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--melt-product-text);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.melt-share-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.melt-share-btn {
+    width: 38px;
+    height: 38px;
+    border: 1px solid var(--melt-product-border);
+    border-radius: 8px;
+    background: white;
+    color: var(--melt-product-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.melt-share-btn svg {
+    width: 18px;
+    height: 18px;
+    stroke-width: 2;
+}
+
+.melt-share-btn:hover {
+    border-color: var(--melt-product-primary);
+    color: var(--melt-product-primary);
+    transform: translateY(-1px);
+}
+
+/* ============================================
+   Product Tabs
+   ============================================ */
+.melt-product-tabs-section {
+    margin-top: 4rem;
+    padding: 3rem 0;
+    background: var(--melt-product-bg);
+    border-top: 1px solid var(--melt-product-border);
+}
+
+.melt-tabs-wrapper {
+    background: transparent;
+}
+
+.melt-tabs-nav {
+    display: flex;
+    border-bottom: 2px solid var(--melt-product-border);
+    margin-bottom: 2rem;
+    gap: 0;
+}
+
+.melt-tab-btn {
+    padding: 1rem 2rem;
+    border: none;
+    background: none;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--melt-product-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    font-family: var(--font-body);
+}
+
+.melt-tab-btn:hover {
+    color: var(--melt-product-text);
+}
+
+.melt-tab-btn.active {
+    color: var(--melt-product-primary);
+    border-bottom-color: var(--melt-product-primary);
+}
+
+.melt-tab-content {
+    display: none;
+    padding: 1rem 0;
+    animation: fadeIn 0.3s ease-in;
+}
+
+.melt-tab-content.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.melt-tab-inner {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--melt-product-text);
+}
+
+.melt-tab-inner p {
+    margin-bottom: 1rem;
+}
+
+.melt-tab-inner p:last-child {
+    margin-bottom: 0;
+}
+
+.melt-reviews-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--melt-product-border);
+    margin-bottom: 2rem;
+}
+
+.melt-reviews-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--melt-product-text);
+    margin: 0;
+}
+
+.melt-add-review-btn {
+    padding: 0.75rem 1.5rem;
+    background: var(--melt-product-primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: var(--font-body);
+}
+
+.melt-add-review-btn:hover {
+    background: var(--melt-product-accent);
+    transform: translateY(-1px);
+}
+
+.melt-reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.melt-review-item {
+    padding: 1.5rem;
+    background: var(--melt-product-card);
+    border-radius: 12px;
+    border: 1px solid var(--melt-product-border);
+}
+
+.melt-review-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.melt-review-author {
+    font-weight: 600;
+    color: var(--melt-product-text);
+}
+
+.melt-review-date {
+    font-size: 0.875rem;
+    color: var(--melt-product-muted);
+}
+
+.melt-review-rating {
+    display: flex;
+    gap: 0.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.melt-review-content {
+    color: var(--melt-product-text);
+    line-height: 1.7;
+}
+
+.melt-review-content p {
+    margin: 0;
+}
+
+.melt-no-reviews {
+    color: var(--melt-product-muted);
+    font-style: italic;
+    padding: 2rem;
+    text-align: center;
+    background: var(--melt-product-card);
+    border-radius: 12px;
+    border: 1px dashed var(--melt-product-border);
+}
+
+/* ============================================
+   Related Products
+   ============================================ */
+.melt-related-products {
+    margin-top: 4rem;
+    padding: 4rem 0;
+    background: linear-gradient(135deg, rgba(184, 134, 11, 0.03) 0%, rgba(218, 165, 32, 0.03) 100%);
+}
+
+.melt-related-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.melt-related-title {
+    font-family: var(--font-serif);
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: var(--melt-product-text);
+    margin: 0 0 0.5rem 0;
+}
+
+.melt-related-subtitle {
+    font-size: 1.0625rem;
+    color: var(--melt-product-muted);
+    margin: 0;
+}
+
+.melt-related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+}
+
+@media (max-width: 480px) {
+    .melt-related-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.melt-related-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+    box-shadow: var(--melt-product-shadow);
+    border: 1px solid var(--melt-product-border);
+}
+
+.melt-related-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--melt-product-shadow-lg);
+}
+
+.melt-related-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.melt-related-image {
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background: var(--melt-product-card);
+    max-height: 300px;
+    position: relative;
+}
+
+.melt-related-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+    display: block;
+    max-height: 300px;
+}
+
+.melt-related-card:hover .melt-related-image img {
+    transform: scale(1.05);
+}
+
+.melt-related-info {
+    padding: 1.25rem;
+}
+
+.melt-related-name {
+    font-size: 1.0625rem;
+    font-weight: 600;
+    color: var(--melt-product-text);
+    margin: 0 0 0.5rem 0;
+    transition: color 0.2s ease;
+}
+
+.melt-related-link:hover .melt-related-name {
+    color: var(--melt-product-primary);
+}
+
+.melt-related-price {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--melt-product-primary);
+    margin: 0;
+}
+
+/* ============================================
+   Responsive Design
+   ============================================ */
+@media (max-width: 768px) {
+    .melt-product-page {
+        padding: 1rem 0 2rem;
+    }
+
+    .melt-gallery-main {
+        padding: 1rem;
+    }
+
+    .melt-product-form-card {
+        padding: 1.5rem;
+    }
+
+    .melt-tab-btn {
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+    }
+
+    .melt-related-title {
+        font-size: 1.875rem;
+    }
+
+    .melt-related-image {
+        max-height: 250px;
+    }
+
+    .melt-related-image img {
+        max-height: 250px;
+    }
+}
+
+/* ============================================
+   Accessibility
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+.melt-tab-btn:focus,
+.melt-variation-select:focus,
+.melt-qty-btn:focus,
+.melt-add-to-cart-btn:focus,
+.melt-share-btn:focus {
+    outline: 2px solid var(--melt-product-primary);
+    outline-offset: 2px;
+}
