@@ -556,11 +556,15 @@ while (have_posts()) : the_post();
                     if (allSelected) {
                         addToCartBtn.prop('disabled', false);
                         addToCartBtn.find('.melt-btn-text').text('Add to cart');
-                        resetLink.parent().show();
+                        if (resetLink.parent()) {
+                             resetLink.parent().show();
+                        }
                     } else {
                         addToCartBtn.prop('disabled', true);
                         addToCartBtn.find('.melt-btn-text').text('Select options to add to cart');
-                        resetLink.parent().hide();
+                        if (resetLink.parent()) {
+                            resetLink.parent().hide();
+                        }
                     }
                 }
 

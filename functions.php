@@ -568,7 +568,7 @@ add_action('wp_ajax_nopriv_melt_update_cart', 'melt_ajax_update_cart');
  */
 function melt_get_cart_count()
 {
-	if (function_exists('WC')) {
+	if (function_exists('WC') && WC() && isset(WC()->cart)) {
 		return WC()->cart->get_cart_contents_count();
 	}
 	return 0;

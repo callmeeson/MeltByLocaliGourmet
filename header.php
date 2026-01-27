@@ -195,6 +195,7 @@
 								</button>
 							</div>
 							
+							<!-- Divider -->
 							<div class="user-dropdown-divider"></div>
 							
 							<div class="guest-links">
