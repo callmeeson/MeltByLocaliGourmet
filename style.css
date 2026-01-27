@@ -2418,3 +2418,12 @@ body:not(.home-page) .site-header .mobile-header-icons .header-icon:hover {
 .shop-page-wrapper {
     padding-top: 180px !important;
 }
+
+/* EMERGENCY VISIBILITY FIX */
+.fade-in-item, .fade-in-section, .hero-slide, .hero-content {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    animation: none !important;
+}
+body { opacity: 1 !important; background-color: white !important; }
