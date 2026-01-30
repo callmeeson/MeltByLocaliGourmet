@@ -421,7 +421,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const formData = new FormData(authForm);
             formData.append('action', isSignUpMode ? 'melt_register' : 'melt_login');
             // Add correct nonce for auth actions
-            formData.append('nonce', meltAjax.nonce);
+            formData.append('nonce', meltData.nonce);
 
             // Show loading state
             const submitBtn = document.getElementById('authSubmitBtn');
@@ -431,7 +431,7 @@ document.addEventListener('DOMContentLoaded', function () {
             submitBtn.style.opacity = '0.7';
 
             // Send AJAX request
-            fetch(meltAjax.ajaxurl, {
+            fetch(meltData.ajaxurl, {
                 method: 'POST',
                 body: formData
             })

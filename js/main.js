@@ -14,12 +14,19 @@
     const heroSubtitle = document.getElementById('heroSubtitle');
 
     // Slide data from PHP
-    const slideData = [
-        { title: 'Artisan Patisserie', subtitle: 'Handcrafted confections made with premium ingredients and timeless techniques' },
-        { title: 'Elegant Creations', subtitle: 'Exquisite cakes designed to elevate your special moments' },
-        { title: 'Fresh & Delicious', subtitle: 'Premium ingredients sourced daily for the finest flavors' },
-        { title: 'Layered Perfection', subtitle: 'Each layer crafted with precision and passion' }
-    ];
+    let slideData = [];
+    
+    if (typeof meltData !== 'undefined' && meltData.slides) {
+        slideData = meltData.slides;
+    } else {
+        // Fallback hardcoded data
+        slideData = [
+            { title: 'Artisan Patisserie', subtitle: 'Handcrafted confections made with premium ingredients and timeless techniques' },
+            { title: 'Elegant Creations', subtitle: 'Exquisite cakes designed to elevate your special moments' },
+            { title: 'Fresh & Delicious', subtitle: 'Premium ingredients sourced daily for the finest flavors' },
+            { title: 'Layered Perfection', subtitle: 'Each layer crafted with precision and passion' }
+        ];
+    }
 
     function showSlide(index) {
         slides.forEach((slide, i) => {
@@ -148,18 +155,18 @@
 
     // Add to cart functionality (for WooCommerce integration)
     window.addToCart = function (productId) {
-        if (typeof meltAjax === 'undefined') {
+        if (typeof meltData === 'undefined') {
             console.error('AJAX not configured');
             return;
         }
 
         const formData = new FormData();
         formData.append('action', 'melt_update_cart');
-        formData.append('nonce', meltAjax.nonce);
+        formData.append('nonce', meltData.nonce);
         formData.append('product_id', productId);
         formData.append('quantity', 1);
 
-        fetch(meltAjax.ajaxurl, {
+        fetch(meltData.ajaxurl, {
             method: 'POST',
             body: formData
         })

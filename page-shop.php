@@ -585,6 +585,12 @@ get_header();
 	<div class="shop-header fade-in-section">
 		<h1 class="shop-title">Our Collection</h1>
 		<p class="shop-subtitle">Handcrafted with passion and precision</p>
+		<div style="margin-top: 2rem;">
+			<a href="<?php echo esc_url( home_url( '/custom-cake' ) ); ?>" class="btn-add" style="padding: 0.8rem 1.5rem; border-radius: 8px; font-size: 1rem; background-color: #1a1a1a; color: #fff;">
+				<i data-lucide="pen-tool" style="width: 18px; height: 18px;"></i>
+				Design Your Own Cake
+			</a>
+		</div>
 	</div>
 
 	<!-- Category Filters -->

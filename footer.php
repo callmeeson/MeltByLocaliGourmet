@@ -7,14 +7,8 @@
 				<p class="brand-subtitle">by Locali Gourmet</p>
 				<p class="brand-description">Crafting exquisite artisanal cakes since 2015</p>
 				<div class="social-links">
-					<a href="#" aria-label="Facebook">
-						<i data-lucide="facebook"></i>
-					</a>
-					<a href="#" aria-label="Instagram">
+					<a href="https://www.instagram.com/meltbylocaligourmet?igsh=MWFidGlraDEwemZvdw%3D%3D&utm_source=qr" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
 						<i data-lucide="instagram"></i>
-					</a>
-					<a href="#" aria-label="Twitter">
-						<i data-lucide="twitter"></i>
 					</a>
 				</div>
 			</div>
@@ -26,7 +20,7 @@
 					<li><a href="<?php echo esc_url(home_url('/about')); ?>">About Us</a></li>
 					<li><a href="<?php echo esc_url(home_url('/our-story')); ?>">Our Story</a></li>
 					<li><a href="<?php echo esc_url(home_url('/shop')); ?>">Shop</a></li>
-					<li><a href="<?php echo esc_url(home_url('/custom-orders')); ?>">Custom Orders</a></li>
+					<li><a href="<?php echo esc_url(home_url('/custom-cake')); ?>">Custom Cake</a></li>
 					<li><a href="<?php echo esc_url(home_url('/catering')); ?>">Catering</a></li>
 				</ul>
 			</div>
@@ -53,7 +47,7 @@
 					</li>
 					<li style="display: flex; align-items: center; gap: 0.75rem;">
 						<i data-lucide="phone" style="width: 1rem; height: 1rem; flex-shrink: 0;"></i>
-						<span>(555) 123-4567</span>
+						<span>+971 55 550 7868</span>
 					</li>
 					<li style="display: flex; align-items: center; gap: 0.75rem;">
 						<i data-lucide="mail" style="width: 1rem; height: 1rem; flex-shrink: 0;"></i>
@@ -116,7 +110,7 @@
 				<span style="font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 1px;">MELT BY</span><br>
 				<span style="font-weight: 600; color: #333;">L'OCALI GOURMET</span>
 			</div>
-			<a href="https://wa.me/15551234567?text=Hi%21%20I%27d%20like%20to%20chat%20about%20Melt%20by%20Locali%20Gourmet." target="_blank" rel="noopener noreferrer" style="display: block; background: #25d366; color: #fff; text-align: center; padding: 12px 20px; border-radius: 50px; font-weight: 500; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s;">
+			<a href="https://wa.me/971555507868?text=Hi%21%20I%27d%20like%20to%20chat%20about%20Melt%20by%20Locali%20Gourmet." target="_blank" rel="noopener noreferrer" style="display: block; background: #25d366; color: #fff; text-align: center; padding: 12px 20px; border-radius: 50px; font-weight: 500; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s;">
 				Contact Now
 			</a>
 		</div>

@@ -228,7 +228,7 @@
         const params = new URLSearchParams();
         params.append('action', 'melt_add_customized_to_cart');
         params.append('product_id', currentProduct.id);
-        params.append('nonce', meltAjax.nonce);
+        params.append('nonce', meltData.nonce);
 
         Object.keys(customization).forEach((key) => {
             const value = customization[key];
@@ -242,7 +242,7 @@
         });
 
         // Send AJAX request
-        fetch(meltAjax.ajaxurl, {
+        fetch(meltData.ajaxurl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',

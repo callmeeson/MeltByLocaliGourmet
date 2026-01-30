@@ -42,6 +42,9 @@ require_once get_template_directory() . '/inc/registration-diagnostics.php';
 // Include custom WooCommerce logic
 require_once get_template_directory() . '/inc/woocommerce-custom.php';
 
+// Include custom cake order management
+require_once get_template_directory() . '/inc/custom-cake-orders.php';
+
 // Ensure WooCommerce shop is visible to all users (not just logged-in)
 add_filter('woocommerce_prevent_automatic_wizard_redirect', '__return_true');
 add_filter('option_woocommerce_catalog_visibility', function ($value) {
@@ -201,13 +204,14 @@ function melt_scripts()
 		wp_enqueue_style('melt-shop-page', get_template_directory_uri() . '/css/shop-page.css', array('melt-style'), MELT_VERSION, 'all');
 	}
 
-	// Localize script for AJAX
+	// Localize script for AJAX and Theme Data
 	wp_localize_script(
 		'melt-main',
-		'meltAjax',
+		'meltData',
 		array(
 			'ajaxurl' => admin_url('admin-ajax.php'),
 			'nonce'   => wp_create_nonce('melt_nonce'),
+			'slides'  => melt_get_hero_slides(),
 		)
 	);
 }
@@ -516,10 +520,18 @@ function melt_get_hero_slides()
 	}
 
 	$result = array();
-	foreach ($slides as $slide) {
+	$defaults = array(
+		'https://images.unsplash.com/photo-1640794334523-b299f14d28db?w=1080',
+		'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=1080', // Chocolate
+		'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=1080', // Strawberry
+		'https://images.unsplash.com/photo-1558636508-e0db3814bd1d?w=1080', // Gold leaf
+	);
+
+	foreach ($slides as $index => $slide) {
 		$image = get_the_post_thumbnail_url($slide->ID, 'full');
 		if (! $image) {
-			$image = 'https://images.unsplash.com/photo-1640794334523-b299f14d28db?w=1080';
+			// Use rotating fallback image
+			$image = $defaults[$index % count($defaults)];
 		}
 
 		$result[] = array(

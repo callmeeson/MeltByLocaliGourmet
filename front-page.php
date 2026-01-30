@@ -48,7 +48,7 @@ get_header();
 			<button class="hero-button primary" onclick="location.href='<?php echo esc_url( home_url( '/shop' ) ); ?>'">
 				View Collection
 			</button>
-			<button class="hero-button secondary" onclick="location.href='<?php echo esc_url( home_url( '/custom-orders' ) ); ?>'">
+			<button class="hero-button secondary" onclick="location.href='<?php echo esc_url( home_url( '/custom-cake' ) ); ?>'">
 				Custom Orders
 			</button>
 		</div>

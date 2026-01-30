@@ -124,6 +124,11 @@ function get_status_icon($status)
                         <span>Order History</span>
                         <i data-lucide="chevron-right" class="chevron"></i>
                     </button>
+                    <button class="nav-item" data-tab="custom-cakes">
+                        <i data-lucide="cake-slice"></i>
+                        <span>Custom Cakes</span>
+                        <i data-lucide="chevron-right" class="chevron"></i>
+                    </button>
                     <button class="nav-item" data-tab="profile">
                         <i data-lucide="user"></i>
                         <span>Profile</span>
@@ -260,6 +265,76 @@ function get_status_icon($status)
                                         </div>
                                     </div>
                                 </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+
+                <!-- Custom Cakes Tab -->
+                <div id="tab-custom-cakes" class="tab-content">
+                    <h3 class="section-title">My Custom Cake Orders</h3>
+                    <?php
+                    $cake_orders = get_posts(array(
+                        'post_type' => 'custom_cake',
+                        'post_status' => 'publish',
+                        'author' => $current_user->ID,
+                        'posts_per_page' => -1,
+                        'orderby' => 'date',
+                        'order' => 'DESC'
+                    ));
+                    
+                    if (empty($cake_orders)) : ?>
+                        <div class="empty-state">
+                            <i data-lucide="cake-slice" class="empty-icon"></i>
+                            <p>You haven't placed any custom cake orders yet.</p>
+                            <a href="<?php echo home_url('/custom-cake'); ?>" class="btn-primary-small" style="margin-top: 15px;">Design a Cake</a>
+                        </div>
+                    <?php else : ?>
+                        <div class="orders-list">
+                            <?php foreach ($cake_orders as $cake) : 
+                                $status_key = get_post_meta($cake->ID, 'melt_cc_status', true);
+                                if (!$status_key) $status_key = 'submitted';
+
+                                $status_config = array(
+                                    'submitted' => array('label' => 'Submitted', 'icon' => 'clock', 'class' => 'status-processing'),
+                                    'viewed'    => array('label' => 'Viewed', 'icon' => 'eye', 'class' => 'status-processing'),
+                                    'contacted' => array('label' => 'Contacted', 'icon' => 'message-circle', 'class' => 'status-on-hold'),
+                                    'confirmed' => array('label' => 'Confirmed', 'icon' => 'check-circle', 'class' => 'status-completed'),
+                                    'completed' => array('label' => 'Completed', 'icon' => 'package-check', 'class' => 'status-completed'),
+                                    'cancelled' => array('label' => 'Cancelled', 'icon' => 'x-circle', 'class' => 'status-cancelled'),
+                                );
+
+                                $config = isset($status_config[$status_key]) ? $status_config[$status_key] : $status_config['submitted'];
+                                
+                                $date = get_the_date('M d, Y', $cake->ID);
+                                $pref_date = get_post_meta($cake->ID, 'melt_cc_pref_date', true);
+                                $flavor = get_post_meta($cake->ID, 'melt_cc_flavor', true);
+                            ?>
+                            <div class="order-card-full">
+                                <div class="order-header-full">
+                                    <div class="order-info-group">
+                                        <div>
+                                            <div class="order-ref">Request <span class="highlight">#<?php echo $cake->ID; ?></span></div>
+                                            <div class="order-date">Submitted on <?php echo $date; ?></div>
+                                        </div>
+                                        <div class="status-badge <?php echo esc_attr($config['class']); ?>">
+                                            <i data-lucide="<?php echo esc_attr($config['icon']); ?>"></i>
+                                            <span><?php echo esc_html($config['label']); ?></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="order-body">
+                                    <div class="order-items">
+                                        <div class="order-item-row">
+                                            <span class="item-name">
+                                                <strong>Custom Cake Request</strong><br>
+                                                <small>Flavor: <?php echo esc_html($flavor ?: 'Not specified'); ?></small><br>
+                                                <small>Preferred Date: <?php echo esc_html($pref_date); ?></small>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <?php endforeach; ?>
                         </div>
                     <?php endif; ?>

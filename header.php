@@ -43,6 +43,7 @@
 				<ul class="nav-menu">
 					<li><a href="<?php echo esc_url( home_url( '/' ) ); ?>">Home</a></li>
 					<li><a href="<?php echo esc_url( home_url( '/shop' ) ); ?>">Shop</a></li>
+					<li><a href="<?php echo esc_url( home_url( '/custom-cake' ) ); ?>">Custom Cake</a></li>
 					<li><a href="<?php echo esc_url( home_url( '/about' ) ); ?>">About Melt</a></li>
 					<li><a href="<?php echo esc_url( home_url( '/contact' ) ); ?>">Contact Us</a></li>
 				</ul>
@@ -273,6 +274,7 @@
 				<ul class="mobile-nav-menu">
 					<li><a href="<?php echo esc_url( home_url( '/' ) ); ?>">Home</a></li>
 					<li><a href="<?php echo esc_url( home_url( '/shop' ) ); ?>">Shop</a></li>
+					<li><a href="<?php echo esc_url( home_url( '/custom-cake' ) ); ?>">Custom Cake</a></li>
 					<li><a href="<?php echo esc_url( home_url( '/about' ) ); ?>">About Melt</a></li>
 					<li><a href="<?php echo esc_url( home_url( '/contact' ) ); ?>">Contact Us</a></li>
 				</ul>

@@ -79,9 +79,9 @@ function handlePasswordResetSubmit(email) {
     const formData = new FormData();
     formData.append('action', 'melt_request_password_reset');
     formData.append('email', email);
-    formData.append('nonce', meltAjax.nonce);
+    formData.append('nonce', meltData.nonce);
 
-    return fetch(meltAjax.ajaxurl, {
+    return fetch(meltData.ajaxurl, {
         method: 'POST',
         body: formData
     })
@@ -200,7 +200,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const formData = new FormData(authForm);
             formData.append('action', isSignUpMode ? 'melt_register' : 'melt_login');
-            formData.append('nonce', meltAjax.nonce);
+            formData.append('nonce', meltData.nonce);
 
             const submitBtn = document.getElementById('authSubmitBtn');
             const originalText = submitBtn.textContent;
@@ -208,7 +208,7 @@ document.addEventListener('DOMContentLoaded', function () {
             submitBtn.disabled = true;
             submitBtn.style.opacity = '0.7';
 
-            fetch(meltAjax.ajaxurl, {
+            fetch(meltData.ajaxurl, {
                 method: 'POST',
                 body: formData
             })

@@ -1,0 +1,215 @@
+/* Custom Cake Form Styles */
+.custom-cake-page-wrapper {
+    padding: 160px 0 80px;
+    background-color: #f9f9f9;
+    min-height: 80vh;
+}
+
+.custom-cake-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+}
+
+.custom-cake-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.custom-cake-header h1 {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.custom-cake-header p {
+    color: #666;
+}
+
+/* Progress Bar */
+.form-progress {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 50px;
+    counter-reset: step;
+}
+
+.form-progress::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    height: 4px;
+    width: 100%;
+    background-color: #e0e0e0;
+    z-index: 0;
+}
+
+.progress-step {
+    width: 40px;
+    height: 40px;
+    background-color: #fff;
+    border: 2px solid #e0e0e0;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+    position: relative;
+    font-weight: 600;
+    color: #999;
+    transition: all 0.3s ease;
+}
+
+.progress-step.active {
+    border-color: #d4a574; /* Gold/Theme color */
+    background-color: #d4a574;
+    color: #fff;
+}
+
+.progress-step.completed {
+    border-color: #d4a574;
+    background-color: #fff;
+    color: #d4a574;
+}
+
+/* Form Steps */
+.form-step {
+    display: none;
+    animation: fadeIn 0.5s ease;
+}
+
+.form-step.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.step-title {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 25px;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 10px;
+}
+
+/* Form Fields */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+.form-control:focus {
+    border-color: #d4a574;
+    outline: none;
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Checkbox */
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.checkbox-group input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+}
+
+/* Navigation Buttons */
+.form-navigation {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid #f0f0f0;
+}
+
+.btn-prev, .btn-next, .btn-submit {
+    padding: 12px 25px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+}
+
+.btn-prev {
+    background-color: #f0f0f0;
+    color: #666;
+}
+
+.btn-prev:hover {
+    background-color: #e0e0e0;
+}
+
+.btn-next, .btn-submit {
+    background-color: #1a1a1a;
+    color: #fff;
+}
+
+.btn-next:hover, .btn-submit:hover {
+    background-color: #333;
+}
+
+.btn-submit {
+    background-color: #d4a574;
+}
+
+.btn-submit:hover {
+    background-color: #c09060;
+}
+
+/* Review Step */
+.review-item {
+    margin-bottom: 15px;
+    border-bottom: 1px dashed #eee;
+    padding-bottom: 10px;
+}
+
+.review-label {
+    font-weight: 600;
+    color: #666;
+    display: block;
+    font-size: 0.9rem;
+}
+
+.review-value {
+    color: #333;
+    font-size: 1.1rem;
+}
+
+.hidden {
+    display: none;
+}
