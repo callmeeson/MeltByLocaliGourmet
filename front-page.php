@@ -18,7 +18,12 @@ get_header();
 		foreach ( $slides as $index => $slide ) :
 			?>
 			<div class="hero-slide <?php echo 0 === $index ? 'active' : ''; ?>" data-slide="<?php echo esc_attr( $index ); ?>">
-				<img src="<?php echo esc_url( $slide['image'] ); ?>" alt="<?php echo esc_attr( $slide['title'] ); ?>" loading="<?php echo 0 === $index ? 'eager' : 'lazy'; ?>">
+				<img 
+					src="<?php echo esc_url( $slide['image'] ); ?>" 
+					alt="<?php echo esc_attr( $slide['title'] ); ?>" 
+					loading="<?php echo 0 === $index ? 'eager' : 'lazy'; ?>"
+					onerror="this.onerror=null;this.src='<?php echo esc_url( get_template_directory_uri() . '/assets/images/hero/hero-' . (($index % 4) + 1) . '.jpeg' ); ?>';"
+				>
 			</div>
 		<?php endforeach; ?>
 	</div>

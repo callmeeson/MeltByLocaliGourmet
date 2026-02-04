@@ -521,10 +521,10 @@ function melt_get_hero_slides()
 
 	$result = array();
 	$defaults = array(
-		'https://images.unsplash.com/photo-1640794334523-b299f14d28db?w=1080',
-		'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=1080', // Chocolate
-		'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=1080', // Strawberry
-		'https://images.unsplash.com/photo-1558636508-e0db3814bd1d?w=1080', // Gold leaf
+		get_template_directory_uri() . '/assets/images/hero/hero-1.jpeg',
+		get_template_directory_uri() . '/assets/images/hero/hero-2.jpeg',
+		get_template_directory_uri() . '/assets/images/hero/hero-3.jpeg',
+		get_template_directory_uri() . '/assets/images/hero/hero-4.jpeg',
 	);
 
 	foreach ($slides as $index => $slide) {
