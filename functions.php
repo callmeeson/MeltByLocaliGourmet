@@ -610,6 +610,8 @@ function melt_clear_user_orders_cache($order_id)
 }
 add_action('woocommerce_new_order', 'melt_clear_user_orders_cache');
 add_action('woocommerce_update_order', 'melt_clear_user_orders_cache');
+add_action('woocommerce_delete_order', 'melt_clear_user_orders_cache');
+add_action('wp_trash_post', 'melt_clear_user_orders_cache');
 
 /**
  * Add lazy loading to images
@@ -703,7 +705,7 @@ function melt_register_developer_role()
 			'update_core'            => true, // Updates
 			'export'                 => true,
 			'import'                 => true,
-			'view_site_health_checks'=> true, // System Maintenance
+			'view_site_health_checks' => true, // System Maintenance
 
 			// Themes
 			'switch_themes'          => true,
@@ -779,15 +781,15 @@ function melt_register_shop_owner_role()
 			'read_private_products'  => true,
 			'delete_products'        => true,
 			'delete_others_products' => true,
-			'delete_private_products'=> true,
+			'delete_private_products' => true,
 			'delete_published_products' => true,
 			'edit_shop_orders'       => true,
 			'read_shop_order'        => true,
-			'edit_others_shop_orders'=> true,
+			'edit_others_shop_orders' => true,
 			'publish_shop_orders'    => true,
 			'delete_shop_orders'     => true,
 			'edit_shop_coupons'      => true,
-			'edit_others_shop_coupons'=> true,
+			'edit_others_shop_coupons' => true,
 			'publish_shop_coupons'   => true,
 			'delete_shop_coupons'    => true,
 
@@ -1018,22 +1020,22 @@ add_action('wp_ajax_nopriv_get_variation_price', 'melt_ajax_get_variation_price'
 /**
  * Redirect /admin to /wp-admin
  */
-function melt_admin_shortcut_redirect() {
-    $request_uri = $_SERVER['REQUEST_URI'];
-    // Remove query string
-    $path = parse_url($request_uri, PHP_URL_PATH);
-    
-    // Get the site path
-    $site_path = parse_url(home_url(), PHP_URL_PATH) ?: '/';
-    
-    // Ensure trailing slash for site path comparison
-    $site_path = rtrim($site_path, '/') . '/';
-    
-    // Check if the request is exactly site_path + 'admin' or 'admin/'
-    if ( $path === $site_path . 'admin' || $path === $site_path . 'admin/' ) {
-        wp_redirect( admin_url() );
-        exit;
-    }
-}
-add_action( 'init', 'melt_admin_shortcut_redirect' );
+function melt_admin_shortcut_redirect()
+{
+	$request_uri = $_SERVER['REQUEST_URI'];
+	// Remove query string
+	$path = parse_url($request_uri, PHP_URL_PATH);
 
+	// Get the site path
+	$site_path = parse_url(home_url(), PHP_URL_PATH) ?: '/';
+
+	// Ensure trailing slash for site path comparison
+	$site_path = rtrim($site_path, '/') . '/';
+
+	// Check if the request is exactly site_path + 'admin' or 'admin/'
+	if ($path === $site_path . 'admin' || $path === $site_path . 'admin/') {
+		wp_redirect(admin_url());
+		exit;
+	}
+}
+add_action('init', 'melt_admin_shortcut_redirect');

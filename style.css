@@ -171,6 +171,17 @@ p {
     -webkit-backdrop-filter: blur(12px);
 }
 
+/* Admin Bar Adjustments for Logged-In Users */
+.admin-bar .site-header {
+    top: 32px;
+}
+
+@media screen and (min-width: 783px) {
+    .admin-bar .site-header {
+        top: 32px;
+    }
+}
+
 .site-header.scrolled {
     background-color: rgba(255, 255, 255, 1);
     border-bottom-color: var(--border);
@@ -224,11 +235,13 @@ body:not(.home-page) .site-header .logo-image {
 
 @media (max-width: 768px) {
     .logo-image:hover {
-        transform: none; /* Disable hover scale on mobile to prevent jitter */
+        transform: none;
+        /* Disable hover scale on mobile to prevent jitter */
     }
-    
+
     .logo-image:active {
-        transform: scale(0.98); /* Subtle tap feedback instead */
+        transform: scale(0.98);
+        /* Subtle tap feedback instead */
     }
 }
 
@@ -446,6 +459,43 @@ body:not(.home-page) .site-header .mobile-header-icons .header-icon:hover {
 .site-header:not(.scrolled) .mobile-header-icons .header-icon:hover {
     color: white;
 }
+
+/* Main Content Adjustments */
+body {
+    padding-top: 0;
+}
+
+/* Admin bar padding for main content */
+.admin-bar body {
+    padding-top: 0 !important;
+}
+
+/* Ensure hero section accounts for admin bar */
+.admin-bar .hero-section {
+    margin-top: 32px;
+}
+
+@media screen and (min-width: 783px) {
+    .admin-bar .hero-section {
+        margin-top: 32px;
+    }
+}
+
+/* Non-hero pages padding */
+body:not(.home-page) {
+    padding-top: 100px;
+}
+
+.admin-bar body:not(.home-page) {
+    padding-top: 132px;
+}
+
+@media screen and (min-width: 783px) {
+    .admin-bar body:not(.home-page) {
+        padding-top: 132px;
+    }
+}
+
 
 /* ==========================================================================
    HERO SECTION
@@ -2432,13 +2482,20 @@ body:not(.home-page) .site-header .mobile-header-icons .header-icon:hover {
 }
 
 /* EMERGENCY VISIBILITY FIX */
-.fade-in-item, .fade-in-section, .hero-slide, .hero-content {
+.fade-in-item,
+.fade-in-section,
+.hero-slide,
+.hero-content {
     opacity: 1 !important;
     visibility: visible !important;
     transform: none !important;
     animation: none !important;
 }
-body { opacity: 1 !important; background-color: white !important; }
+
+body {
+    opacity: 1 !important;
+    background-color: white !important;
+}
 
 /* ==========================================================================
    SEARCH MODAL
