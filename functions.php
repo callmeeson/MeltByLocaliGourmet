@@ -45,6 +45,9 @@ require_once get_template_directory() . '/inc/woocommerce-custom.php';
 // Include custom cake order management
 require_once get_template_directory() . '/inc/custom-cake-orders.php';
 
+// Include maintenance mode
+require_once get_template_directory() . '/inc/maintenance-mode.php';
+
 // Ensure WooCommerce shop is visible to all users (not just logged-in)
 add_filter('woocommerce_prevent_automatic_wizard_redirect', '__return_true');
 add_filter('option_woocommerce_catalog_visibility', function ($value) {
@@ -684,6 +687,141 @@ if (class_exists('WooCommerce')) {
 }
 
 /**
+ * Register Custom Developer Role
+ */
+function melt_register_developer_role()
+{
+	add_role(
+		'developer',
+		__('Developer', 'melt-custom'),
+		array(
+			// Core Capabilities
+			'read'                   => true,
+			'edit_dashboard'         => true,
+			'manage_options'         => true, // General Settings
+			'update_core'            => true, // Updates
+			'export'                 => true,
+			'import'                 => true,
+			'view_site_health_checks'=> true, // System Maintenance
+
+			// Themes
+			'switch_themes'          => true,
+			'edit_themes'            => true,
+			'install_themes'         => true,
+			'update_themes'          => true,
+			'delete_themes'          => true,
+			'edit_theme_options'     => true, // Customizer, Menus
+
+			// Plugins
+			'activate_plugins'       => true,
+			'edit_plugins'           => true,
+			'install_plugins'        => true,
+			'update_plugins'         => true,
+			'delete_plugins'         => true,
+
+			// Users (Limited to creating/listing)
+			'list_users'             => true,
+			'create_users'           => true,
+			'promote_users'          => true, // Help users change roles (except Admin)
+			'edit_users'             => true,
+			'remove_users'           => false, // Safety: Cannot delete users
+			'delete_users'           => false,
+
+			// Content
+			'edit_posts'             => true,
+			'edit_others_posts'      => true,
+			'publish_posts'          => true,
+			'edit_pages'             => true,
+			'edit_others_pages'      => true,
+			'publish_pages'          => true,
+			'delete_posts'           => true,
+			'delete_pages'           => true,
+			'upload_files'           => true, // Media
+			'unfiltered_html'        => true, // Critical for dev work (scripts/iframes)
+			'manage_categories'      => true,
+
+			// WooCommerce (E-Commerce)
+			'manage_woocommerce'     => true, // WC Settings
+			'view_woocommerce_reports' => true, // Sales data
+			'edit_products'          => true,
+			'edit_others_products'   => true,
+			'publish_products'       => true,
+			'read_private_products'  => true,
+			'delete_products'        => true,
+			'edit_shop_orders'       => true, // View/Edit orders for debugging
+		)
+	);
+}
+add_action('init', 'melt_register_developer_role');
+
+/**
+ * Register Shop Owner Role
+ */
+function melt_register_shop_owner_role()
+{
+	add_role(
+		'shop_owner',
+		__('Shop Owner', 'melt-custom'),
+		array(
+			// Core
+			'read'                   => true,
+			'edit_dashboard'         => true,
+			'upload_files'           => true, // Media Library
+			'manage_categories'      => true,
+
+			// WooCommerce (Full Shop Control)
+			'manage_woocommerce'     => true,
+			'view_woocommerce_reports' => true,
+			'edit_products'          => true,
+			'edit_others_products'   => true,
+			'publish_products'       => true,
+			'read_private_products'  => true,
+			'delete_products'        => true,
+			'delete_others_products' => true,
+			'delete_private_products'=> true,
+			'delete_published_products' => true,
+			'edit_shop_orders'       => true,
+			'read_shop_order'        => true,
+			'edit_others_shop_orders'=> true,
+			'publish_shop_orders'    => true,
+			'delete_shop_orders'     => true,
+			'edit_shop_coupons'      => true,
+			'edit_others_shop_coupons'=> true,
+			'publish_shop_coupons'   => true,
+			'delete_shop_coupons'    => true,
+
+			// Content (Blog & Pages)
+			'edit_posts'             => true,
+			'edit_others_posts'      => true,
+			'publish_posts'          => true,
+			'delete_posts'           => true,
+			'edit_pages'             => true,
+			'edit_others_pages'      => true,
+			'publish_pages'          => true,
+			'delete_pages'           => true,
+
+			// Users (Customers Only)
+			'list_users'             => true,
+			'create_users'           => true,
+			'edit_users'             => true,
+			'promote_users'          => false,
+			'delete_users'           => false,
+			'remove_users'           => false,
+
+			// No Technical Access
+			'manage_options'         => false,
+			'update_core'            => false,
+			'activate_plugins'       => false,
+			'edit_plugins'           => false,
+			'install_plugins'        => false,
+			'edit_themes'            => false,
+			'switch_themes'          => false,
+		)
+	);
+}
+add_action('init', 'melt_register_shop_owner_role');
+
+/**
  * AJAX handler for password change
  */
 function melt_ajax_change_password()
@@ -875,3 +1013,26 @@ function melt_ajax_get_variation_price()
 }
 add_action('wp_ajax_get_variation_price', 'melt_ajax_get_variation_price');
 add_action('wp_ajax_nopriv_get_variation_price', 'melt_ajax_get_variation_price');
+
+/**
+ * Redirect /admin to /wp-admin
+ */
+function melt_admin_shortcut_redirect() {
+    $request_uri = $_SERVER['REQUEST_URI'];
+    // Remove query string
+    $path = parse_url($request_uri, PHP_URL_PATH);
+    
+    // Get the site path
+    $site_path = parse_url(home_url(), PHP_URL_PATH) ?: '/';
+    
+    // Ensure trailing slash for site path comparison
+    $site_path = rtrim($site_path, '/') . '/';
+    
+    // Check if the request is exactly site_path + 'admin' or 'admin/'
+    if ( $path === $site_path . 'admin' || $path === $site_path . 'admin/' ) {
+        wp_redirect( admin_url() );
+        exit;
+    }
+}
+add_action( 'init', 'melt_admin_shortcut_redirect' );
+
