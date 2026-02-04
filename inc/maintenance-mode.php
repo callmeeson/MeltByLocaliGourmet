@@ -62,7 +62,12 @@ function melt_maintenance_mode_handler() {
         return;
     }
 
-    // 4. For everyone else, show the 503 Maintenance page
+    // 4. For everyone else (including logged-out users), show the 503 Maintenance page
+    // Note: Since steps 1-3 didn't return, this catches EVERYONE else.
+    
+    // Prevent caching of the maintenance page
+    nocache_headers();
+    
     $protocol = wp_get_server_protocol();
     header("$protocol 503 Service Unavailable", true, 503);
     header('Retry-After: 600'); // Retry in 10 minutes
