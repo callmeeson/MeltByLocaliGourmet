@@ -136,19 +136,35 @@ table {
         display: none;
     }
 
-    /* Logo - Center */
+    /* Logo - Center (Absolute Positioning Strategy) */
     .site-logo {
-        order: 2;
-        flex: 1;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: auto !important; /* Let content define width */
+        margin: 0 !important;
         display: flex;
         justify-content: center;
         align-items: center;
+        z-index: 5; /* Ensure above other elements but below modal */
+        pointer-events: auto; /* Ensure clickable */
         min-width: 0;
+    }
+
+    /* Prevent clicking shift */
+    .site-logo:active,
+    .site-logo:focus {
+        transform: translateX(-50%) !important; /* Force keep center */
     }
 
     .site-logo .logo-image {
         height: 40px;
         width: auto;
+        display: block;
+        margin: 0;
+        /* Disable any transform on the image itself to prevent jitter */
+        transform: none !important;
+        transition: none !important;
     }
 
     /* Legacy text logo styles */
@@ -507,7 +523,7 @@ a:focus {
 
 /* Mobile-First Base Styles */
 * {
-    -webkit-tap-highlight-color: rgba(184, 134, 11, 0.2);
+    -webkit-tap-highlight-color: transparent !important;
 }
 
 /* Fluid Typography */

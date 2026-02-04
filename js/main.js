@@ -189,9 +189,30 @@
             });
     };
 
-    // Search modal placeholder
+    // Search Functionality - Redirect to Custom Search Page
     window.openSearch = function () {
-        alert('Search functionality - Connect to your search implementation');
+        // Use meltData.homeUrl if available, otherwise fallback to relative path
+        if (typeof meltData !== 'undefined' && meltData.homeUrl) {
+            window.location.href = meltData.homeUrl + '/search';
+        } else {
+            // Fallback that respects subdirectory installation
+            // This grabs the base path from the current location
+            // E.g. http://localhost/melt-staging/some-page -> /melt-staging
+            const pathArray = window.location.pathname.split('/');
+            // If we are in a subdirectory (like /melt-staging/), keep it
+            let basePath = '';
+            if (pathArray.length > 2 && pathArray[1] !== 'search' && pathArray[1] !== '') {
+                 // Simple heuristic: if the first path segment isn't 'search', assume it's a project dir
+                 // Ideally we rely on meltData.homeUrl which we will ensure is passed from PHP
+            }
+            
+            // Safer fallback: let's trust the PHP localization which we will add next
+            window.location.href = '/melt-staging/search'; 
+        }
+    };
+
+    window.closeSearch = function () {
+        // No-op for page redirect
     };
 
     // Locations modal placeholder

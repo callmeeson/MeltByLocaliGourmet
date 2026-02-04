@@ -222,6 +222,16 @@ body:not(.home-page) .site-header .logo-image {
     transform: scale(1.05);
 }
 
+@media (max-width: 768px) {
+    .logo-image:hover {
+        transform: none; /* Disable hover scale on mobile to prevent jitter */
+    }
+    
+    .logo-image:active {
+        transform: scale(0.98); /* Subtle tap feedback instead */
+    }
+}
+
 /* Legacy text logo styles - kept for backwards compatibility */
 .logo-text {
     font-family: var(--font-serif);
@@ -2429,3 +2439,139 @@ body:not(.home-page) .site-header .mobile-header-icons .header-icon:hover {
     animation: none !important;
 }
 body { opacity: 1 !important; background-color: white !important; }
+
+/* ==========================================================================
+   SEARCH MODAL
+   ========================================================================== */
+
+.search-modal {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    z-index: 1001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.search-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.search-modal-close {
+    position: absolute;
+    right: 3rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--foreground);
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.search-modal-close:hover {
+    color: var(--primary);
+}
+
+.search-modal-close svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.search-modal-content {
+    width: 100%;
+    max-width: 500px;
+    padding: 0;
+    text-align: center;
+    transform: translateY(5px);
+    transition: transform 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.search-modal.active .search-modal-content {
+    transform: translateY(0);
+}
+
+.search-form {
+    position: relative;
+    width: 100%;
+    margin-bottom: 0;
+    display: flex;
+    align-items: center;
+}
+
+.search-field {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    padding: 0.25rem 0;
+    font-size: 0.9rem;
+    font-family: var(--font-body);
+    font-weight: 500;
+    color: var(--foreground);
+    background: transparent;
+    outline: none;
+    text-align: left;
+    transition: border-color 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    height: 2rem;
+}
+
+.search-field:focus {
+    border-bottom-color: var(--primary);
+}
+
+.search-field::placeholder {
+    color: var(--muted-foreground);
+    opacity: 0.7;
+    font-size: 0.8rem;
+}
+
+.search-submit {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--muted-foreground);
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+}
+
+.search-submit:hover {
+    color: var(--primary);
+}
+
+.search-submit svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+.search-modal-subtitle,
+.search-suggestions {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .search-modal-close {
+        right: 1.5rem;
+    }
+}

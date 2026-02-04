@@ -24,54 +24,45 @@ get_header();
 
 		<?php if ( have_posts() ) : ?>
 
-			<div class="search-results" style="display: grid; gap: 2rem;">
+			<div class="search-results-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem;">
 				<?php
 				while ( have_posts() ) :
 					the_post();
+					$has_thumb = has_post_thumbnail();
 					?>
-					<article id="post-<?php the_ID(); ?>" <?php post_class(); ?> style="padding: 2rem; border: 1px solid var(--border); transition: all 0.3s ease;"
-						onmouseover="this.style.boxShadow='0 10px 25px rgba(0, 0, 0, 0.1)'; this.style.borderColor='var(--primary)'"
-						onmouseout="this.style.boxShadow='none'; this.style.borderColor='var(--border)'">
+					<article id="post-<?php the_ID(); ?>" <?php post_class(); ?> style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); border: 1px solid var(--border); transition: all 0.3s ease; display: flex; flex-direction: column;"
+						onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'"
+						onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)'">
 						
-						<div style="display: flex; gap: 2rem; align-items: start;">
-							<?php if ( has_post_thumbnail() ) : ?>
-								<div class="post-thumbnail" style="flex-shrink: 0; width: 200px;">
-									<a href="<?php the_permalink(); ?>">
-										<?php the_post_thumbnail( 'medium' ); ?>
-									</a>
-								</div>
-							<?php endif; ?>
-							
-							<div style="flex: 1;">
-								<h2 class="post-title" style="font-family: var(--font-serif); font-size: 1.5rem; margin-bottom: 0.5rem;">
-									<a href="<?php the_permalink(); ?>" style="color: var(--foreground); transition: color 0.3s ease;"
-										onmouseover="this.style.color='var(--primary)'"
-										onmouseout="this.style.color='var(--foreground)'">
-										<?php the_title(); ?>
-									</a>
-								</h2>
-								
-								<div class="post-meta" style="color: var(--muted-foreground); font-family: var(--font-body); font-size: 0.875rem; margin-bottom: 1rem;">
-									<span><?php echo esc_html( get_the_date() ); ?></span>
-									<span> • </span>
-									<span><?php echo esc_html( get_the_author() ); ?></span>
-									<?php if ( 'post' === get_post_type() && has_category() ) : ?>
-										<span> • </span>
-										<?php the_category( ', ' ); ?>
-									<?php endif; ?>
-								</div>
-								
-								<div class="post-excerpt" style="font-family: var(--font-body); color: var(--muted-foreground); line-height: 1.7; margin-bottom: 1rem;">
-									<?php the_excerpt(); ?>
-								</div>
-								
-								<a href="<?php the_permalink(); ?>" style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--primary); font-family: var(--font-body); font-weight: 500; transition: gap 0.3s ease;"
-									onmouseover="this.style.gap='1rem'"
-									onmouseout="this.style.gap='0.5rem'">
-									<?php esc_html_e( 'Read More', 'melt-custom' ); ?>
-									<i data-lucide="arrow-right" style="width: 1rem; height: 1rem;"></i>
+						<?php if ( $has_thumb ) : ?>
+							<div class="post-thumbnail" style="position: relative; padding-top: 66.67%; overflow: hidden;">
+								<a href="<?php the_permalink(); ?>" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+									<?php the_post_thumbnail( 'medium_large', array( 'style' => 'width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;' ) ); ?>
 								</a>
 							</div>
+						<?php endif; ?>
+						
+						<div class="post-content" style="padding: 1.5rem; flex: 1; display: flex; flex-direction: column;">
+							<div class="post-meta" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted-foreground); margin-bottom: 0.75rem;">
+								<?php echo get_post_type() === 'product' ? 'Product' : get_the_date(); ?>
+							</div>
+
+							<h2 class="post-title" style="font-family: var(--font-serif); font-size: 1.25rem; margin-bottom: 0.75rem; line-height: 1.4;">
+								<a href="<?php the_permalink(); ?>" style="color: var(--foreground); text-decoration: none;">
+									<?php the_title(); ?>
+								</a>
+							</h2>
+							
+							<div class="post-excerpt" style="font-family: var(--font-body); font-size: 0.9rem; color: var(--muted-foreground); line-height: 1.6; margin-bottom: 1.5rem; flex: 1;">
+								<?php echo wp_trim_words( get_the_excerpt(), 15 ); ?>
+							</div>
+							
+							<a href="<?php the_permalink(); ?>" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 0.5rem; color: var(--primary); font-family: var(--font-body); font-weight: 500; font-size: 0.9rem; transition: gap 0.2s ease;"
+								onmouseover="this.style.gap='0.75rem'"
+								onmouseout="this.style.gap='0.5rem'">
+								<?php echo get_post_type() === 'product' ? 'View Product' : 'Read More'; ?>
+								<i data-lucide="arrow-right" style="width: 1rem; height: 1rem;"></i>
+							</a>
 						</div>
 					</article>
 				<?php endwhile; ?>

@@ -215,6 +215,7 @@ function melt_scripts()
 			'ajaxurl' => admin_url('admin-ajax.php'),
 			'nonce'   => wp_create_nonce('melt_nonce'),
 			'slides'  => melt_get_hero_slides(),
+			'homeUrl' => home_url(), // Add dynamic home URL
 		)
 	);
 }

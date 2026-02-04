@@ -308,5 +308,33 @@
 			</div>
 		</div>
 	</div>
+	<!-- Search Modal -->
+	<div class="search-modal" id="search-modal">
+		<button class="search-modal-close" onclick="closeSearch()" aria-label="Close search">
+			<i data-lucide="x"></i>
+		</button>
+		<div class="search-modal-content">
+			<form role="search" method="get" class="search-form" action="<?php echo esc_url( home_url( '/' ) ); ?>">
+				<label style="width: 100%;">
+					<span class="screen-reader-text"><?php echo _x( 'Search for:', 'label', 'melt-custom' ); ?></span>
+					<input type="search" class="search-field" placeholder="<?php echo esc_attr_x( 'Search for cakes, pastries...', 'placeholder', 'melt-custom' ); ?>" value="<?php echo get_search_query(); ?>" name="s" autocomplete="off" />
+				</label>
+				<button type="submit" class="search-submit" aria-label="Submit Search">
+					<i data-lucide="arrow-right"></i>
+				</button>
+			</form>
+			<p class="search-modal-subtitle">Type and press Enter to search</p>
+			
+			<div class="search-suggestions">
+				<span class="suggestions-label">Popular:</span>
+				<div class="suggestions-list">
+					<a href="<?php echo esc_url( home_url( '/?s=chocolate' ) ); ?>">Chocolate</a>
+					<a href="<?php echo esc_url( home_url( '/?s=cake' ) ); ?>">Birthday Cakes</a>
+					<a href="<?php echo esc_url( home_url( '/?s=pastry' ) ); ?>">Pastries</a>
+					<a href="<?php echo esc_url( home_url( '/?s=gift' ) ); ?>">Gifts</a>
+				</div>
+			</div>
+		</div>
+	</div>
 </header>
 
