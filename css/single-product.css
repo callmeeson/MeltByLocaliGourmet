@@ -1027,16 +1027,21 @@
         position: relative;
         z-index: 2;
         display: flex;
+        gap: 0.5rem;
         margin-top: 0;
         /* Remove margin as main-gallery has bottom margin */
+        margin-bottom: 1.5rem;
+        /* Add bottom margin to prevent overlap with title */
         padding-top: 0;
+        padding-bottom: 0.5rem;
+        /* Ensure shadows are visible */
         clear: both;
         /* Ensure it's below everything else */
     }
 
     .melt-thumbnail {
-        width: 70px;
-        height: 70px;
+        width: 60px;
+        height: 60px;
         flex-shrink: 0;
         position: relative;
         z-index: 2;
@@ -1101,8 +1106,8 @@
     }
 
     .melt-thumbnail {
-        width: 60px;
-        height: 60px;
+        width: 50px;
+        height: 50px;
     }
 
     .melt-product-title {
