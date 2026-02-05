@@ -75,9 +75,11 @@ if (defined('IS_WPCOM') && constant('IS_WPCOM')) {
 }
 
 /**
- * Fix for SiteGround Optimizer (SG Optimizer) ChunkLoadError
- * Exclude WooCommerce scripts from combination to prevent 400 Bad Request on dynamic chunks
+ * Fix for Script Concatenation ChunkLoadError (Works with SG Optimizer, WP Rocket, Autoptimize, etc.)
+ * Exclude WooCommerce and dynamic chunks from combination to prevent 400 Bad Request errors
  */
+
+// SiteGround Optimizer
 add_filter('sgo_javascript_combine_excluded_handles', function ($exclude_list) {
 	$exclude_list[] = 'woocommerce';
 	$exclude_list[] = 'wc-add-to-cart';
@@ -85,8 +87,32 @@ add_filter('sgo_javascript_combine_excluded_handles', function ($exclude_list) {
 	$exclude_list[] = 'wc-checkout';
 	$exclude_list[] = 'wc-add-payment-method';
 	$exclude_list[] = 'woocommerce-blocks';
+	$exclude_list[] = 'wc-blocks-checkout';
+	$exclude_list[] = 'wc-blocks-vendors';
+	$exclude_list[] = 'wc-blocks-registry';
 	return $exclude_list;
 });
+
+// WP Rocket - Exclude WooCommerce from JS concatenation
+add_filter('rocket_exclude_js', function ($excluded_js) {
+	$excluded_js[] = '/wp-content/plugins/woocommerce/(.*)';
+	$excluded_js[] = '/wc-blocks/(.*)';
+	$excluded_js[] = '/_static/(.*)'; // Exclude concatenated chunks
+	return $excluded_js;
+});
+
+// Autoptimize - Exclude WooCommerce scripts
+add_filter('autoptimize_filter_js_exclude', function ($exclude) {
+	return $exclude . ', woocommerce, wc-add-to-cart, wc-cart-fragments, wc-checkout, woocommerce-blocks';
+});
+
+// W3 Total Cache - Exclude WooCommerce
+add_filter('w3tc_minify_js_do_tag_minification', function ($do_min, $script_tag, $file) {
+	if (strpos($file, 'woocommerce') !== false || strpos($file, 'wc-') !== false) {
+		return false;
+	}
+	return $do_min;
+}, 10, 3);
 
 /**
  * Sets up theme defaults and registers support for various WordPress features.

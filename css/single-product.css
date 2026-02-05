@@ -225,9 +225,11 @@
     display: flex;
     gap: 0.75rem;
     overflow-x: auto;
-    padding: 0.5rem 0;
+    overflow-y: hidden;
+    padding: 0.5rem 0.25rem;
     scrollbar-width: thin;
     scrollbar-color: var(--melt-product-border) transparent;
+    -webkit-overflow-scrolling: touch;
 }
 
 .melt-gallery-thumbnails::-webkit-scrollbar {
@@ -497,6 +499,7 @@
     font-weight: 600;
     color: var(--melt-product-text);
     background: white;
+    appearance: textfield;
     -moz-appearance: textfield;
 }
 
@@ -918,23 +921,64 @@
         padding: 1rem 0 2rem;
     }
 
-    .melt-gallery-main {
-        padding: 0.75rem; /* Reduced padding for more image space */
+    /* Gallery container - prevent overflow */
+    .melt-product-gallery {
+        width: 100%;
+        max-width: 100vw;
+        overflow: hidden;
     }
 
-    /* Fix image container width */
+    .melt-gallery-main {
+        padding: 0.75rem;
+        /* Reduced padding for more image space */
+        margin: 0;
+        width: 100%;
+    }
+
+    /* Fix image container width and prevent overflow */
     .melt-main-image-wrapper {
         width: 100%;
         max-width: 100%;
+        aspect-ratio: 1 / 1;
+        overflow: hidden;
+        position: relative;
+    }
+
+    /* Ensure images fit perfectly */
+    .melt-main-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    /* Fix navigation buttons - ensure they stay inside container */
+    .melt-gallery-nav {
+        position: absolute;
+        top: 50%;
+        left: 0.5rem;
+        right: 0.5rem;
+        width: auto;
+        transform: translateY(-50%);
+        display: flex;
+        justify-content: space-between;
+        padding: 0;
+        margin: 0;
+        pointer-events: none;
     }
 
     /* Adjust nav buttons for mobile */
     .melt-gallery-prev,
     .melt-gallery-next {
-        width: 32px;
-        height: 32px;
+        width: 36px;
+        height: 36px;
         font-size: 1rem;
-        background: rgba(255, 255, 255, 0.9);
+        background: rgba(255, 255, 255, 0.95);
+        flex-shrink: 0;
+        pointer-events: all;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
 
     /* Hide zoom hint on touch devices to prevent overlap */
@@ -942,25 +986,87 @@
         display: none;
     }
 
-    .melt-product-form-card {
-        padding: 1.5rem;
+    /* Thumbnails - ensure they stay within viewport */
+    .melt-gallery-thumbnails {
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+        width: 100%;
+        max-width: 100%;
     }
 
+    .melt-thumbnail {
+        width: 70px;
+        height: 70px;
+        flex-shrink: 0;
+    }
+
+    /* Product form adjustments */
+    .melt-product-form-card {
+        padding: 1.5rem;
+        margin: 0;
+        width: 100%;
+    }
+
+    /* Product info adjustments */
+    .melt-product-info {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .melt-product-title {
+        font-size: 1.75rem;
+        line-height: 1.3;
+    }
+
+    /* Tab buttons responsive */
     .melt-tab-btn {
         padding: 0.75rem 1rem;
         font-size: 0.875rem;
     }
 
+    /* Related products */
     .melt-related-title {
         font-size: 1.875rem;
     }
 
     .melt-related-image {
         max-height: 250px;
+        aspect-ratio: 1 / 1;
+        overflow: hidden;
     }
 
     .melt-related-image img {
         max-height: 250px;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+
+    .melt-gallery-prev,
+    .melt-gallery-next {
+        width: 32px;
+        height: 32px;
+        font-size: 0.875rem;
+    }
+
+    .melt-gallery-nav {
+        left: 0.25rem;
+        right: 0.25rem;
+    }
+
+    .melt-thumbnail {
+        width: 60px;
+        height: 60px;
+    }
+
+    .melt-product-title {
+        font-size: 1.5rem;
     }
 }
 
