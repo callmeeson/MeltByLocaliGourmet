@@ -15,7 +15,7 @@ if (!defined('ABSPATH')) {
 function melt_request_password_reset() {
     check_ajax_referer('melt_nonce', 'nonce');
     
-    $email = sanitize_email($_POST['email']);
+    $email = isset($_POST['email']) ? sanitize_email($_POST['email']) : '';
     
     if (empty($email)) {
         wp_send_json_error(['message' => 'Email is required.']);

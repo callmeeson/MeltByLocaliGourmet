@@ -146,11 +146,6 @@
 <?php
 // Include auth modal
 get_template_part('template-parts/auth-modal');
-
-// Include customize modal (for shop pages)
-if (is_page_template('page-shop.php') || is_shop() || is_product_taxonomy()) {
-	get_template_part('template-parts/customize-modal');
-}
 ?>
 
 <?php wp_footer(); ?>

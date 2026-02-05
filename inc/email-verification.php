@@ -17,10 +17,10 @@ function melt_handle_registration()
 {
     check_ajax_referer('melt_nonce', 'nonce');
 
-    $name = sanitize_text_field($_POST['name']);
-    $email = sanitize_email($_POST['email']);
-    $phone = sanitize_text_field($_POST['phone']);
-    $password = $_POST['password']; // Don't sanitize passwords, just validate
+    $name = isset($_POST['name']) ? sanitize_text_field($_POST['name']) : '';
+    $email = isset($_POST['email']) ? sanitize_email($_POST['email']) : '';
+    $phone = isset($_POST['phone']) ? sanitize_text_field($_POST['phone']) : '';
+    $password = isset($_POST['password']) ? $_POST['password'] : ''; // Don't sanitize passwords, just validate
 
     // Validation
     if (empty($name) || empty($email) || empty($phone) || empty($password)) {
@@ -472,7 +472,7 @@ function melt_resend_verification_email()
 {
     check_ajax_referer('melt_nonce', 'nonce');
 
-    $email = sanitize_email($_POST['email']);
+    $email = isset($_POST['email']) ? sanitize_email($_POST['email']) : '';
 
     $user = get_user_by('email', $email);
 

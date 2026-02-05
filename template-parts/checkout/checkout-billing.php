@@ -190,14 +190,6 @@ $customer = WC()->customer;
         </div>
     </div>
 
-    <div class="form-row full-width" style="margin-top: 1.5rem;">
-        <div class="form-group">
-            <label for="delivery_date">Preferred Delivery Date <span class="required">*</span></label>
-            <input type="date" id="delivery_date" name="delivery_date" required>
-            <span class="field-error">Delivery date is required</span>
-        </div>
-    </div>
-
     <!-- Order Notes -->
     <div class="form-row full-width" style="margin-top: 1.5rem;">
         <div class="form-group">

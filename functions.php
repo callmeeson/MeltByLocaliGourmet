@@ -163,16 +163,6 @@ function melt_scripts()
 	wp_enqueue_script('lucide-icons', 'https://unpkg.com/lucide@latest', array(), null, true);
 	wp_script_add_data('lucide-icons', 'strategy', 'defer');
 
-	// Customize Modal Script - Only on shop pages
-	if (is_page_template('page-shop.php') || is_shop() || is_product_taxonomy()) {
-		wp_enqueue_script('melt-customize-modal', get_template_directory_uri() . '/js/customize-modal.js', array('melt-main'), MELT_VERSION, true);
-
-		// Needed for variable products in quick view modal (variation selects + AJAX add to cart)
-		if (class_exists('WooCommerce')) {
-			wp_enqueue_script('wc-add-to-cart-variation');
-		}
-	}
-
 	// WooCommerce Add to Cart AJAX Script
 	if (class_exists('WooCommerce')) {
 		wp_enqueue_script('wc-add-to-cart');

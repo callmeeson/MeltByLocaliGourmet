@@ -11,18 +11,18 @@ $submission_status = '';
 if ( $_SERVER['REQUEST_METHOD'] === 'POST' && isset( $_POST['custom_cake_nonce'] ) && wp_verify_nonce( $_POST['custom_cake_nonce'], 'submit_custom_cake' ) ) {
     
     // Collect Data
-    $fullname = sanitize_text_field( $_POST['fullname'] );
-    $contact = sanitize_text_field( $_POST['contact-number'] );
-    $email = sanitize_email( $_POST['email'] );
+    $fullname = isset($_POST['fullname']) ? sanitize_text_field( $_POST['fullname'] ) : '';
+    $contact = isset($_POST['contact-number']) ? sanitize_text_field( $_POST['contact-number'] ) : '';
+    $email = isset($_POST['email']) ? sanitize_email( $_POST['email'] ) : '';
     
-    $order_type = sanitize_text_field( $_POST['order-type'] );
-    $delivery_address = sanitize_textarea_field( $_POST['delivery-address'] );
-    $pref_date = sanitize_text_field( $_POST['preferred-date'] );
-    $pref_time = sanitize_text_field( $_POST['preferred-time'] );
+    $order_type = isset($_POST['order-type']) ? sanitize_text_field( $_POST['order-type'] ) : '';
+    $delivery_address = isset($_POST['delivery-address']) ? sanitize_textarea_field( $_POST['delivery-address'] ) : '';
+    $pref_date = isset($_POST['preferred-date']) ? sanitize_text_field( $_POST['preferred-date'] ) : '';
+    $pref_time = isset($_POST['preferred-time']) ? sanitize_text_field( $_POST['preferred-time'] ) : '';
     
-    $flavor = sanitize_text_field( $_POST['cake-flavor'] );
-    $servings = sanitize_text_field( $_POST['servings'] );
-    $instructions = sanitize_textarea_field( $_POST['instructions'] );
+    $flavor = isset($_POST['cake-flavor']) ? sanitize_text_field( $_POST['cake-flavor'] ) : '';
+    $servings = isset($_POST['servings']) ? sanitize_text_field( $_POST['servings'] ) : '';
+    $instructions = isset($_POST['instructions']) ? sanitize_textarea_field( $_POST['instructions'] ) : '';
     
     // Insert Post into Database
     $post_args = array(

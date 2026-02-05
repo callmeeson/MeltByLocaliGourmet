@@ -14,152 +14,19 @@ if (!defined('ABSPATH')) {
  * 
  * Security: All inputs are sanitized and validated
  */
-function melt_add_customized_to_cart()
+// melt_add_customized_to_cart removed
+
+/**
+ * Add delivery date to cart item data for standard products
+ */
+function melt_add_delivery_date_to_cart_item($cart_item_data, $product_id, $variation_id)
 {
-    // Check nonce with expiration handling
-    $nonce_check = check_ajax_referer('melt_nonce', 'nonce', false);
-    if (!$nonce_check) {
-        wp_send_json_error([
-            'message' => 'Your session has expired. Please refresh the page and try again.',
-            'nonce_expired' => true
-        ]);
+    if (isset($_POST['delivery_date']) && !empty($_POST['delivery_date'])) {
+        $cart_item_data['melt_delivery_date'] = sanitize_text_field($_POST['delivery_date']);
     }
-
-    if (!isset($_POST['product_id'])) {
-        melt_log_error('WooCommerce', 'Product ID missing in customization request');
-        wp_send_json_error(['message' => 'Product ID is required']);
-    }
-
-    $product_id = intval($_POST['product_id']);
-
-    // Validate product exists
-    $product = wc_get_product($product_id);
-    if (!$product) {
-        wp_send_json_error(['message' => 'Invalid product']);
-    }
-
-    // Sanitize customization data
-    $raw_customization = isset($_POST['customization']) ? $_POST['customization'] : [];
-    $customization = [];
-
-    // Sanitize text fields
-    if (isset($raw_customization['size'])) {
-        $customization['size'] = sanitize_text_field($raw_customization['size']);
-    }
-    if (isset($raw_customization['flavor'])) {
-        $customization['flavor'] = sanitize_text_field($raw_customization['flavor']);
-    }
-    if (isset($raw_customization['frosting'])) {
-        $customization['frosting'] = sanitize_text_field($raw_customization['frosting']);
-    }
-    if (isset($raw_customization['filling'])) {
-        $customization['filling'] = sanitize_text_field($raw_customization['filling']);
-    }
-    if (isset($raw_customization['decoration'])) {
-        $customization['decoration'] = sanitize_text_field($raw_customization['decoration']);
-    }
-    if (isset($raw_customization['customMessage'])) {
-        $customization['customMessage'] = sanitize_textarea_field($raw_customization['customMessage']);
-    }
-    if (isset($raw_customization['specialInstructions'])) {
-        $customization['specialInstructions'] = sanitize_textarea_field($raw_customization['specialInstructions']);
-    }
-
-    // Sanitize numeric fields
-    if (isset($raw_customization['layers'])) {
-        $customization['layers'] = absint($raw_customization['layers']);
-        // Validate range (2-10 layers)
-        if ($customization['layers'] < 2 || $customization['layers'] > 10) {
-            wp_send_json_error(['message' => 'Invalid number of layers']);
-        }
-    }
-
-    // Sanitize date field
-    if (isset($raw_customization['deliveryDate'])) {
-        $customization['deliveryDate'] = sanitize_text_field($raw_customization['deliveryDate']);
-        // Validate date format (YYYY-MM-DD)
-        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $customization['deliveryDate'])) {
-            wp_send_json_error(['message' => 'Invalid delivery date format']);
-        }
-    }
-
-    // Sanitize array fields (toppings)
-    if (isset($raw_customization['toppings']) && is_array($raw_customization['toppings'])) {
-        $customization['toppings'] = array_map('sanitize_text_field', $raw_customization['toppings']);
-    }
-
-    // Calculate custom price
-    $base_price = (float) get_post_meta($product_id, '_price', true);
-    $extra_cost = 0;
-
-    // Prices matching JS (whitelist for security)
-    $prices = [
-        'sizes' => [
-            "Small (6 inch)" => 0,
-            "Medium (8 inch)" => 50,
-            "Large (10 inch)" => 100,
-            "Extra Large (12 inch)" => 180
-        ],
-        'layers' => 30, // for each layer > 2
-        'toppings' => [
-            "Fresh Berries" => 25,
-            "Edible Gold Leaf" => 45,
-            "Chocolate Shavings" => 20,
-            "Fresh Flowers" => 35,
-            "Macarons" => 40,
-            "Nuts & Almonds" => 15,
-            "Candy Pearls" => 30
-        ],
-        'decorations' => [
-            "Simple" => 0,
-            "Elegant Piping" => 50,
-            "Custom Design" => 100,
-            "Premium 3D Design" => 200
-        ]
-    ];
-
-    // Calculate Extra Cost (only from whitelisted values)
-    if (isset($customization['size']) && isset($prices['sizes'][$customization['size']])) {
-        $extra_cost += $prices['sizes'][$customization['size']];
-    }
-
-    if (isset($customization['layers']) && intval($customization['layers']) > 2) {
-        $extra_cost += (intval($customization['layers']) - 2) * $prices['layers'];
-    }
-
-    if (isset($customization['toppings']) && is_array($customization['toppings'])) {
-        foreach ($customization['toppings'] as $topping) {
-            if (isset($prices['toppings'][$topping])) {
-                $extra_cost += $prices['toppings'][$topping];
-            }
-        }
-    }
-
-    if (isset($customization['decoration']) && isset($prices['decorations'][$customization['decoration']])) {
-        $extra_cost += $prices['decorations'][$customization['decoration']];
-    }
-
-    // Add to cart with custom data
-    $cart_item_data = [
-        'melt_customization' => $customization,
-        'melt_extra_cost' => $extra_cost
-    ];
-
-    $cart_item_key = WC()->cart->add_to_cart($product_id, 1, 0, [], $cart_item_data);
-
-    if ($cart_item_key) {
-        wp_send_json_success([
-            'message' => 'Product added to cart',
-            'cart_count' => WC()->cart->get_cart_contents_count(),
-            'cart_total' => WC()->cart->get_cart_total()
-        ]);
-    } else {
-        error_log('Melt Theme: Failed to add product to cart. Product ID: ' . $product_id);
-        wp_send_json_error(['message' => 'Failed to add to cart']);
-    }
+    return $cart_item_data;
 }
-add_action('wp_ajax_melt_add_customized_to_cart', 'melt_add_customized_to_cart');
-add_action('wp_ajax_nopriv_melt_add_customized_to_cart', 'melt_add_customized_to_cart');
+add_filter('woocommerce_add_cart_item_data', 'melt_add_delivery_date_to_cart_item', 10, 3);
 
 /**
  * Restore custom data from session
@@ -171,6 +38,9 @@ function melt_get_cart_item_from_session($cart_item, $values)
     }
     if (isset($values['melt_extra_cost'])) {
         $cart_item['melt_extra_cost'] = $values['melt_extra_cost'];
+    }
+    if (isset($values['melt_delivery_date'])) {
+        $cart_item['melt_delivery_date'] = $values['melt_delivery_date'];
     }
     return $cart_item;
 }
@@ -247,6 +117,11 @@ function melt_display_custom_data_in_cart($item_data, $cart_item)
             $item_data[] = ['key' => 'Instructions', 'value' => esc_html($customs['specialInstructions'])];
         }
     }
+
+    if (isset($cart_item['melt_delivery_date'])) {
+        $item_data[] = ['key' => 'Delivery Date', 'value' => esc_html($cart_item['melt_delivery_date'])];
+    }
+
     return $item_data;
 }
 add_filter('woocommerce_get_item_data', 'melt_display_custom_data_in_cart', 10, 2);
@@ -270,7 +145,12 @@ function melt_add_custom_data_to_order($item, $cart_item_key, $values, $order)
             }
         }
     }
+
+    if (isset($values['melt_delivery_date'])) {
+        $item->add_meta_data('Delivery Date', $values['melt_delivery_date']);
+    }
 }
+add_action('woocommerce_checkout_create_order_line_item', 'melt_add_custom_data_to_order', 10, 4);
 
 /**
  * AJAX Handler for Cart Actions (Update, Remove, Coupon)
@@ -382,7 +262,7 @@ add_action('wp_ajax_nopriv_melt_cart_action', 'melt_ajax_cart_action');
  * 
  * Creates a WooCommerce order in pending status and a Stripe PaymentIntent
  */
-function melt_build_checkout_order($billing_data, $shipping_data, $email, $name, $phone, $order_notes, $delivery_date = '')
+function melt_build_checkout_order($billing_data, $shipping_data, $email, $name, $phone, $order_notes)
 {
     // Create WooCommerce order
     $order = wc_create_order();
@@ -390,6 +270,8 @@ function melt_build_checkout_order($billing_data, $shipping_data, $email, $name,
     if ($user_id) {
         $order->set_customer_id($user_id);
     }
+
+    $order_delivery_date = '';
 
     // Add cart items to order
     foreach (WC()->cart->get_cart() as $cart_item_key => $cart_item) {
@@ -408,7 +290,21 @@ function melt_build_checkout_order($billing_data, $shipping_data, $email, $name,
                     }
                     $label = ucfirst(preg_replace('/(?<!^)[A-Z]/', ' $0', $key));
                     wc_add_order_item_meta($item_id, $label, $value);
+
+                    // Capture delivery date from customization if available
+                    if ($key === 'deliveryDate' && empty($order_delivery_date)) {
+                        $order_delivery_date = $value;
+                    }
                 }
+            }
+        }
+
+        if (isset($cart_item['melt_delivery_date'])) {
+            wc_add_order_item_meta($item_id, 'Delivery Date', $cart_item['melt_delivery_date']);
+            
+            // Capture delivery date from item meta if available and not yet set
+            if (empty($order_delivery_date)) {
+                $order_delivery_date = $cart_item['melt_delivery_date'];
             }
         }
     }
@@ -476,8 +372,8 @@ function melt_build_checkout_order($billing_data, $shipping_data, $email, $name,
     if (! empty($order_notes)) {
         $order->set_customer_note($order_notes);
     }
-    if (! empty($delivery_date)) {
-        $order->update_meta_data('_delivery_date', sanitize_text_field($delivery_date));
+    if (! empty($order_delivery_date)) {
+        $order->update_meta_data('_delivery_date', sanitize_text_field($order_delivery_date));
     }
 
     // Apply coupons
@@ -523,7 +419,7 @@ function melt_create_payment_intent()
         $total = WC()->cart->get_total('edit');
         $currency = strtolower(get_woocommerce_currency());
 
-        $order = melt_build_checkout_order($billing_data, $shipping_data, $email, $name, $phone, $order_notes, $delivery_date);
+        $order = melt_build_checkout_order($billing_data, $shipping_data, $email, $name, $phone, $order_notes);
 
         // Set payment method
         $order->set_payment_method('stripe');
@@ -632,23 +528,8 @@ function melt_create_cod_order()
         $name = isset($_POST['name']) ? sanitize_text_field($_POST['name']) : '';
         $phone = isset($_POST['phone']) ? sanitize_text_field($_POST['phone']) : '';
         $order_notes = isset($_POST['order_notes']) ? sanitize_textarea_field($_POST['order_notes']) : '';
-        $delivery_date = isset($_POST['delivery_date']) ? sanitize_text_field($_POST['delivery_date']) : '';
 
-        if (empty($delivery_date)) {
-            wp_send_json(array('success' => false, 'message' => 'Please select a delivery date.'));
-        }
-        $delivery_date = isset($_POST['delivery_date']) ? sanitize_text_field($_POST['delivery_date']) : '';
-
-        if (empty($delivery_date)) {
-            wp_send_json(array('success' => false, 'message' => 'Please select a delivery date.'));
-        }
-        $delivery_date = isset($_POST['delivery_date']) ? sanitize_text_field($_POST['delivery_date']) : '';
-
-        if (empty($delivery_date)) {
-            wp_send_json(array('success' => false, 'message' => 'Please select a delivery date.'));
-        }
-
-        $order = melt_build_checkout_order($billing_data, $shipping_data, $email, $name, $phone, $order_notes, $delivery_date);
+        $order = melt_build_checkout_order($billing_data, $shipping_data, $email, $name, $phone, $order_notes);
 
         $order->set_payment_method('cod');
         $order->set_payment_method_title($available_gateways['cod']->get_title());

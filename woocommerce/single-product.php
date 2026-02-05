@@ -301,7 +301,7 @@ while (have_posts()) : the_post();
                         <?php endif; ?>
 
                         <?php if ($product->get_short_description()) : ?>
-                            <div class="melt-tab-content" id="meltTabShort-description">
+                            <div class="melt-tab-content" id="meltTabShortDescription">
                                 <div class="melt-tab-inner">
                                     <?php echo wpautop($product->get_short_description()); ?>
                                 </div>
