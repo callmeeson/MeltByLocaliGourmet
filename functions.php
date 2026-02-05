@@ -75,6 +75,20 @@ if (defined('IS_WPCOM') && constant('IS_WPCOM')) {
 }
 
 /**
+ * Fix for SiteGround Optimizer (SG Optimizer) ChunkLoadError
+ * Exclude WooCommerce scripts from combination to prevent 400 Bad Request on dynamic chunks
+ */
+add_filter('sgo_javascript_combine_excluded_handles', function ($exclude_list) {
+	$exclude_list[] = 'woocommerce';
+	$exclude_list[] = 'wc-add-to-cart';
+	$exclude_list[] = 'wc-cart-fragments';
+	$exclude_list[] = 'wc-checkout';
+	$exclude_list[] = 'wc-add-payment-method';
+	$exclude_list[] = 'woocommerce-blocks';
+	return $exclude_list;
+});
+
+/**
  * Sets up theme defaults and registers support for various WordPress features.
  */
 function melt_setup()
