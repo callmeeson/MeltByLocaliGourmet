@@ -90,7 +90,8 @@ get_header();
 		grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
 		gap: 2rem 1.5rem;
 		padding: 0 1.5rem 5rem;
-		max-width: 1400px; /* Increased width to help fit 4 comfortably */
+		max-width: 1400px;
+		/* Increased width to help fit 4 comfortably */
 		margin: 0 auto;
 	}
 
@@ -116,12 +117,15 @@ get_header();
 	.product-image-wrapper {
 		position: relative;
 		overflow: hidden;
-		aspect-ratio: 1 / 1;
-		/* Smaller, more compact image area */
+		padding-top: 100%;
+		/* Enforce 1:1 Aspect Ratio vertically */
+		height: 0;
+		/* Use height 0 with padding-top */
 		background: linear-gradient(135deg, rgba(15, 23, 42, 0.03), rgba(184, 134, 11, 0.05));
 		border-bottom: 1px solid rgba(15, 23, 42, 0.04);
 		border: none;
-		padding: 0;
+		padding-left: 0;
+		padding-right: 0;
 		width: 100%;
 		text-align: left;
 		cursor: default;
@@ -133,6 +137,9 @@ get_header();
 	}
 
 	.product-image {
+		position: absolute;
+		top: 0;
+		left: 0;
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
@@ -196,9 +203,12 @@ get_header();
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		padding-top: 0.9rem;
+		padding-top: 1rem;
 		border-top: 1px solid rgba(15, 23, 42, 0.08);
 		margin-top: auto;
+		gap: 1rem;
+		flex-wrap: wrap;
+		/* Allow wrapping if space is really tight */
 	}
 
 	.product-price {
@@ -247,26 +257,30 @@ get_header();
 	}
 
 	.btn-add {
-		padding: 0.5rem 0.9rem;
+		padding: 0.6rem 1.25rem;
 		width: auto;
-		height: auto;
 		justify-content: center;
 		background-color: var(--primary);
 		color: white;
 		border: none;
 		font-family: var(--font-body);
-		font-size: 0.8rem;
+		font-size: 0.85rem;
 		font-weight: 600;
 		cursor: pointer;
 		transition: all 0.2s ease;
 		display: inline-flex;
 		align-items: center;
-		gap: 0.4rem;
-		border-radius: 999px;
+		gap: 0.5rem;
+		border-radius: 9999px;
+		/* Fully rounded pill */
 		position: relative;
 		z-index: 10;
 		text-decoration: none;
-		box-shadow: 0 6px 14px rgba(184, 134, 11, 0.25);
+		box-shadow: 0 4px 12px rgba(184, 134, 11, 0.2);
+		white-space: nowrap;
+		/* Prevent text wrapping */
+		flex-shrink: 0;
+		/* Don't shrink */
 	}
 
 	.btn-add:hover {
@@ -586,7 +600,7 @@ get_header();
 		<h1 class="shop-title">Our Collection</h1>
 		<p class="shop-subtitle">Handcrafted with passion and precision</p>
 		<div style="margin-top: 2rem;">
-			<a href="<?php echo esc_url( home_url( '/custom-cake' ) ); ?>" class="btn-add" style="padding: 0.8rem 1.5rem; border-radius: 8px; font-size: 1rem; background-color: #1a1a1a; color: #fff;">
+			<a href="<?php echo esc_url(home_url('/custom-cake')); ?>" class="btn-add" style="padding: 0.8rem 1.5rem; border-radius: 8px; font-size: 1rem; background-color: #1a1a1a; color: #fff;">
 				<i data-lucide="pen-tool" style="width: 18px; height: 18px;"></i>
 				Design Your Own Cake
 			</a>
@@ -748,7 +762,7 @@ get_header();
 				if ($card_price_html) {
 					$card_price_text = wp_strip_all_tags($card_price_html);
 				}
-				
+
 				$description = '';
 				if ($product->get_description()) {
 					$description = wp_strip_all_tags($product->get_description());
