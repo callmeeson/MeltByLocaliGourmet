@@ -16,7 +16,7 @@ if (! defined('CONCATENATE_SCRIPTS')) {
 }
 
 // Theme version
-define('MELT_VERSION', '1.0.4');
+define('MELT_VERSION', '1.0.5');
 
 // Include email verification system
 require_once get_template_directory() . '/inc/email-verification.php';
