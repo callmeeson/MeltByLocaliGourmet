@@ -65,11 +65,20 @@ if (defined('IS_WPCOM') && constant('IS_WPCOM')) {
 	add_filter('wpcom_asset_minification_enabled', '__return_false');
 
 	// Force original asset URLs
+	// Force original asset URLs (Safely)
 	add_filter('style_loader_src', function ($src) {
+		// Skip external domains to prevent breaking 3rd party scripts (like stats.wp.com)
+		if (strpos($src, 'wp.com') !== false || strpos($src, 'googleapis') !== false) {
+			return $src;
+		}
 		return remove_query_arg('minify', $src);
 	}, 10, 1);
 
 	add_filter('script_loader_src', function ($src) {
+		// Skip external domains to prevent breaking 3rd party scripts (like stats.wp.com)
+		if (strpos($src, 'wp.com') !== false || strpos($src, 'googleapis') !== false) {
+			return $src;
+		}
 		return remove_query_arg('minify', $src);
 	}, 10, 1);
 }
