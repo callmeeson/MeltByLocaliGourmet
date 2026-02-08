@@ -309,66 +309,6 @@ get_header();
 */
 ?>
 
-<!-- Seasonal Cakes Section -->
-<?php
-// You can create a custom query here to fetch WooCommerce products or custom posts for seasonal cakes
-if ( function_exists( 'wc_get_products' ) ) :
-	?>
-	<section class="section fade-in-section" style="background-color: white;">
-		<div class="section-container">
-			<div class="section-header">
-				<p style="color: var(--primary); margin-bottom: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.875rem; font-family: var(--font-body);">
-					Limited Edition
-				</p>
-				<h2 class="section-title">Seasonal Delights</h2>
-				<p class="section-description">Exclusive flavors available for a limited time</p>
-			</div>
 
-			<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
-				<?php
-				$seasonal_products = wc_get_products(
-					array(
-						'limit'    => 4,
-						'orderby'  => 'date',
-						'order'    => 'DESC',
-						'category' => array( 'seasonal' ), // Filter by seasonal category
-						'status'   => 'publish',
-					)
-				);
-
-				if ( $seasonal_products ) :
-					foreach ( $seasonal_products as $product ) :
-						?>
-						<div class="product-card fade-in-item" style="position: relative; cursor: pointer; background-color: white; border: 1px solid var(--border); transition: all 0.3s ease;"
-							onmouseover="this.style.boxShadow='0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'; this.style.transform='translateY(-4px)';"
-							onmouseout="this.style.boxShadow='none'; this.style.transform='translateY(0)';">
-							<div style="overflow: hidden;">
-								<?php echo wp_kses_post( $product->get_image( 'medium' ) ); ?>
-							</div>
-							<div style="padding: 1.5rem;">
-								<h3 style="font-size: 1.25rem; margin-bottom: 0.5rem; font-family: var(--font-serif);">
-									<?php echo esc_html( $product->get_name() ); ?>
-								</h3>
-								<p style="color: var(--muted-foreground); margin-bottom: 1rem; font-family: var(--font-body);">
-									<?php echo wp_kses_post( wp_trim_words( $product->get_short_description(), 15 ) ); ?>
-								</p>
-								<div style="display: flex; justify-content: space-between; align-items: center;">
-									<span style="color: var(--primary); font-size: 1.25rem; font-weight: 600; font-family: var(--font-body);">
-										<?php echo wp_kses_post( $product->get_price_html() ); ?>
-									</span>
-									<button onclick="location.href='<?php echo esc_url( $product->get_permalink() ); ?>'" style="padding: 0.5rem 1rem; background-color: var(--primary); color: white; font-family: var(--font-body); font-weight: 500; transition: all 0.3s ease;"
-										onmouseover="this.style.backgroundColor='var(--accent)';"
-										onmouseout="this.style.backgroundColor='var(--primary)';">
-										View Details
-									</button>
-								</div>
-							</div>
-						</div>
-					<?php endforeach; ?>
-				<?php endif; ?>
-			</div>
-		</div>
-	</section>
-<?php endif; ?>
 
 <?php get_footer(); ?>
