@@ -31,8 +31,8 @@ get_header();
 
 	/* Shop Page Styles */
 	.shop-page-wrapper {
-		padding-top: 180px !important;
-		/* Adjusted clearance for fixed navbar */
+		padding-top: 110px !important;
+		/* Adjusted clearance for fixed navbar based on standard height */
 		margin-top: 0 !important;
 		background-color: white;
 		min-height: 100vh;
@@ -42,15 +42,15 @@ get_header();
 	}
 
 	.shop-header {
-		padding: 4rem 1.5rem 2rem;
-		/* Extra padding for title */
+		padding: 2.5rem 1.5rem 1.5rem;
+		/* Reduced padding for tighter layout */
 		text-align: center;
 	}
 
 	.shop-title {
 		font-family: var(--font-serif);
 		font-size: clamp(2rem, 5vw, 3rem);
-		margin-bottom: 1rem;
+		margin-bottom: 0.75rem;
 		font-weight: 500;
 		letter-spacing: -0.025em;
 		color: var(--foreground);
@@ -68,9 +68,9 @@ get_header();
 		flex-wrap: wrap;
 		justify-content: center;
 		gap: 0.75rem;
-		padding: 0 1.5rem 2rem;
+		padding: 0 1.5rem 1.5rem;
 		border-bottom: 1px solid var(--border);
-		margin-bottom: 4rem;
+		margin-bottom: 2.5rem;
 		max-width: 1280px;
 		margin-left: auto;
 		margin-right: auto;
@@ -106,7 +106,7 @@ get_header();
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
 		gap: 2rem 1.5rem;
-		padding: 0 1.5rem 5rem;
+		padding: 0 1.5rem 3rem;
 		max-width: 1400px;
 		/* Increased width to help fit 4 comfortably */
 		margin: 0 auto;
