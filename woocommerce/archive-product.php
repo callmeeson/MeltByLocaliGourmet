@@ -12,6 +12,37 @@ get_header();
 ?>
 
 <style>
+	/* Force header icons and navigation to be dark on shop pages */
+	.woocommerce-shop .site-header .header-icon,
+	.woocommerce-shop .site-header .nav-menu a,
+	.woocommerce-shop .site-header .mobile-menu-toggle,
+	.woocommerce-shop .site-header .mobile-header-icons .header-icon,
+	.post-type-archive-product .site-header .header-icon,
+	.post-type-archive-product .site-header .nav-menu a,
+	.post-type-archive-product .site-header .mobile-menu-toggle,
+	.post-type-archive-product .site-header .mobile-header-icons .header-icon,
+	.tax-product_cat .site-header .header-icon,
+	.tax-product_cat .site-header .nav-menu a,
+	.tax-product_cat .site-header .mobile-menu-toggle,
+	.tax-product_cat .site-header .mobile-header-icons .header-icon {
+		color: rgba(26, 26, 26, 0.7) !important;
+	}
+
+	.woocommerce-shop .site-header .header-icon:hover,
+	.woocommerce-shop .site-header .nav-menu a:hover,
+	.post-type-archive-product .site-header .header-icon:hover,
+	.post-type-archive-product .site-header .nav-menu a:hover,
+	.tax-product_cat .site-header .header-icon:hover,
+	.tax-product_cat .site-header .nav-menu a:hover {
+		color: var(--primary) !important;
+	}
+
+	.woocommerce-shop .site-header .logo-image,
+	.post-type-archive-product .site-header .logo-image,
+	.tax-product_cat .site-header .logo-image {
+		filter: none !important;
+	}
+
 	/* Shop Page Styles - Copied from page-shop.php for consistency */
 	.shop-page-wrapper {
 		padding-top: 4.5rem;
@@ -190,20 +221,24 @@ get_header();
 
 	.product-footer {
 		display: flex;
+		flex-direction: row;
 		align-items: center;
 		justify-content: space-between;
-		padding-top: 0.9rem;
+		padding-top: 1rem;
 		border-top: 1px solid rgba(15, 23, 42, 0.08);
 		margin-top: auto;
+		gap: 1rem;
+		flex-wrap: wrap;
 	}
 
 	.product-price {
 		font-family: var(--font-body);
-		font-size: 1rem;
+		font-size: 1.05rem;
 		font-weight: 600;
 		color: var(--foreground);
-		transition: transform 0.3s ease;
+		transition: color 0.3s ease;
 		display: inline-block;
+		flex-shrink: 0;
 	}
 
 	.product-card:hover .product-price {
@@ -214,6 +249,25 @@ get_header();
 		display: flex;
 		gap: 0.5rem;
 		align-items: center;
+		justify-content: flex-end;
+		flex-shrink: 0;
+		margin-left: auto;
+	}
+
+	/* Responsive: Center on very small cards */
+	@media (max-width: 320px) {
+		.product-footer {
+			flex-direction: column;
+			align-items: center;
+			text-align: center;
+			gap: 0.75rem;
+		}
+
+		.product-buttons {
+			justify-content: center;
+			margin-left: 0;
+			width: 100%;
+		}
 	}
 
 	.btn-customize {
@@ -694,31 +748,44 @@ get_header();
 					$default_attrs = $product->get_default_attributes();
 					$default_variation_id = 0;
 					if (!empty($default_attrs)) {
-						$default_variation_id = $product->get_matching_variation($default_attrs);
+						// Use WooCommerce 3.0+ data store method instead of deprecated get_matching_variation
+						$data_store = WC_Data_Store::load('product');
+						$default_variation_id = $data_store->find_matching_product_variation($product, $default_attrs);
 					}
 
 					$start_price = null;
-					if ($default_variation_id) {
+					// Check if we got a valid variation ID (could be 0 or false if not found)
+					if ($default_variation_id && $default_variation_id > 0) {
 						$default_variation = wc_get_product($default_variation_id);
-						if ($default_variation) {
+						if ($default_variation && $default_variation->get_price()) {
 							$start_price = (float) $default_variation->get_price();
 						}
 					}
-					if ($start_price === null) {
+					// Fallback to minimum variation price if no default variation found
+					if ($start_price === null || $start_price <= 0) {
 						$start_price = (float) $product->get_variation_price('min', true);
 					}
+					// If we have a valid price, format it with "Starts at"
 					if ($start_price > 0) {
 						$card_price_html = 'Starts at ' . wc_price($start_price);
+					} elseif (!empty($price_display)) {
+						// Use WooCommerce's default price HTML if available
+						$card_price_html = $price_display;
 					}
 				} elseif (empty($price_display) && $product->get_price()) {
 					$card_price_html = wc_price((float) $product->get_price());
+				}
+
+				// Final fallback: if still empty, use WooCommerce default
+				if (empty($card_price_html) && !empty($price_display)) {
+					$card_price_html = $price_display;
 				}
 
 				$card_price_text = '';
 				if ($card_price_html) {
 					$card_price_text = wp_strip_all_tags($card_price_html);
 				}
-				
+
 				$description = '';
 				if ($product->get_description()) {
 					$description = wp_strip_all_tags($product->get_description());

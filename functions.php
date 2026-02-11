@@ -174,18 +174,65 @@ function melt_setup()
 add_action('after_setup_theme', 'melt_setup');
 
 /**
- * Enqueue scripts and styles.
+ * Enqueue scripts and styles - OPTIMIZED COMPONENT-BASED STRUCTURE
  */
 function melt_scripts()
 {
-	// Theme stylesheet - Force loading with high priority
+	// ========================================================================
+	// 1. FOUNDATION (Variables, Reset, Typography, Utilities)
+	// ========================================================================
 	wp_enqueue_style('melt-style', get_stylesheet_uri(), array(), MELT_VERSION, 'all');
 
-	// Responsive styles
-	wp_enqueue_style('melt-responsive', get_template_directory_uri() . '/css/responsive.css', array('melt-style'), MELT_VERSION, 'all');
+	// ========================================================================
+	// 2. LAYOUT COMPONENTS (Always loaded)
+	// ========================================================================
+	wp_enqueue_style('melt-header', get_template_directory_uri() . '/css/layout/header.css', array('melt-style'), MELT_VERSION, 'all');
+	wp_enqueue_style('melt-footer', get_template_directory_uri() . '/css/layout/footer.css', array('melt-style'), MELT_VERSION, 'all');
+	wp_enqueue_style('melt-navigation', get_template_directory_uri() . '/css/layout/navigation.css', array('melt-style'), MELT_VERSION, 'all');
 
-	// User dropdown styles
-	wp_enqueue_style('melt-user-dropdown', get_template_directory_uri() . '/css/user-dropdown.css', array('melt-style'), MELT_VERSION, 'all');
+	// ========================================================================
+	// 3. UI COMPONENTS (Always loaded)
+	// ========================================================================
+	wp_enqueue_style('melt-hero', get_template_directory_uri() . '/css/components/hero.css', array('melt-style'), MELT_VERSION, 'all');
+	wp_enqueue_style('melt-user-dropdown', get_template_directory_uri() . '/css/components/user-dropdown.css', array('melt-style'), MELT_VERSION, 'all');
+	wp_enqueue_style('melt-whatsapp-widget', get_template_directory_uri() . '/css/components/whatsapp-widget.css', array('melt-style'), MELT_VERSION, 'all');
+
+	// ========================================================================
+	// 4. PAGE-SPECIFIC STYLES (Conditional loading for performance)
+	// ========================================================================
+
+	// Front Page - Cake Gallery
+	if (is_front_page()) {
+		wp_enqueue_style('melt-cake-gallery', get_template_directory_uri() . '/css/pages/cake-gallery.css', array('melt-style'), MELT_VERSION, 'all');
+		wp_enqueue_script('melt-cake-gallery', get_template_directory_uri() . '/js/cake-gallery.js', array(), MELT_VERSION, true);
+	}
+
+	// Single Product Page
+	if (is_product()) {
+		wp_enqueue_style('melt-single-product', get_template_directory_uri() . '/css/pages/single-product.css', array('melt-style'), MELT_VERSION, 'all');
+		wp_enqueue_style('melt-single-product-ux-wins', get_template_directory_uri() . '/css/pages/single-product-ux-wins.css', array('melt-single-product'), MELT_VERSION, 'all');
+		wp_enqueue_style('melt-single-product-mobile', get_template_directory_uri() . '/css/pages/single-product-mobile.css', array('melt-single-product'), MELT_VERSION, 'all');
+		wp_enqueue_script('melt-single-product', get_template_directory_uri() . '/js/single-product.js', array('jquery'), MELT_VERSION, true);
+	}
+
+	// Shop Archive Pages
+	if (is_shop() || is_product_taxonomy() || is_post_type_archive('product')) {
+		wp_enqueue_style('melt-shop-page', get_template_directory_uri() . '/css/pages/shop.css', array('melt-style'), MELT_VERSION, 'all');
+	}
+
+	// Thank You / Order Received Page
+	if (is_wc_endpoint_url('order-received')) {
+		wp_enqueue_style('melt-thankyou', get_template_directory_uri() . '/css/pages/thankyou.css', array('melt-style'), MELT_VERSION, 'all');
+	}
+
+	// Custom Cake Page
+	if (is_page_template('page-custom-cake.php')) {
+		wp_enqueue_style('melt-custom-cake', get_template_directory_uri() . '/css/pages/custom-cake.css', array('melt-style'), MELT_VERSION, 'all');
+	}
+
+	// ========================================================================
+	// 5. JAVASCRIPT
+	// ========================================================================
 
 	// Custom JavaScript - Critical, loads normally
 	wp_enqueue_script('melt-main', get_template_directory_uri() . '/js/main.js', array(), MELT_VERSION, true);
@@ -193,6 +240,9 @@ function melt_scripts()
 	// Toast notifications - Can be deferred
 	wp_enqueue_script('melt-toast', get_template_directory_uri() . '/js/toast.js', array(), MELT_VERSION, true);
 	wp_script_add_data('melt-toast', 'strategy', 'defer');
+
+	// Mobile Menu
+	wp_enqueue_script('melt-mobile-menu', get_template_directory_uri() . '/js/mobile-menu.js', array(), MELT_VERSION, true);
 
 	// Auth modal scripts - Only load if user is NOT logged in
 	if (! is_user_logged_in()) {
@@ -208,9 +258,8 @@ function melt_scripts()
 		wp_script_add_data('melt-auth-spinner', 'strategy', 'defer');
 	}
 
-	// Lucide Icons (SVG icon library) - Can be deferred
+	// Lucide Icons (SVG icon library) - Load synchronously to ensure icons render
 	wp_enqueue_script('lucide-icons', 'https://unpkg.com/lucide@latest', array(), null, true);
-	wp_script_add_data('lucide-icons', 'strategy', 'defer');
 
 	// WooCommerce Add to Cart AJAX Script
 	if (class_exists('WooCommerce')) {
@@ -219,31 +268,6 @@ function melt_scripts()
 		// Add to Cart Toast Notification
 		wp_enqueue_script('melt-add-to-cart-toast', get_template_directory_uri() . '/js/add-to-cart-toast.js', array('jquery', 'wc-add-to-cart'), MELT_VERSION, true);
 		wp_script_add_data('melt-add-to-cart-toast', 'strategy', 'defer');
-	}
-
-	// Mobile Menu
-	wp_enqueue_style('melt-mobile-menu', get_template_directory_uri() . '/css/mobile-menu.css', array(), MELT_VERSION);
-	wp_enqueue_script('melt-mobile-menu', get_template_directory_uri() . '/js/mobile-menu.js', array(), MELT_VERSION, true);
-
-	// Cake Gallery Styles and Scripts - Only load on front page
-	if (is_front_page()) {
-		wp_enqueue_style('melt-cake-gallery', get_template_directory_uri() . '/css/cake-gallery.css', array('melt-style'), MELT_VERSION, 'all');
-		wp_enqueue_script('melt-cake-gallery', get_template_directory_uri() . '/js/cake-gallery.js', array(), MELT_VERSION, true);
-	}
-
-	// Thank You Page Styles - Only load on order-received page
-	if (is_wc_endpoint_url('order-received')) {
-		wp_enqueue_style('melt-thankyou', get_template_directory_uri() . '/css/thankyou.css', array('melt-style'), MELT_VERSION, 'all');
-	}
-
-	// Single Product Page Styles - Only load on single product pages
-	if (is_product()) {
-		wp_enqueue_style('melt-single-product', get_template_directory_uri() . '/css/single-product.css', array('melt-style'), MELT_VERSION, 'all');
-	}
-
-	// Shop Page Styles - Only load on shop archive pages to fix text visibility
-	if (is_shop() || is_product_taxonomy() || is_post_type_archive('product')) {
-		wp_enqueue_style('melt-shop-page', get_template_directory_uri() . '/css/shop-page.css', array('melt-style'), MELT_VERSION, 'all');
 	}
 
 	// Localize script for AJAX and Theme Data

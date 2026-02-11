@@ -56,9 +56,9 @@
 			<!-- Header Icons -->
 			<div class="header-icons">
 				<!-- Search Icon -->
-				<button class="header-icon-btn" onclick="openSearch()" aria-label="Search">
+				<a href="<?php echo esc_url(home_url('/search')); ?>" class="header-icon-btn" aria-label="Search">
 					<i data-lucide="search" class="header-icon"></i>
-				</button>
+				</a>
 
 				<!-- Location Icon -->
 				<button class="header-icon-btn" onclick="openLocations()" aria-label="Locations">
@@ -261,50 +261,57 @@
 			</div>
 		</div>
 
-		<!-- Mobile Menu -->
+		<!-- Mobile Menu Overlay -->
+		<div class="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
+
+		<!-- Modern Mobile Sidebar Menu -->
 		<div class="mobile-menu">
 			<div class="mobile-menu-content">
+				<!-- Premium Header -->
 				<div class="mobile-menu-header">
-					<button type="button" class="mobile-menu-close" aria-label="Close menu">
+					<div class="mobile-menu-header-content">
+						<h2>Menu</h2>
+						<p>Explore our artisan collection</p>
+					</div>
+					<button type="button" class="mobile-menu-close" aria-label="Close menu" onclick="closeMobileMenu()">
 						<i data-lucide="x"></i>
 					</button>
 				</div>
+
+				<!-- Search Bar -->
 				<div class="mobile-menu-search">
-					<input type="text" placeholder="Search for products" aria-label="Search for products">
-					<button type="button" aria-label="Search">
-						<i data-lucide="search"></i>
-					</button>
+					<i data-lucide="search"></i>
+					<input type="text" placeholder="Search products..." aria-label="Search for products">
 				</div>
 
-				<div class="mobile-menu-tabs">
-					<button type="button" class="mobile-menu-tab active">Menu</button>
-					<button type="button" class="mobile-menu-tab">Categories</button>
-				</div>
-
+				<!-- Navigation Links -->
 				<nav class="mobile-nav">
 					<ul class="mobile-nav-menu">
-						<li><a href="<?php echo esc_url(home_url('/')); ?>">Home</a></li>
-						<li><a href="<?php echo esc_url(home_url('/shop')); ?>">Shop</a></li>
-						<li><a href="<?php echo esc_url(home_url('/custom-cake')); ?>">Custom Cake</a></li>
-						<li><a href="<?php echo esc_url(home_url('/about')); ?>">About Melt</a></li>
-						<li><a href="<?php echo esc_url(home_url('/contact')); ?>">Contact Us</a></li>
+						<li><a href="<?php echo esc_url(home_url('/')); ?>">🏠 Home</a></li>
+						<li><a href="<?php echo esc_url(home_url('/shop')); ?>">🛍️ Shop</a></li>
+						<li><a href="<?php echo esc_url(home_url('/custom-cake')); ?>">🎂 Custom Cake</a></li>
+						<li><a href="<?php echo esc_url(home_url('/about')); ?>">ℹ️ About Melt</a></li>
+						<li><a href="<?php echo esc_url(home_url('/contact')); ?>">📧 Contact Us</a></li>
 					</ul>
 				</nav>
 
 				<div class="mobile-menu-divider"></div>
 
+				<!-- Quick Actions -->
 				<div class="mobile-menu-actions">
+					<p class="mobile-menu-actions-title">Quick Actions</p>
+
 					<?php if (is_user_logged_in()) : ?>
 						<a href="<?php echo esc_url(home_url('/dashboard')); ?>" class="mobile-menu-link">
 							<i data-lucide="layout-dashboard"></i>
-							<span>Dashboard</span>
+							<span>My Dashboard</span>
 						</a>
 						<a href="<?php echo esc_url(wp_logout_url(home_url())); ?>" class="mobile-menu-link">
 							<i data-lucide="log-out"></i>
 							<span>Logout</span>
 						</a>
 					<?php else : ?>
-						<button onclick="openAuthModal('login')" class="mobile-menu-link">
+						<button onclick="openAuthModal('login'); closeMobileMenu();" class="mobile-menu-link">
 							<i data-lucide="user"></i>
 							<span>Login / Register</span>
 						</button>
@@ -313,37 +320,9 @@
 					<?php if (function_exists('WC') && function_exists('wc_get_cart_url')) : ?>
 						<a href="<?php echo esc_url(wc_get_cart_url()); ?>" class="mobile-menu-link">
 							<i data-lucide="shopping-cart"></i>
-							<span>Cart (<?php echo melt_get_cart_count(); ?>)</span>
+							<span>View Cart (<?php echo melt_get_cart_count(); ?>)</span>
 						</a>
 					<?php endif; ?>
-				</div>
-			</div>
-		</div>
-		<!-- Search Modal -->
-		<div class="search-modal" id="search-modal">
-			<button class="search-modal-close" onclick="closeSearch()" aria-label="Close search">
-				<i data-lucide="x"></i>
-			</button>
-			<div class="search-modal-content">
-				<form role="search" method="get" class="search-form" action="<?php echo esc_url(home_url('/')); ?>">
-					<label style="width: 100%;">
-						<span class="screen-reader-text"><?php echo _x('Search for:', 'label', 'melt-custom'); ?></span>
-						<input type="search" class="search-field" placeholder="<?php echo esc_attr_x('Search for cakes, pastries...', 'placeholder', 'melt-custom'); ?>" value="<?php echo get_search_query(); ?>" name="s" autocomplete="off" />
-					</label>
-					<button type="submit" class="search-submit" aria-label="Submit Search">
-						<i data-lucide="arrow-right"></i>
-					</button>
-				</form>
-				<p class="search-modal-subtitle">Type and press Enter to search</p>
-
-				<div class="search-suggestions">
-					<span class="suggestions-label">Popular:</span>
-					<div class="suggestions-list">
-						<a href="<?php echo esc_url(home_url('/?s=chocolate')); ?>">Chocolate</a>
-						<a href="<?php echo esc_url(home_url('/?s=cake')); ?>">Birthday Cakes</a>
-						<a href="<?php echo esc_url(home_url('/?s=pastry')); ?>">Pastries</a>
-						<a href="<?php echo esc_url(home_url('/?s=gift')); ?>">Gifts</a>
-					</div>
 				</div>
 			</div>
 		</div>

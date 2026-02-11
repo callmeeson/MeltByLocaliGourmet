@@ -12,6 +12,23 @@ get_header();
 ?>
 
 <style>
+	/* Force header icons and navigation to be dark on shop page */
+	.page-template-page-shop .site-header .header-icon,
+	.page-template-page-shop .site-header .nav-menu a,
+	.page-template-page-shop .site-header .mobile-menu-toggle,
+	.page-template-page-shop .site-header .mobile-header-icons .header-icon {
+		color: rgba(26, 26, 26, 0.7) !important;
+	}
+
+	.page-template-page-shop .site-header .header-icon:hover,
+	.page-template-page-shop .site-header .nav-menu a:hover {
+		color: var(--primary) !important;
+	}
+
+	.page-template-page-shop .site-header .logo-image {
+		filter: none !important;
+	}
+
 	/* Shop Page Styles */
 	.shop-page-wrapper {
 		padding-top: 180px !important;
@@ -201,6 +218,7 @@ get_header();
 
 	.product-footer {
 		display: flex;
+		flex-direction: row;
 		align-items: center;
 		justify-content: space-between;
 		padding-top: 1rem;
@@ -208,16 +226,16 @@ get_header();
 		margin-top: auto;
 		gap: 1rem;
 		flex-wrap: wrap;
-		/* Allow wrapping if space is really tight */
 	}
 
 	.product-price {
 		font-family: var(--font-body);
-		font-size: 1rem;
+		font-size: 1.05rem;
 		font-weight: 600;
 		color: var(--foreground);
-		transition: transform 0.3s ease;
+		transition: color 0.3s ease;
 		display: inline-block;
+		flex-shrink: 0;
 	}
 
 	.product-card:hover .product-price {
@@ -228,6 +246,25 @@ get_header();
 		display: flex;
 		gap: 0.5rem;
 		align-items: center;
+		justify-content: flex-end;
+		flex-shrink: 0;
+		margin-left: auto;
+	}
+
+	/* Responsive: Center on very small cards */
+	@media (max-width: 320px) {
+		.product-footer {
+			flex-direction: column;
+			align-items: center;
+			text-align: center;
+			gap: 0.75rem;
+		}
+
+		.product-buttons {
+			justify-content: center;
+			margin-left: 0;
+			width: 100%;
+		}
 	}
 
 	.btn-customize {
@@ -738,24 +775,37 @@ get_header();
 					$default_attrs = $product->get_default_attributes();
 					$default_variation_id = 0;
 					if (!empty($default_attrs)) {
-						$default_variation_id = $product->get_matching_variation($default_attrs);
+						// Use WooCommerce 3.0+ data store method instead of deprecated get_matching_variation
+						$data_store = WC_Data_Store::load('product');
+						$default_variation_id = $data_store->find_matching_product_variation($product, $default_attrs);
 					}
 
 					$start_price = null;
-					if ($default_variation_id) {
+					// Check if we got a valid variation ID (could be 0 or false if not found)
+					if ($default_variation_id && $default_variation_id > 0) {
 						$default_variation = wc_get_product($default_variation_id);
-						if ($default_variation) {
+						if ($default_variation && $default_variation->get_price()) {
 							$start_price = (float) $default_variation->get_price();
 						}
 					}
-					if ($start_price === null) {
+					// Fallback to minimum variation price if no default variation found
+					if ($start_price === null || $start_price <= 0) {
 						$start_price = (float) $product->get_variation_price('min', true);
 					}
+					// If we have a valid price, format it with "Starts at"
 					if ($start_price > 0) {
 						$card_price_html = 'Starts at ' . wc_price($start_price);
+					} elseif (!empty($price_display)) {
+						// Use WooCommerce's default price HTML if available
+						$card_price_html = $price_display;
 					}
 				} elseif (empty($price_display) && $product->get_price()) {
 					$card_price_html = wc_price((float) $product->get_price());
+				}
+
+				// Final fallback: if still empty, use WooCommerce default
+				if (empty($card_price_html) && !empty($price_display)) {
+					$card_price_html = $price_display;
 				}
 
 				$card_price_text = '';
@@ -766,9 +816,11 @@ get_header();
 				$description = '';
 				if ($product->get_description()) {
 					$description = wp_strip_all_tags($product->get_description());
+				} elseif ($product->get_short_description()) {
+					$description = wp_strip_all_tags($product->get_short_description());
 				}
 		?>
-				<div class="product-card fade-in-item" style="opacity: 1 !important; visibility: visible !important;"
+				<div class="product-card fade-in-item"
 					data-categories='<?php echo esc_attr($categories_json); ?>'
 					data-size-label="Cake Size"
 					data-size-options='<?php echo esc_attr($size_terms_json); ?>'
@@ -806,32 +858,45 @@ get_header();
 								echo $card_price_html;
 								?>
 							</span>
-
 							<div class="product-buttons">
-								<a href="<?php echo esc_url($product->get_permalink()); ?>" class="btn-add">View Product</a>
+								<?php if ($product->is_type('variable')) : ?>
+									<a href="<?php echo esc_url($product->get_permalink()); ?>" class="btn-add">
+										<i data-lucide="eye" style="width: 1rem; height: 1rem;"></i>
+										View Product
+									</a>
+								<?php else : ?>
+									<?php
+									$add_to_cart_url = $product->add_to_cart_url();
+									?>
+									<a href="<?php echo esc_url($add_to_cart_url); ?>"
+										data-product_id="<?php echo esc_attr($product->get_id()); ?>"
+										data-product_sku="<?php echo esc_attr($product->get_sku()); ?>"
+										class="btn-add product_type_simple add_to_cart_button ajax_add_to_cart">
+										<i data-lucide="shopping-cart" style="width: 1rem; height: 1rem;"></i>
+										Add to Cart
+									</a>
+								<?php endif; ?>
 							</div>
 						</div>
 					</div>
 				</div>
-			<?php endwhile; ?>
-		<?php else : ?>
-			<div class="no-products" style="grid-column: 1 / -1; text-align: center; padding: 4rem;">
-				<h3 style="font-family: var(--font-serif); font-size: 1.5rem; margin-bottom: 1rem;">No products found</h3>
-				<p style="color: var(--muted-foreground);">Try adjusting your category filter or check back later.</p>
-				<a href="<?php echo remove_query_arg('category'); ?>" class="btn-primary" style="display: inline-block; margin-top: 1rem; color: var(--primary); text-decoration: underline;">View All Products</a>
-			</div>
+			<?php
+			endwhile;
+		else :
+			?>
+			<p style="grid-column: 1 / -1; text-align: center; font-family: var(--font-body); color: var(--muted-foreground);">
+				No products found in this category.
+			</p>
 		<?php endif; ?>
 	</div>
 
 	<!-- Pagination -->
 	<?php
-	$total_pages = $loop->max_num_pages;
+	$total_products = $loop->found_posts;
+	$total_pages = ceil($total_products / $products_per_page);
+	$base_url = remove_query_arg('paged');
+
 	if ($total_pages > 1) :
-		$base_url = remove_query_arg('paged');
-		// Preserve category filter
-		if ($current_cat_slug !== 'all') {
-			$base_url = add_query_arg('category', $current_cat_slug, $base_url);
-		}
 	?>
 		<div class="pagination-wrapper">
 			<!-- Previous Button -->
@@ -843,30 +908,32 @@ get_header();
 				<button class="pagination-btn disabled" disabled><i data-lucide="chevron-left" style="width: 1rem; height: 1rem;"></i></button>
 			<?php endif; ?>
 
-			<!-- Page Numbers -->
-			<?php
-			$range = 2; // Show 2 pages on each side of current page
-			$start = max(1, $current_page - $range);
-			$end = min($total_pages, $current_page + $range);
+			<!-- Page Numbers  -->
+			<?php if ($total_pages <= 7) : ?>
+				<?php for ($i = 1; $i <= $total_pages; $i++) : ?>
+					<a href="<?php echo $i == 1 ? remove_query_arg('paged', $base_url) : add_query_arg('paged', $i, $base_url); ?>" class="pagination-btn <?php echo $current_page == $i ? 'active' : ''; ?>">
+						<?php echo $i; ?>
+					</a>
+				<?php endfor; ?>
+			<?php else : ?>
+				<a href="<?php echo remove_query_arg('paged', $base_url); ?>" class="pagination-btn <?php echo $current_page == 1 ? 'active' : ''; ?>">
+					1
+				</a>
 
-			// First page
-			if ($start > 1) :
-			?>
-				<a href="<?php echo remove_query_arg('paged', $base_url); ?>" class="pagination-btn <?php echo $current_page == 1 ? 'active' : ''; ?>">1</a>
-				<?php if ($start > 2) : ?>
+				<?php if ($current_page > 3) : ?>
 					<span class="pagination-info">...</span>
 				<?php endif; ?>
-			<?php endif; ?>
 
-			<!-- Page range -->
-			<?php for ($i = $start; $i <= $end; $i++) : ?>
-				<a href="<?php echo $i == 1 ? remove_query_arg('paged', $base_url) : add_query_arg('paged', $i, $base_url); ?>" class="pagination-btn <?php echo $current_page == $i ? 'active' : ''; ?>">
-					<?php echo $i; ?>
-				</a>
-			<?php endfor; ?>
+				<?php
+				$start = max(2, $current_page - 1);
+				$end = min($total_pages - 1, $current_page + 1);
+				for ($i = $start; $i <= $end; $i++) :
+				?>
+					<a href="<?php echo add_query_arg('paged', $i, $base_url); ?>" class="pagination-btn <?php echo $current_page == $i ? 'active' : ''; ?>">
+						<?php echo $i; ?>
+					</a>
+				<?php endfor; ?>
 
-			<!-- Last page -->
-			<?php if ($end < $total_pages) : ?>
 				<?php if ($end < $total_pages - 1) : ?>
 					<span class="pagination-info">...</span>
 				<?php endif; ?>
@@ -897,4 +964,7 @@ get_header();
 <?php
 // Include customize modal
 get_template_part('template-parts/customize-modal');
+
+// Get footer (THIS WAS MISSING!)
+get_footer();
 ?>

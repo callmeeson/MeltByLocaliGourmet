@@ -79,8 +79,12 @@ while (have_posts()) : the_post();
 
                             <?php if (!empty($gallery_ids)) : ?>
                                 <div class="melt-gallery-nav">
-                                    <button class="melt-gallery-prev" id="meltGalleryPrev" aria-label="Previous image">‹</button>
-                                    <button class="melt-gallery-next" id="meltGalleryNext" aria-label="Next image">›</button>
+                                    <button class="melt-gallery-prev" id="meltGalleryPrev" aria-label="Previous image">
+                                        <i data-lucide="chevron-left"></i>
+                                    </button>
+                                    <button class="melt-gallery-next" id="meltGalleryNext" aria-label="Next image">
+                                        <i data-lucide="chevron-right"></i>
+                                    </button>
                                 </div>
                             <?php endif; ?>
                         </div>
@@ -125,8 +129,56 @@ while (have_posts()) : the_post();
                             </div>
                         <?php endif; ?>
 
-                        <div class="melt-product-price">
+                        <div class="melt-product-price" id="meltProductPrice">
                             <?php echo $product->get_price_html(); ?>
+                        </div>
+
+                        <!-- Stock Availability -->
+                        <?php if ($product->is_in_stock()) : ?>
+                            <div class="melt-stock-status in-stock">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="8" cy="8" r="8" fill="#10B981" />
+                                    <path d="M5 8L7 10L11 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                                <span>In Stock</span>
+                                <?php
+                                $stock_qty = $product->get_stock_quantity();
+                                if ($stock_qty && $stock_qty <= 10) :
+                                ?>
+                                    <span class="melt-stock-urgency"> - Only <?php echo $stock_qty; ?> left!</span>
+                                <?php endif; ?>
+                            </div>
+                        <?php else : ?>
+                            <div class="melt-stock-status out-of-stock">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="8" cy="8" r="8" fill="#EF4444" />
+                                    <path d="M5 5L11 11M5 11L11 5" stroke="white" stroke-width="2" stroke-linecap="round" />
+                                </svg>
+                                <span>Out of Stock</span>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+
+                    <!-- Trust Signals -->
+                    <div class="melt-trust-signals">
+                        <div class="melt-trust-item">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M17 8.5L10 3L3 8.5V17H17V8.5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M7 17V11H13V17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            <span>Free shipping on orders over $50</span>
+                        </div>
+                        <div class="melt-trust-item">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M10 1L12.5 6.5L18.5 7.5L14.25 11.5L15.5 17.5L10 14.5L4.5 17.5L5.75 11.5L1.5 7.5L7.5 6.5L10 1Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            <span>100% Secure Checkout</span>
+                        </div>
+                        <div class="melt-trust-item">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3 10L8 15L17 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            <span>Easy 30-day returns</span>
                         </div>
                     </div>
 
@@ -152,7 +204,7 @@ while (have_posts()) : the_post();
                                                 class="melt-variation-select"
                                                 data-attribute_name="attribute_<?php echo esc_attr(sanitize_title($attribute_name)); ?>">
                                                 <option value="">Choose an option...</option>
-                                                <?php foreach ($options as $option) : 
+                                                <?php foreach ($options as $option) :
                                                     $price_suffix = '';
                                                     foreach ($available_variations as $variation) {
                                                         $attr_key = 'attribute_' . sanitize_title($attribute_name);
@@ -216,6 +268,12 @@ while (have_posts()) : the_post();
                                     type="submit"
                                     class="melt-add-to-cart-btn"
                                     disabled>
+                                    <span class="melt-btn-spinner" style="display: none;">
+                                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="2" stroke-opacity="0.25" />
+                                            <path d="M10 2C10 2 10 2 10 2C14.4183 2 18 5.58172 18 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                                        </svg>
+                                    </span>
                                     <span class="melt-btn-text">Select options to add to cart</span>
                                 </button>
 
@@ -263,6 +321,12 @@ while (have_posts()) : the_post();
                                     class="melt-add-to-cart-btn"
                                     name="add-to-cart"
                                     value="<?php echo esc_attr($product->get_id()); ?>">
+                                    <span class="melt-btn-spinner" style="display: none;">
+                                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="2" stroke-opacity="0.25" />
+                                            <path d="M10 2C10 2 10 2 10 2C14.4183 2 18 5.58172 18 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                                        </svg>
+                                    </span>
                                     <span class="melt-btn-text"><?php echo esc_html($product->single_add_to_cart_text()); ?></span>
                                 </button>
 
@@ -390,310 +454,33 @@ while (have_posts()) : the_post();
                 </div>
             </div>
         <?php endif; ?>
+
+        <!-- Sticky Mobile Add-to-Cart Bar -->
+        <div class="melt-sticky-mobile-bar" id="meltStickyBar">
+            <div class="melt-sticky-bar-content">
+                <div class="melt-sticky-bar-info">
+                    <div class="melt-sticky-bar-price" id="meltStickyPrice">
+                        <?php echo $product->get_price_html(); ?>
+                    </div>
+                    <?php if ($product->is_in_stock()) : ?>
+                        <div class="melt-sticky-bar-stock">
+                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="6" cy="6" r="6" fill="#10B981" />
+                                <path d="M4 6L5.5 7.5L8 5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            <span>In Stock</span>
+                        </div>
+                    <?php endif; ?>
+                </div>
+                <button type="button" class="melt-sticky-bar-btn" id="meltStickyAddBtn">
+                    <span>Add to Cart</span>
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6 1L3 4M3 4L6 7M3 4H11C13.2091 4 15 5.79086 15 8V8C15 10.2091 13.2091 12 11 12H4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </button>
+            </div>
+        </div>
     </div>
-
-    <script>
-        jQuery(document).ready(function($) {
-            'use strict';
-
-            const toast = document.getElementById('meltToast');
-            let toastTimer = null;
-
-            function showToast(message) {
-                if (!toast || !message) return;
-                toast.textContent = message;
-                toast.classList.add('is-visible');
-                if (toastTimer) clearTimeout(toastTimer);
-                toastTimer = setTimeout(() => {
-                    toast.classList.remove('is-visible');
-                }, 2800);
-            }
-
-            document.querySelectorAll('.woocommerce-message, .woocommerce-notice--success').forEach((notice) => {
-                notice.remove();
-            });
-
-            if (toast) {
-                const hasSuccess = toast.dataset.hasSuccess === '1';
-                const noticeMessage = toast.dataset.message || 'Added to cart';
-                if (hasSuccess) {
-                    showToast(noticeMessage);
-                }
-            }
-
-            $(document.body).on('added_to_cart', function(event, fragments, cart_hash, $button) {
-                let message = 'Added to cart';
-                if ($button && $button.data && $button.data('product_name')) {
-                    message = $button.data('product_name') + ' added to cart';
-                }
-                showToast(message);
-            });
-
-            console.log('Melt Product Script Loaded');
-
-            // Gallery functionality
-            const mainImage = document.getElementById('meltMainImage');
-            const mainImageWrapper = document.getElementById('meltMainImageWrapper');
-            const thumbnails = document.querySelectorAll('.melt-thumbnail');
-            const prevBtn = document.getElementById('meltGalleryPrev');
-            const nextBtn = document.getElementById('meltGalleryNext');
-            let currentImageIndex = 0;
-
-            // Thumbnail click
-            thumbnails.forEach((thumb, index) => {
-                thumb.addEventListener('click', function() {
-                    const fullUrl = this.dataset.full;
-                    if (fullUrl && mainImage) {
-                        mainImage.style.opacity = '0.5';
-                        setTimeout(() => {
-                            mainImage.src = fullUrl;
-                            mainImage.style.opacity = '1';
-                        }, 150);
-                    }
-
-                    thumbnails.forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-                    currentImageIndex = index;
-                });
-            });
-
-            // Navigation arrows
-            if (prevBtn && nextBtn && thumbnails.length > 1) {
-                prevBtn.addEventListener('click', () => {
-                    currentImageIndex = (currentImageIndex - 1 + thumbnails.length) % thumbnails.length;
-                    thumbnails[currentImageIndex].click();
-                });
-
-                nextBtn.addEventListener('click', () => {
-                    currentImageIndex = (currentImageIndex + 1) % thumbnails.length;
-                    thumbnails[currentImageIndex].click();
-                });
-            }
-
-            // Image zoom
-            if (mainImageWrapper) {
-                let isZoomed = false;
-                mainImageWrapper.addEventListener('click', function(e) {
-                    if (e.target.tagName === 'BUTTON') return;
-                    isZoomed = !isZoomed;
-                    this.classList.toggle('zoomed', isZoomed);
-                });
-            }
-
-            // Quantity controls - jQuery Event Delegation
-            $(document).on('click', '.melt-qty-minus, .melt-qty-plus', function(e) {
-                e.preventDefault();
-
-                const $btn = $(this);
-                const $wrapper = $btn.closest('.melt-quantity-controls');
-                const $input = $wrapper.find('.melt-quantity-input');
-
-                if (!$input.length) return;
-
-                let current = parseFloat($input.val());
-                if (isNaN(current)) current = 1;
-
-                const min = parseFloat($input.attr('min')) || 1;
-                const max = parseFloat($input.attr('max'));
-                const step = parseFloat($input.attr('step')) || 1;
-
-                if ($btn.hasClass('melt-qty-minus')) {
-                    if (current > min) {
-                        $input.val(current - step).trigger('change');
-                    }
-                } else {
-                    // -1 or NaN means unlimited in WooCommerce
-                    if (isNaN(max) || max === -1 || current < max) {
-                        $input.val(current + step).trigger('change');
-                    }
-                }
-            });
-
-            // Variable product handling with WooCommerce integration
-            const variationForm = $('.variations_form');
-            if (variationForm.length) {
-                const selects = variationForm.find('.melt-variation-select');
-                const addToCartBtn = variationForm.find('.melt-add-to-cart-btn');
-                const resetLink = variationForm.find('.melt-reset-variations');
-                const priceDisplay = $('.melt-product-price');
-                const productId = variationForm.find('input[name="product_id"]').val();
-
-                // Store original price HTML
-                const originalPriceHtml = priceDisplay.html();
-
-                // Get variation data from WooCommerce
-                let variationsData = [];
-
-                // Fetch variations data via AJAX
-                if (productId) {
-                    $.ajax({
-                        url: '<?php echo admin_url('admin-ajax.php'); ?>',
-                        type: 'POST',
-                        data: {
-                            action: 'get_product_variations',
-                            product_id: productId
-                        },
-                        success: function(response) {
-                            if (response.success && response.data) {
-                                variationsData = response.data;
-                                console.log('Variations loaded:', variationsData.length);
-                            }
-                        }
-                    });
-                }
-
-                selects.on('change', function() {
-                    checkVariationSelection();
-                    updateVariationPrice();
-                });
-
-                function checkVariationSelection() {
-                    let allSelected = true;
-                    selects.each(function() {
-                        if (!$(this).val()) allSelected = false;
-                    });
-
-                    if (allSelected) {
-                        addToCartBtn.prop('disabled', false);
-                        addToCartBtn.find('.melt-btn-text').text('Add to cart');
-                        if (resetLink.parent()) {
-                             resetLink.parent().show();
-                        }
-                    } else {
-                        addToCartBtn.prop('disabled', true);
-                        addToCartBtn.find('.melt-btn-text').text('Select options to add to cart');
-                        if (resetLink.parent()) {
-                            resetLink.parent().hide();
-                        }
-                    }
-                }
-
-                function updateVariationPrice() {
-                    if (!productId || !priceDisplay.length) return;
-
-                    // Collect selected attributes
-                    const selectedAttributes = {};
-                    let allSelected = true;
-
-                    selects.each(function() {
-                        const $select = $(this);
-                        const value = $select.val();
-                        if (value) {
-                            selectedAttributes[$select.attr('name')] = value;
-                        } else {
-                            allSelected = false;
-                        }
-                    });
-
-                    if (!allSelected) {
-                        // Reset to original price if not all selected
-                        priceDisplay.html(originalPriceHtml);
-                        // Reset variation_id
-                        variationForm.find('.variation_id').val('0');
-                        return;
-                    }
-
-                    // Find matching variation
-                    const matchingVariation = findMatchingVariation(selectedAttributes);
-
-                    if (matchingVariation && matchingVariation.price_html) {
-                        priceDisplay.html(matchingVariation.price_html);
-                        // Set the variation_id for add to cart
-                        variationForm.find('.variation_id').val(matchingVariation.variation_id);
-                        console.log('Price updated:', matchingVariation.display_price);
-                        console.log('Variation ID set:', matchingVariation.variation_id);
-                    } else {
-                        // Fallback: Use AJAX to get variation data
-                        $.ajax({
-                            url: '<?php echo admin_url('admin-ajax.php'); ?>',
-                            type: 'POST',
-                            data: {
-                                action: 'get_variation_price',
-                                product_id: productId,
-                                attributes: selectedAttributes
-                            },
-                            success: function(response) {
-                                if (response.success && response.data && response.data.price_html) {
-                                    priceDisplay.html(response.data.price_html);
-                                    // Set the variation_id for add to cart
-                                    if (response.data.variation_id) {
-                                        variationForm.find('.variation_id').val(response.data.variation_id);
-                                        console.log('Variation ID set via AJAX:', response.data.variation_id);
-                                    }
-                                    console.log('Price updated via AJAX');
-                                }
-                            }
-                        });
-                    }
-                }
-
-                function findMatchingVariation(selectedAttributes) {
-                    if (!variationsData || variationsData.length === 0) return null;
-
-                    for (let i = 0; i < variationsData.length; i++) {
-                        const variation = variationsData[i];
-                        let matches = true;
-
-                        for (let attrName in selectedAttributes) {
-                            const selectedValue = selectedAttributes[attrName].toLowerCase();
-                            const variationValue = (variation.attributes[attrName] || '').toLowerCase();
-
-                            // Empty variation attribute means "any"
-                            if (variationValue !== '' && variationValue !== selectedValue) {
-                                matches = false;
-                                break;
-                            }
-                        }
-
-                        if (matches) {
-                            return variation;
-                        }
-                    }
-
-                    return null;
-                }
-
-                resetLink.on('click', function(e) {
-                    e.preventDefault();
-                    selects.val('').trigger('change');
-                    priceDisplay.html(originalPriceHtml);
-                    checkVariationSelection();
-                });
-            }
-
-            // Tabs
-            $('.melt-tab-btn').on('click', function() {
-                const targetTab = $(this).data('tab');
-
-                $('.melt-tab-btn').removeClass('active');
-                $(this).addClass('active');
-
-                $('.melt-tab-content').removeClass('active');
-
-                // Construct ID safely
-                const tabId = 'meltTab' + targetTab.split('-').map(function(word) {
-                    return word.charAt(0).toUpperCase() + word.slice(1);
-                }).join('');
-
-                $('#' + tabId).addClass('active');
-            });
-
-            // Delivery date persistence
-            const deliveryInput = document.getElementById('meltDeliveryDate');
-            if (deliveryInput) {
-                const saved = localStorage.getItem('melt_delivery_date');
-                if (saved) deliveryInput.value = saved;
-                deliveryInput.addEventListener('change', function() {
-                    localStorage.setItem('melt_delivery_date', this.value);
-                });
-            }
-
-            // Initialize Lucide icons
-            if (typeof lucide !== 'undefined') {
-                lucide.createIcons();
-            }
-        });
-    </script>
 
 <?php
 endwhile;
