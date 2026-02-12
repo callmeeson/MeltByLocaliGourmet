@@ -603,8 +603,8 @@ function melt_get_hero_slides()
 
 		$result[] = array(
 			'image'    => $image,
-			'title'    => get_the_title($slide->ID),
-			'subtitle' => get_post_meta($slide->ID, '_hero_slide_subtitle', true),
+			'title'    => html_entity_decode(get_the_title($slide->ID)),
+			'subtitle' => html_entity_decode(get_post_meta($slide->ID, '_hero_slide_subtitle', true)),
 		);
 	}
 
